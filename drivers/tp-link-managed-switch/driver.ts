@@ -6,8 +6,6 @@ import DeviceAPI from './deviceAPI';
 
 class Driver extends Homey.Driver {
 
-  private repairDelay = 15000; // wait 15 seconds for the polling refresh to finish and suspend
-
   async onInit() {
     this.log('TP-Link managed switch driver has been initialized');
 
@@ -136,7 +134,6 @@ class Driver extends Homey.Driver {
       if (view === 'loading') {
         try {
           await deviceToRepair.suspendRefresh();
-          await this.delay(this.repairDelay);
           deviceAPI = new DeviceAPI(this, address, username, password);
           const result = await deviceAPI.connect();
           if (result && this.isSameDevice(device, deviceAPI)) {
@@ -147,8 +144,11 @@ class Driver extends Homey.Driver {
           } else {
             await session.showView('connection_error');
           }
+        } catch (e) {
+            this.log("repair error", e);
+            await session.showView('connection_error');
         } finally {
-          deviceToRepair.resumeRefresh();
+          await deviceToRepair.resumeRefresh();
         }
       }
     });
@@ -172,8 +172,13 @@ class Driver extends Homey.Driver {
     }
   }
 
-  private isSameDevice(existingDevice: typeof Device, newDeviceAPI: DeviceAPI) {
-    return existingDevice.getData().id == newDeviceAPI.getMacAddress();
+  private normalizeMac(mac: string) {
+    return (mac || '').toLowerCase().replace(/[^0-9a-f]/g, '');
+  }
+
+  private isSameDevice(existingDevice: InstanceType<typeof Device>, newDeviceAPI: DeviceAPI) {
+    return this.normalizeMac(existingDevice.getData().id) ===
+      this.normalizeMac(newDeviceAPI.getMacAddress());
   }
 
   private delay(ms: number): Promise<void> {

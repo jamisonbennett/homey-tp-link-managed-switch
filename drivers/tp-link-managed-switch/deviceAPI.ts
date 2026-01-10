@@ -128,17 +128,54 @@ class DeviceAPI extends Logger {
         throw new Error(`HTTP status ${response.status}`);
       }
 
+      const html = typeof response.data === 'string' ? response.data : String(response.data ?? '');
+      const loginResponseCode = this.processLoginResponse(html);
+      if (loginResponseCode !== 0) {
+        const loginFailureReason = this.loginErrorCodeToMessage(loginResponseCode);
+        throw new Error(`Login failed with reason ${loginFailureReason}`);
+      }
+
       const setCookieHeader = response.headers['set-cookie'];
       if (!setCookieHeader) {
         throw new Error('set-cookie header not found.');
       }
 
-      this.saveSessionCookie(setCookieHeader);
+      const setCookieHeaders = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
+      this.saveSessionCookie(setCookieHeaders);
 
       return this.isLoggedIn();
     } catch (error) {
       this.log(`Error connecting to the device: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return false;
+    }
+  }
+
+  private processLoginResponse(data: string): number {
+    const loginInfoMatch = data.match(/var\s+logonInfo\s*=\s*new\s+Array\s*\(\s*(-?\d+)/)
+    if (!loginInfoMatch || !loginInfoMatch[1]) {
+      throw new Error('Login info not found in the response.');
+    }
+
+    return parseInt(loginInfoMatch[1]);
+  }
+
+  private loginErrorCodeToMessage(loginErrorCode: number): string {
+    switch (loginErrorCode) {
+      case 0:
+        return "Login was successful";
+      case 1:
+        return "Invalid username or password.";
+      case 2:
+        return "The user is not allowed to login.";
+      case 3:
+      case 4:
+        return "Too many users are logged in.";
+      case 5:
+        return "The session has timed out.";
+      case 6:
+        return "The user must login to the switch and change the password.";
+      default:
+        return `There was an unknown login response type (error_type=${loginErrorCode})`;
     }
   }
 
@@ -462,7 +499,7 @@ class DeviceAPI extends Logger {
 
       return true;
     } catch (error) {
-      this.log(`Error restarting the swtich: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
+      this.log(`Error restarting the switch: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return false;
     } 
   }

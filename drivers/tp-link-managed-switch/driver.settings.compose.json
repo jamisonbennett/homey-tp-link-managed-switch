@@ -8,6 +8,7 @@
     "value": 0,
     "min": 0,
     "max": 48,
+    "step": 1,
     "hint": {
       "en": "Port 0 will disable the favorite port. The port must exist on the device."
     }
@@ -16,7 +17,7 @@
     "id": "configurable_ports",
     "type": "text",
     "label": {
-      "en": "Configurabel ports"
+      "en": "Configurable ports"
     },
     "value": "",
     "hint": {

@@ -120,6 +120,10 @@ npx homey app build
 
 Execute the unit tests using Jest: `npx jest`
 
+### Login to CLI
+
+Login for using the cli: `npx homey login`
+
 ### Run the App Locally
 
 Launch the app in development mode: `npx homey app run`

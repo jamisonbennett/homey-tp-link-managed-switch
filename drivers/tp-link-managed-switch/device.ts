@@ -10,7 +10,7 @@ class Device extends Homey.Device {
   private refreshPromise: Promise<void> | null = null;
   private lastSuspendRefreshTime = 0;
   private needsFullRefresh = false;
-  private registeredCapabilities = new Set();
+  private registeredCapabilities = new Set<string>();
   private address: string = ""
   private username: string = ""
   private password: string = ""
@@ -33,8 +33,14 @@ class Device extends Homey.Device {
     this.linkStateChanged = this.homey.flow.getDeviceTriggerCard('link_state_changed');
 
     return this.fullRefresh().catch(async (error) => {
-      this.log('Error performing init: ', error);
-      await this.setUnavailable(error);
+      const errMessage = error instanceof Error ? error.message : String(error);
+      this.log('Error performing init: ', errMessage);
+      try {
+        await this.setUnavailable(errMessage);
+      } catch (e) {
+        // Device likely no longer exists — this is NOT an error
+        this.log('setUnavailable failed (device may be removed):', e);
+      }
     }).finally( () => {
       this.refreshInterval = setInterval(async () => {
         if (this.getRefreshIntervalProcessing()) {
@@ -47,8 +53,9 @@ class Device extends Homey.Device {
           this.setRefreshIntervalProcessing(true);
           if (this.needsFullRefresh) {
             this.fullRefresh().catch(async (error) => {
-              this.log('Error performing full refresh: ', error);
-              await this.setUnavailable(error);
+              const errMessage = error instanceof Error ? error.message : String(error);
+              this.log('Error performing full refresh: ', errMessage);
+              await this.setUnavailable(errMessage);
             });
           } else {
             const isLoggedIn = this.deviceAPI != null && (await this.deviceAPI.isLoggedIn());
@@ -164,7 +171,7 @@ class Device extends Homey.Device {
     // Sometimes the registered capabilities are not registered eventhough the promise for registering comes before the code that uses the capability.
     // This allows all of the capabilities to register before using them.
     const registeredCapabilities = this.getCapabilities();
-    const requiredCapabilities = ["onoff.favorite"];
+    const requiredCapabilities = ["onoff.favorite", "onoff.leds"];
     if (this.deviceAPI) {
       for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++ ) {
         requiredCapabilities.push(`onoff.${i}`);
@@ -244,8 +251,8 @@ class Device extends Homey.Device {
         throw new Error(`Unable to set the port ${port} ${value ? 'on' : 'off'}`);
       }
     } else {
-      this.log(`Unable to set the port ${port} ${value ? 'on' : 'off'} because it was configuration is restricted.`);
-      throw new Error(`Unable to set the port ${port} ${value ? 'on' : 'off'} because it was configuration is restricted.`);
+      this.log(`Unable to set the port ${port} ${value ? 'on' : 'off'} because it was restricted.`);
+      throw new Error(`Unable to set the port ${port} ${value ? 'on' : 'off'} because it was restricted.`);
     }
     return this.refreshState();
   }
@@ -279,7 +286,7 @@ class Device extends Homey.Device {
         throw new Error('Non-integer port number are not supported.');
       }
       if (newDefaultPortNumber < 0) {
-        throw new Error('Negative port numberr are not supported');
+        throw new Error('Negative port number are not supported');
       }
       if (this.deviceAPI != null) {
         const maxPortNumber = this.deviceAPI.getNumPorts();
@@ -444,10 +451,8 @@ class Device extends Homey.Device {
   }
 
   public async suspendRefresh() {
-    if (this.refreshPromise) {
-      await this.refreshPromise; // Wait for the ongoing refresh to finish
-    }
     this.lastSuspendRefreshTime = Date.now();
+    await this.refreshPromise?.catch(() => {}); // Wait for the ongoing refresh to finish or error but we don't care about the error we just care that it isn't concurrently executing
   }
 
   public async resumeRefresh() {

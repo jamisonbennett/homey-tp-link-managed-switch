@@ -8,6 +8,22 @@ import Logger, { ILogger } from '../../../lib/Logger';
 
 jest.mock('axios');
 
+const mockLoginInfo = `<script>
+var logonInfo = new Array(
+0,
+0,0);
+var g_Lan = 1;
+var g_year=2023;
+</script>`
+
+const mockLoginInfoUnsuccessful = `<script>
+var logonInfo = new Array(
+1,
+0,0);
+var g_Lan = 1;
+var g_year=2023;
+</script>`
+
 const mockSystemInfo: SystemInfo = {
   macAddress: '00:11:22:33:44:55', 
   firmwareVersion: '1.0.0 Build 20230218 Rel.50633',
@@ -73,7 +89,7 @@ async function performSuccessfulLogin(deviceAPI: DeviceAPI) {
     headers: {
       'set-cookie': ['H_P_SSID=mocked_cookie; Path=/; HttpOnly'],
     },
-    data: 'login success',
+    data: mockLoginInfo,
   }); 
     
   // Mocking axios.get for getSystemInfo
@@ -125,7 +141,21 @@ describe('DeviceAPI', () => {
       expect(deviceAPI.getNumPorts()).toBe(numPorts);
     });
 
-    it('should return false if login fails', async () => {
+    it('should return false on unsuccessful login with 200', async () => {
+      // Mocking axios.post for login
+      jest.spyOn(axios, 'post').mockResolvedValueOnce({
+        status: 200,
+        headers: {
+          'set-cookie': ['H_P_SSID=mocked_cookie; Path=/; HttpOnly'],
+        },
+        data: mockLoginInfoUnsuccessful,
+      });
+
+      const result = await deviceAPI.connect();
+      expect(result).toBe(false);
+    });
+
+    it('should return false if login fails with 401', async () => {
       jest.spyOn(axios, 'post').mockResolvedValueOnce({
         status: 401,
       });
