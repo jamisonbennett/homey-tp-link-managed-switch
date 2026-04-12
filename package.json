@@ -15,23 +15,30 @@
   "description": "A Homey app for managing TP-Link managed switches",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint --ext .js,.ts --ignore-path .gitignore ."
+    "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
+    "test": "jest"
   },
   "devDependencies": {
-    "@tsconfig/node16": "^16.1.8",
+    "@tsconfig/node22": "^22.0.5",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.0.5",
-    "eslint": "^9.39.2",
+    "@types/node": "^25.6.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^7.32.0",
     "eslint-config-athom": "^3.1.5",
-    "homey": "^3.12.0",
-    "jest": "^30.2.0",
-    "ts-jest": "^29.4.6",
+    "eslint-plugin-homey-app": "^1.0.2",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-mocha": "^6.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "homey": "^4.1.1",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.9",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "dependencies": {
-    "axios": "^1.7.2"
+    "axios": "^1.15.0"
   },
   "keywords": [
     "homey",
@@ -40,6 +47,17 @@
     "smart home"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=22"
+  },
+  "overrides": {
+    "update-notifier": "7.3.1",
+    "homey-api": {
+      "socket.io-client": "4.8.1",
+      "engine.io-client": "6.6.4"
+    },
+    "tmp": "0.2.5",
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^9.0.7"
+    }
   }
 }
