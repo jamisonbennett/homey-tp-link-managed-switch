@@ -2,7 +2,7 @@
 
 import Homey from 'homey';
 import axios, { isAxiosError, type RawAxiosResponseHeaders } from 'axios';
-import Logger from '../../lib/Logger';
+import Logger, { type ILogger } from '../../lib/Logger';
 import assertValidSwitchHostAddress from '../../lib/switchHostAddress';
 import { assertValidSwitchPassword, assertValidSwitchUsername } from '../../lib/switchCredentials';
 import {
@@ -61,7 +61,7 @@ class DeviceAPI extends Logger {
   private cookie: string = "";
   private readonly abortSignal?: AbortSignal;
 
-  constructor(logger: any, ipAddress: string, username: string, password: string, abortSignal?: AbortSignal) {
+  constructor(logger: ILogger, ipAddress: string, username: string, password: string, abortSignal?: AbortSignal) {
     super(logger);
     this.ipAddress = assertValidSwitchHostAddress(ipAddress);
     this.username = assertValidSwitchUsername(username);

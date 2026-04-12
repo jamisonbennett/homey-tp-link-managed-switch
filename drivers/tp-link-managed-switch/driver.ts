@@ -6,8 +6,22 @@ import { assertValidSwitchPassword, assertValidSwitchUsername } from '../../lib/
 import { assertPairConnectionFields } from '../../lib/pairConnectionPayload';
 import { assertValidPairedDeviceMacId, MAX_SWITCH_PORT_COUNT } from '../../lib/switchDeviceWebData';
 import DeviceAPI from './deviceAPI';
+import ManagedSwitchDevice = require('./device');
 
-const ManagedSwitchDevice = require('./device');
+type ManagedSwitchDeviceInstance = InstanceType<typeof ManagedSwitchDevice>;
+
+/** Flow card args that only reference the switch device (LEDs, restart). */
+interface FlowSwitchDeviceArgs {
+  device: ManagedSwitchDeviceInstance;
+}
+
+/** Flow card args that include a port number (link check, enable/disable port). */
+interface FlowSwitchPortArgs extends FlowSwitchDeviceArgs {
+  port: number;
+}
+
+/** State object for flow run listeners (unused for these cards; typed for API consistency). */
+type FlowCardRunState = Record<string, unknown>;
 
 class Driver extends Homey.Driver {
 
@@ -15,36 +29,36 @@ class Driver extends Homey.Driver {
     this.log('TP-Link managed switch driver has been initialized');
 
     const linkUpCondition = this.homey.flow.getConditionCard('link_up');
-    linkUpCondition.registerRunListener(async (args: any, state: any) => {
+    linkUpCondition.registerRunListener(async (args: FlowSwitchPortArgs, _state: FlowCardRunState) => {
       this.validatePortCardArgs(args);
-      return args.device.isLinkUp(args.port, true);
+      return args.device.isLinkUp(args.port);
     });
 
     const enablePortAction = this.homey.flow.getActionCard('enable_port');
-    enablePortAction.registerRunListener(async (args: any, state: any) => {
+    enablePortAction.registerRunListener(async (args: FlowSwitchPortArgs, _state: FlowCardRunState) => {
       this.validatePortCardArgs(args);
       return args.device.onCapabilityOnoff(args.port, true);
     });
 
     const disablePortAction = this.homey.flow.getActionCard('disable_port');
-    disablePortAction.registerRunListener(async (args: any, state: any) => {
+    disablePortAction.registerRunListener(async (args: FlowSwitchPortArgs, _state: FlowCardRunState) => {
       this.validatePortCardArgs(args);
       return args.device.onCapabilityOnoff(args.port, false);
     });
 
     const enableLedsAction = this.homey.flow.getActionCard('enable_leds');
-    enableLedsAction.registerRunListener(async (args: any, state: any) => {
+    enableLedsAction.registerRunListener(async (args: FlowSwitchDeviceArgs, _state: FlowCardRunState) => {
       this.validateDeviceCardArgs(args);
       return args.device.onCapabilityOnoffLeds(true);
     });
     const disableLedsAction = this.homey.flow.getActionCard('disable_leds');
-    disableLedsAction.registerRunListener(async (args: any, state: any) => {
+    disableLedsAction.registerRunListener(async (args: FlowSwitchDeviceArgs, _state: FlowCardRunState) => {
       this.validateDeviceCardArgs(args);
       return args.device.onCapabilityOnoffLeds(false);
     });
 
     const restartAction = this.homey.flow.getActionCard('restart');
-    restartAction.registerRunListener(async (args: any, state: any) => {
+    restartAction.registerRunListener(async (args: FlowSwitchDeviceArgs, _state: FlowCardRunState) => {
       this.validateDeviceCardArgs(args);
       return args.device.restart();
     });
@@ -212,7 +226,7 @@ class Driver extends Homey.Driver {
     return { address, username, password };
   }
 
-  private validateDeviceCardArgs(args: any) {
+  private validateDeviceCardArgs(args: FlowSwitchDeviceArgs) {
     if (!args.device) {
       throw new Error(String(this.homey.__(
         'settings.drivers.tp-link-managed-switch.flowSwitchDeviceNotAvailable',
@@ -220,7 +234,7 @@ class Driver extends Homey.Driver {
     }
   }
 
-  private validatePortCardArgs(args: any) {
+  private validatePortCardArgs(args: FlowSwitchPortArgs) {
     this.validateDeviceCardArgs(args);
     if (!Number.isInteger(args.port) || args.port < 1 || args.port > MAX_SWITCH_PORT_COUNT) {
       throw new Error(String(this.homey.__(

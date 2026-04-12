@@ -501,4 +501,4 @@ class Device extends Homey.Device {
   }
 }
 
-module.exports = Device;
+export = Device;
