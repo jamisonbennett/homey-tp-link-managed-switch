@@ -131,6 +131,20 @@ describe('DeviceAPI', () => {
     jest.clearAllMocks();
   });
 
+  describe('constructor', () => {
+    it('rejects values that would break URL construction', () => {
+      expect(() => new DeviceAPI(mockLogger, '192.168.0.1/evil', mockUsername, mockPassword))
+        .toThrow('Invalid switch address');
+    });
+
+    it('rejects invalid username or password for this app', () => {
+      expect(() => new DeviceAPI(mockLogger, mockIpAddress, '', mockPassword))
+        .toThrow('Invalid username');
+      expect(() => new DeviceAPI(mockLogger, mockIpAddress, mockUsername, 'x'.repeat(257)))
+        .toThrow('Invalid password');
+    });
+  });
+
   describe('connect', () => {
     it('should login and fetch system info and port settings', async () => {
       await performSuccessfulLogin(deviceAPI);
@@ -139,6 +153,37 @@ describe('DeviceAPI', () => {
       expect(deviceAPI.getFirmwareVersion()).toBe(mockSystemInfo.firmwareVersion);
       expect(deviceAPI.getHardwareVersion()).toBe(mockSystemInfo.hardwareVersion);
       expect(deviceAPI.getNumPorts()).toBe(numPorts);
+    });
+
+    it('should pass axios response/body size limits on every switch HTTP call', async () => {
+      await performSuccessfulLogin(deviceAPI);
+      const limits = {
+        maxContentLength: 512 * 1024,
+        maxBodyLength: 512 * 1024,
+        maxRedirects: 2,
+      };
+      const postMock = axios.post as jest.Mock;
+      const getMock = axios.get as jest.Mock;
+      for (const call of postMock.mock.calls) {
+        expect(call[2]).toMatchObject(limits);
+      }
+      for (const call of getMock.mock.calls) {
+        expect(call[1]).toMatchObject(limits);
+      }
+    });
+
+    it('should return false when login response Content-Type is not HTML-like', async () => {
+      jest.spyOn(axios, 'post').mockResolvedValueOnce({
+        status: 200,
+        headers: {
+          'content-type': 'application/json',
+          'set-cookie': ['H_P_SSID=mocked_cookie; Path=/; HttpOnly'],
+        },
+        data: mockLoginInfo,
+      });
+
+      const result = await deviceAPI.connect();
+      expect(result).toBe(false);
     });
 
     it('should return false on unsuccessful login with 200', async () => {
@@ -159,6 +204,26 @@ describe('DeviceAPI', () => {
       jest.spyOn(axios, 'post').mockResolvedValueOnce({
         status: 401,
       });
+
+      const result = await deviceAPI.connect();
+      expect(result).toBe(false);
+    });
+
+    it('should return false when system info MAC in the page is not valid hex', async () => {
+      jest.spyOn(axios, 'post').mockResolvedValueOnce({
+        status: 200,
+        headers: {
+          'set-cookie': ['H_P_SSID=mocked_cookie; Path=/; HttpOnly'],
+        },
+        data: mockLoginInfo,
+      });
+      const good = mockSystemInfoData;
+      const badMac = mockSystemInfoData.replace(
+        '00:11:22:33:44:55',
+        'GG:HH:II:JJ:KK:LL',
+      );
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({ status: 200, data: good });
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({ status: 200, data: badMac });
 
       const result = await deviceAPI.connect();
       expect(result).toBe(false);
@@ -300,6 +365,21 @@ describe('DeviceAPI', () => {
       });;
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 400
+      });
+
+      const result = await deviceAPI.getLedsEnabled();
+      expect(result).toBeNull();
+    });
+
+    it('should return null when LED field is not 0 or 1', async () => {
+      await performSuccessfulLogin(deviceAPI);
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 200,
+        data: mockSystemInfoData,
+      });
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 200,
+        data: '<script>\nvar led = 2\nvar tip = "";\n</script>',
       });
 
       const result = await deviceAPI.getLedsEnabled();

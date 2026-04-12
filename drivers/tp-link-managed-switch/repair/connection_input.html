@@ -54,7 +54,9 @@
     const address = document.getElementById('address').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    Homey.emit("set_connection_info", { address, username, password });
+    Homey.emit("set_connection_info", { address, username, password }, function (err) {
+      if (err) Homey.alert(err.message || String(err));
+    });
   });
 </script>
 

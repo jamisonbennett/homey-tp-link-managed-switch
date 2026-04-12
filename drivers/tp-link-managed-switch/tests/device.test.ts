@@ -140,7 +140,7 @@ describe('Device Class Tests', () => {
     it('should reject setting ports that are not configured', async () => {
       jest.spyOn(device, 'getSetting').mockImplementation((...args: unknown[]) => {
         const [settingName] = args as [string]; // Extract and type the first argument
-        if (settingName === 'default_port_number') {
+        if (settingName === 'favorite_port_number') {
           return 0;
         } else if (settingName === 'configurable_ports') {
           return '1-3,5';
@@ -164,6 +164,29 @@ describe('Device Class Tests', () => {
     });
   });
 
+  describe('onSettings configurable_ports', () => {
+    it('rejects port numbers above the app maximum before expanding huge ranges', async () => {
+      await device.onInit();
+      await expect(
+        device.onSettings({
+          oldSettings: {},
+          newSettings: { configurable_ports: '1-999999' },
+          changedKeys: ['configurable_ports'],
+        }),
+      ).rejects.toThrow(/Port range must be within 1/);
+    });
+
+    it('rejects comma-only lists', async () => {
+      await device.onInit();
+      await expect(
+        device.onSettings({
+          oldSettings: {},
+          newSettings: { configurable_ports: ',,' },
+          changedKeys: ['configurable_ports'],
+        }),
+      ).rejects.toThrow(/No valid port numbers/);
+    });
+  });
 
   it('should handle onCapabilityOnoffFavorite correctly', async () => {
     const setPortEnabledSpy = jest.spyOn(DeviceAPI.prototype, 'setPortEnabled').mockResolvedValue(true);

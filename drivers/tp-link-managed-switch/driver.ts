@@ -1,8 +1,13 @@
 'use strict';
 
 import Homey from 'homey';
-const Device = require('./device');
+import assertValidSwitchHostAddress from '../../lib/switchHostAddress';
+import { assertValidSwitchPassword, assertValidSwitchUsername } from '../../lib/switchCredentials';
+import { assertPairConnectionFields } from '../../lib/pairConnectionPayload';
+import { assertValidPairedDeviceMacId, MAX_SWITCH_PORT_COUNT } from '../../lib/switchDeviceWebData';
 import DeviceAPI from './deviceAPI';
+
+const Device = require('./device');
 
 class Driver extends Homey.Driver {
 
@@ -52,9 +57,35 @@ class Driver extends Homey.Driver {
     let deviceAPI: DeviceAPI | null = null
 
     session.setHandler("set_connection_info", async (data) => {
-      address = data.address;
-      username = data.username;
-      password = data.password;
+      let fields;
+      try {
+        fields = assertPairConnectionFields(data);
+      } catch {
+        throw new Error(String(this.homey.__(
+          'settings.drivers.tp-link-managed-switch.invalidConnectionPayload',
+        )));
+      }
+      try {
+        address = assertValidSwitchHostAddress(fields.address);
+      } catch {
+        throw new Error(String(this.homey.__(
+          'settings.drivers.tp-link-managed-switch.invalidSwitchAddress',
+        )));
+      }
+      try {
+        username = assertValidSwitchUsername(fields.username);
+      } catch {
+        throw new Error(String(this.homey.__(
+          'settings.drivers.tp-link-managed-switch.invalidSwitchUsername',
+        )));
+      }
+      try {
+        password = assertValidSwitchPassword(fields.password);
+      } catch {
+        throw new Error(String(this.homey.__(
+          'settings.drivers.tp-link-managed-switch.invalidSwitchPassword',
+        )));
+      }
       await session.nextView();
       return true;
     });
@@ -120,11 +151,38 @@ class Driver extends Homey.Driver {
     });
 
     session.setHandler("set_connection_info", async (data) => {
-      address = data.address;
-      username = data.username;
-      password = data.password;
-      if (password == "") {
+      let fields;
+      try {
+        fields = assertPairConnectionFields(data);
+      } catch {
+        throw new Error(String(this.homey.__(
+          'settings.drivers.tp-link-managed-switch.invalidConnectionPayload',
+        )));
+      }
+      try {
+        address = assertValidSwitchHostAddress(fields.address);
+      } catch {
+        throw new Error(String(this.homey.__(
+          'settings.drivers.tp-link-managed-switch.invalidSwitchAddress',
+        )));
+      }
+      try {
+        username = assertValidSwitchUsername(fields.username);
+      } catch {
+        throw new Error(String(this.homey.__(
+          'settings.drivers.tp-link-managed-switch.invalidSwitchUsername',
+        )));
+      }
+      if (fields.password == "") {
         password = deviceToRepair.getPassword();
+      } else {
+        try {
+          password = assertValidSwitchPassword(fields.password);
+        } catch {
+          throw new Error(String(this.homey.__(
+            'settings.drivers.tp-link-managed-switch.invalidSwitchPassword',
+          )));
+        }
       }
       await session.nextView();
       return true;
@@ -167,22 +225,19 @@ class Driver extends Homey.Driver {
 
   private validatePortCardArgs(args: any) {
     this.validateDeviceCardArgs(args);
-    if (!args.port || !Number.isInteger(args.port)) {
+    if (!Number.isInteger(args.port) || args.port < 1 || args.port > MAX_SWITCH_PORT_COUNT) {
       throw Error('Port number is unknown');
     }
   }
 
-  private normalizeMac(mac: string) {
-    return (mac || '').toLowerCase().replace(/[^0-9a-f]/g, '');
-  }
-
   private isSameDevice(existingDevice: InstanceType<typeof Device>, newDeviceAPI: DeviceAPI) {
-    return this.normalizeMac(existingDevice.getData().id) ===
-      this.normalizeMac(newDeviceAPI.getMacAddress());
-  }
-
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    try {
+      const existingMac = assertValidPairedDeviceMacId(existingDevice.getData().id);
+      const newMac = assertValidPairedDeviceMacId(newDeviceAPI.getMacAddress());
+      return existingMac === newMac;
+    } catch {
+      return false;
+    }
   }
 }
 

@@ -69,6 +69,26 @@ describe('Driver', () => {
       expect(mockSession.setHandler).toHaveBeenCalledWith('list_devices', expect.any(Function));
       expect(mockSession.setHandler).toHaveBeenCalledWith('close_connection', expect.any(Function));
     });
+
+    it('set_connection_info rejects invalid payload before field validation', async () => {
+      const mockSession = {
+        setHandler: jest.fn(),
+        nextView: jest.fn(),
+        showView: jest.fn(),
+        done: jest.fn(),
+      };
+      const __ = jest.fn((key: string) => `t:${key}`);
+      driver.homey = { __, flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+
+      await driver.onPair(mockSession);
+
+      const handlerEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
+      expect(handlerEntry).toBeDefined();
+      const handler = handlerEntry![1] as (data: unknown) => Promise<unknown>;
+
+      await expect(handler(null)).rejects.toThrow('t:settings.drivers.tp-link-managed-switch.invalidConnectionPayload');
+      expect(__).toHaveBeenCalledWith('settings.drivers.tp-link-managed-switch.invalidConnectionPayload');
+    });
   });
 
   describe('onRepair', () => {
@@ -81,7 +101,7 @@ describe('Driver', () => {
       };
 
       const mockDevice = {
-        getData: jest.fn().mockReturnValue({ id: 'mocked-id' }),
+        getData: jest.fn().mockReturnValue({ id: '00:11:22:33:44:55' }),
         repair: jest.fn(),
       };
 

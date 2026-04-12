@@ -1,6 +1,7 @@
 'use strict';
 
 import Homey from 'homey';
+import { MAX_SWITCH_PORT_COUNT } from '../../lib/switchDeviceWebData';
 import DeviceAPI from './deviceAPI';
 
 class Device extends Homey.Device {
@@ -200,7 +201,7 @@ class Device extends Homey.Device {
     // Set the current values of each switch
     const portStatus = await this.deviceAPI.getAllPortsEnabled();
     if (portStatus) {
-      const defaultPortNumber = this.getSetting('default_port_number') || 0;
+      const defaultPortNumber = this.getSetting('favorite_port_number') || 0;
       if (defaultPortNumber == 0) {
         promises.push(this.setCapabilityIfNeeded(`onoff.favorite`, true));
       } else if (defaultPortNumber > 0 && defaultPortNumber <= portStatus.length) {
@@ -330,30 +331,48 @@ class Device extends Homey.Device {
   }
 
   private parsePortNumbers(input: string): number[] {
-    if (!input) {
+    if (!input || !input.trim()) {
       return []; // Empty value indicates all ports
     }
 
     const ports: number[] = [];
-    const ranges = input.replace(/\s+/g, '').split(',');
+    const compact = input.replace(/\s+/g, '');
+    const ranges = compact.split(',');
 
     ranges.forEach(range => {
+      if (range === '') {
+        return;
+      }
       const [start, end] = range.split('-').map(Number);
       if (!Number.isInteger(start) || (end !== undefined && !Number.isInteger(end))) {
         throw new Error(`Invalid port range: ${range}`);
       }
 
       if (end === undefined) {
+        if (start < 1 || start > MAX_SWITCH_PORT_COUNT) {
+          throw new Error(
+            `Port must be between 1 and ${MAX_SWITCH_PORT_COUNT} (got ${start} in "${range}")`,
+          );
+        }
         ports.push(start);
       } else {
         if (start > end) {
           throw new Error(`Invalid range: ${range}`);
+        }
+        if (start < 1 || end > MAX_SWITCH_PORT_COUNT) {
+          throw new Error(
+            `Port range must be within 1-${MAX_SWITCH_PORT_COUNT} (got "${range}")`,
+          );
         }
         for (let i = start; i <= end; i++) {
           ports.push(i);
         }
       }
     });
+
+    if (compact.length > 0 && ports.length === 0) {
+      throw new Error('No valid port numbers in list');
+    }
 
     return ports;
   }

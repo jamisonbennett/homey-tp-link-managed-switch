@@ -1,11 +1,39 @@
 'use strict';
 
 import Homey from 'homey';
-import axios from 'axios';
+import axios, { type RawAxiosResponseHeaders } from 'axios';
 import Logger from '../../lib/Logger';
+import assertValidSwitchHostAddress from '../../lib/switchHostAddress';
+import { assertValidSwitchPassword, assertValidSwitchUsername } from '../../lib/switchCredentials';
+import {
+  assertLedStateFromDevice,
+  assertLogonResponseCode,
+  assertPortCountFromDevice,
+  assertValidDescriptionString,
+  assertValidFirmwareVersionString,
+  assertValidHardwareVersionString,
+  assertValidSessionCookieHeaderPair,
+  mapSpeedActToLinkUp,
+  mapZeroOneToBooleans,
+  normalizeMacFromDeviceHtml,
+  parsePortTableIntegers,
+} from '../../lib/switchDeviceWebData';
 
 /** TCP/connect/response limit so half-open or stuck LAN sessions fail fast instead of hanging. */
 const HTTP_TIMEOUT_MS = 2_000;
+
+/**
+ * Caps how much data axios will accept per request/response. TP-Link admin pages are small HTML/JS;
+ * this limits memory use if the configured host is not the switch or returns a pathological payload.
+ */
+const AXIOS_MAX_CONTENT_BYTES = 512 * 1024;
+
+const axiosSwitchLimits = {
+  maxContentLength: AXIOS_MAX_CONTENT_BYTES,
+  maxBodyLength: AXIOS_MAX_CONTENT_BYTES,
+  /** Low cap: enough for typical device/trailing-slash redirects, limits long cross-host chains. */
+  maxRedirects: 2,
+};
 
 export interface SystemInfo {
   macAddress: string;
@@ -34,9 +62,29 @@ class DeviceAPI extends Logger {
 
   constructor(logger: any, ipAddress: string, username: string, password: string) {
     super(logger);
-    this.ipAddress = ipAddress;
-    this.username = username;
-    this.password = password;
+    this.ipAddress = assertValidSwitchHostAddress(ipAddress);
+    this.username = assertValidSwitchUsername(username);
+    this.password = assertValidSwitchPassword(password);
+  }
+
+  /**
+   * If Content-Type is present it must look like TP-Link admin markup. Missing/empty is allowed
+   * (many embedded devices omit it).
+   */
+  private assertReasonableSwitchContentType(headers: RawAxiosResponseHeaders | undefined): void {
+    if (headers == null) {
+      return;
+    }
+    const raw = headers['content-type'];
+    const ct = typeof raw === 'string' ? raw : Array.isArray(raw) ? String(raw[0] ?? '') : '';
+    if (ct.trim() === '') {
+      return;
+    }
+    const main = ct.split(';')[0].trim().toLowerCase();
+    if (main === 'text/html' || main === 'text/plain' || main === 'application/xhtml+xml') {
+      return;
+    }
+    throw new Error('Unexpected content type from device');
   }
 
   public getName(): string {
@@ -63,6 +111,7 @@ class DeviceAPI extends Logger {
 
     try {
       const response = await axios.get(`http://${this.ipAddress}/SystemInfoRpm.htm`, {
+        ...axiosSwitchLimits,
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -73,11 +122,19 @@ class DeviceAPI extends Logger {
         return false;
       }
 
+      this.assertReasonableSwitchContentType(response.headers);
+
       const data = await response.data;
 
       const macAddressMatch = data.match(/macStr:\s?\[\n?\s*"([^"]+)"\n?\s*\]/);
 
       if (!macAddressMatch || !macAddressMatch[1]) {
+        return false;
+      }
+
+      try {
+        normalizeMacFromDeviceHtml(macAddressMatch[1]);
+      } catch {
         return false;
       }
 
@@ -120,6 +177,7 @@ class DeviceAPI extends Logger {
     try {
       // Post to the login page and get the cookie
       const response = await axios.post(`http://${this.ipAddress}/logon.cgi`, null, {
+        ...axiosSwitchLimits,
         timeout: HTTP_TIMEOUT_MS,
         params: {
           username: this.username,
@@ -132,6 +190,8 @@ class DeviceAPI extends Logger {
       if (response.status !== 200) {
         throw new Error(`HTTP status ${response.status}`);
       }
+
+      this.assertReasonableSwitchContentType(response.headers);
 
       const html = typeof response.data === 'string' ? response.data : String(response.data ?? '');
       const loginResponseCode = this.processLoginResponse(html);
@@ -161,7 +221,8 @@ class DeviceAPI extends Logger {
       throw new Error('Login info not found in the response.');
     }
 
-    return parseInt(loginInfoMatch[1]);
+    const code = parseInt(loginInfoMatch[1], 10);
+    return assertLogonResponseCode(code);
   }
 
   private loginErrorCodeToMessage(loginErrorCode: number): string {
@@ -186,9 +247,9 @@ class DeviceAPI extends Logger {
 
   private saveSessionCookie(setCookieHeaders: string[]) {
     // Extract the cookie for the session
-    const cookie = setCookieHeaders.find(cookie => cookie.startsWith('H_P_SSID='));
+    const cookie = setCookieHeaders.find(c => c.startsWith('H_P_SSID='));
     if (cookie) {
-      this.cookie = cookie.split(';')[0];
+      this.cookie = assertValidSessionCookieHeaderPair(cookie);
     } else {
       throw new Error('H_P_SSID cookie not found in the response headers.');
     }
@@ -201,6 +262,7 @@ class DeviceAPI extends Logger {
 
     try {
       const response = await axios.get(`http://${this.ipAddress}/SystemInfoRpm.htm`, {
+        ...axiosSwitchLimits,
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -210,6 +272,8 @@ class DeviceAPI extends Logger {
       if (response.status !== 200) {
         throw new Error(`HTTP status ${response.status}`);
       }
+
+      this.assertReasonableSwitchContentType(response.headers);
 
       const data = await response.data;
 
@@ -236,10 +300,10 @@ class DeviceAPI extends Logger {
       }
 
       const systemInfo: SystemInfo = {
-        macAddress: macAddressMatch[1].toLowerCase(),
-        firmwareVersion: firmwareMatch[1],
-        hardwareVersion: hardwareMatch[1],
-        description: descriptionMatch[1]
+        macAddress: normalizeMacFromDeviceHtml(macAddressMatch[1]),
+        firmwareVersion: assertValidFirmwareVersionString(firmwareMatch[1]),
+        hardwareVersion: assertValidHardwareVersionString(hardwareMatch[1]),
+        description: assertValidDescriptionString(descriptionMatch[1]),
       };
       return systemInfo;
     } catch (error) {
@@ -254,6 +318,7 @@ class DeviceAPI extends Logger {
 
     try {
       const response = await axios.get(`http://${this.ipAddress}/PortSettingRpm.htm`, {
+        ...axiosSwitchLimits,
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -263,6 +328,8 @@ class DeviceAPI extends Logger {
       if (response.status !== 200) {
         throw new Error(`HTTP status ${response.status}`);
       }
+
+      this.assertReasonableSwitchContentType(response.headers);
 
       const data = await response.data;
 
@@ -293,29 +360,18 @@ class DeviceAPI extends Logger {
         throw new Error('Actual port speed not found in the response.');
       }
 
-      const numPorts = parseInt(maxPortMatch[1]);
-      const stateArray = stateMatch[1].split(',')
-        .map((num: string) => parseInt(num.trim()))
-        .slice(0, numPorts)
-        .map((state: number) => state == 1);
-      const flowControlArray = flowControlMatch[1].split(',')
-        .map((num: string) => parseInt(num.trim()))
-        .slice(0, numPorts)
-        .map((state: number) => state == 1);
-      const speedArray = speedMatch[1].split(',')
-        .map((num: string) => parseInt(num.trim()))
-        .slice(0, numPorts);
-      const linkUpArray = linkUpMatch[1].split(',')
-        .map((num: string) => parseInt(num.trim()))
-        .slice(0, numPorts)
-        .map((state: number) => state != 0);
+      const numPorts = assertPortCountFromDevice(parseInt(maxPortMatch[1], 10));
+      const stateNums = parsePortTableIntegers(stateMatch[1], numPorts, 'port state');
+      const flowNums = parsePortTableIntegers(flowControlMatch[1], numPorts, 'flow control');
+      const speedNums = parsePortTableIntegers(speedMatch[1], numPorts, 'port speed config');
+      const actNums = parsePortTableIntegers(linkUpMatch[1], numPorts, 'port link speed');
 
       const portSettings: PortSettings = {
-        numPorts: parseInt(maxPortMatch[1]),
-        portEnabled: stateArray,
-        flowControl: flowControlArray,
-        speed: speedArray,
-        linkUp: linkUpArray
+        numPorts,
+        portEnabled: mapZeroOneToBooleans(stateNums, 'port state'),
+        flowControl: mapZeroOneToBooleans(flowNums, 'flow control'),
+        speed: speedNums,
+        linkUp: mapSpeedActToLinkUp(actNums),
       };
       return portSettings;
     } catch (error) {
@@ -381,6 +437,7 @@ class DeviceAPI extends Logger {
       // NOTE: The device uses HTTP GET for changing the configuration.
       const cookie = this.getCookie();
       const response = await axios.get(`http://${this.ipAddress}/port_setting.cgi`, {
+        ...axiosSwitchLimits,
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -397,6 +454,8 @@ class DeviceAPI extends Logger {
       if (response.status !== 200) {
         throw new Error(`HTTP status ${response.status}`);
       }
+
+      this.assertReasonableSwitchContentType(response.headers);
 
       return true;
     } catch (error) {
@@ -426,6 +485,7 @@ class DeviceAPI extends Logger {
 
     try {
       const response = await axios.get(`http://${this.ipAddress}/TurnOnLEDRpm.htm`, {
+        ...axiosSwitchLimits,
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -436,6 +496,8 @@ class DeviceAPI extends Logger {
         throw new Error(`HTTP status ${response.status}`);
       }
 
+      this.assertReasonableSwitchContentType(response.headers);
+
       const data = await response.data;
 
       // Extract the port setting from the response
@@ -445,7 +507,8 @@ class DeviceAPI extends Logger {
         throw new Error('LED status not found in the response.');
       }
 
-      return parseInt(ledMatch[1]) == 1;
+      const ledVal = parseInt(ledMatch[1], 10);
+      return assertLedStateFromDevice(ledVal);
     } catch (error) {
       this.log(`Error fetching LED settings: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return null;
@@ -466,6 +529,7 @@ class DeviceAPI extends Logger {
       // NOTE: The device uses HTTP GET for changing the configuration.
       const cookie = this.getCookie();
       const response = await axios.get(`http://${this.ipAddress}/led_on_set.cgi`, {
+        ...axiosSwitchLimits,
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -479,6 +543,8 @@ class DeviceAPI extends Logger {
       if (response.status !== 200) {
         throw new Error(`HTTP status ${response.status}`);
       }
+
+      this.assertReasonableSwitchContentType(response.headers);
 
       return true;
     } catch (error) {
@@ -498,6 +564,7 @@ class DeviceAPI extends Logger {
     try {
       const cookie = this.getCookie();
       const response = await axios.post(`http://${this.ipAddress}/reboot.cgi`, null, {
+        ...axiosSwitchLimits,
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -507,6 +574,8 @@ class DeviceAPI extends Logger {
       if (response.status !== 200) {
         throw new Error(`HTTP status ${response.status}`);
       }
+
+      this.assertReasonableSwitchContentType(response.headers);
 
       return true;
     } catch (error) {
