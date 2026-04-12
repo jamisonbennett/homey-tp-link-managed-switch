@@ -126,6 +126,52 @@ describe('Driver', () => {
         driver.onRepair(mockSession, { getData: jest.fn() } as unknown as Homey.Device),
       ).rejects.toThrow('Unsupported device');
     });
+
+    it('repair set_connection_info reuses stored password when the password field is empty', async () => {
+      const mockSession = {
+        setHandler: jest.fn(),
+        nextView: jest.fn().mockResolvedValue(undefined),
+        showView: jest.fn().mockResolvedValue(undefined),
+        done: jest.fn(),
+      };
+
+      const storedPassword = 'password-kept-from-device';
+      const mockDevice = Object.create(ManagedSwitchDevice.prototype) as InstanceType<
+        typeof ManagedSwitchDevice
+      >;
+      mockDevice.getData = jest.fn().mockReturnValue({ id: '00:11:22:33:44:55' });
+      mockDevice.getPassword = jest.fn().mockReturnValue(storedPassword);
+      mockDevice.getAddress = jest.fn().mockReturnValue('192.168.1.2');
+      mockDevice.getUsername = jest.fn().mockReturnValue('prior-user');
+      mockDevice.suspendRefresh = jest.fn().mockResolvedValue(undefined);
+      mockDevice.resumeRefresh = jest.fn().mockResolvedValue(undefined);
+      mockDevice.repair = jest.fn().mockResolvedValue(undefined);
+
+      const connect = jest.fn().mockResolvedValue(true);
+      const getMacAddress = jest.fn().mockReturnValue('00:11:22:33:44:55');
+      (DeviceAPI as jest.Mock).mockImplementationOnce(() => ({ connect, getMacAddress }));
+
+      driver.homey = { __: jest.fn((key: string) => key), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+
+      await driver.onRepair(mockSession, mockDevice);
+
+      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
+      expect(setConn).toBeDefined();
+      const setConnectionHandler = setConn![1] as (data: unknown) => Promise<unknown>;
+
+      await setConnectionHandler({ address: '192.168.1.10', username: 'admin', password: '' });
+
+      expect(mockDevice.getPassword).toHaveBeenCalled();
+      expect(mockSession.nextView).toHaveBeenCalled();
+
+      const showViewEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView');
+      expect(showViewEntry).toBeDefined();
+      const showViewHandler = showViewEntry![1] as (view: string) => Promise<void>;
+      await showViewHandler('loading');
+
+      expect(DeviceAPI).toHaveBeenCalledWith(driver, '192.168.1.10', 'admin', storedPassword);
+      expect(mockDevice.repair).toHaveBeenCalledWith('192.168.1.10', 'admin', storedPassword);
+    });
   });
 
 });
