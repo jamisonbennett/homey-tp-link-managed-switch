@@ -214,14 +214,18 @@ class Driver extends Homey.Driver {
 
   private validateDeviceCardArgs(args: any) {
     if (!args.device) {
-      throw Error('Switch device is not available');
+      throw new Error(String(this.homey.__(
+        'settings.drivers.tp-link-managed-switch.flowSwitchDeviceNotAvailable',
+      )));
     }
   }
 
   private validatePortCardArgs(args: any) {
     this.validateDeviceCardArgs(args);
     if (!Number.isInteger(args.port) || args.port < 1 || args.port > MAX_SWITCH_PORT_COUNT) {
-      throw Error('Port number is unknown');
+      throw new Error(String(this.homey.__(
+        'settings.drivers.tp-link-managed-switch.flowPortNumberUnknown',
+      )));
     }
   }
 

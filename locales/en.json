@@ -13,6 +13,8 @@
     "drivers": {
       "tp-link-managed-switch": {
         "portName": "Port __number__",
+        "flowSwitchDeviceNotAvailable": "Switch device is not available",
+        "flowPortNumberUnknown": "Port number is unknown",
         "invalidSwitchAddress": "Enter a valid IPv4 address, hostname, or bracketed IPv6. You may add a port (e.g. 192.168.0.1:8080 or [fe80::1]:443). Do not include http://, paths, or a username in this field.",
         "invalidSwitchUsername": "Enter a valid username (1-128 characters; leading and trailing spaces are trimmed). Control characters are not allowed.",
         "invalidSwitchPassword": "Password is too long (max 256 characters for this app) or contains control characters. Leading and trailing spaces are kept—remove them only if you intend to.",
