@@ -9,6 +9,8 @@ class Device extends Homey.Device {
   private linkStateChanged: Homey.FlowCardTriggerDevice | null = null;
   private suspendRefreshTime = 300000; // Suspend refreshing for 5 minutes to prepare for a repair
   private refreshPromise: Promise<void> | null = null;
+  /** When set, a full refresh is in progress; concurrent callers await the same promise. */
+  private fullRefreshInFlight: Promise<void> | null = null;
   private lastSuspendRefreshTime = 0;
   private needsFullRefresh = false;
   private registeredCapabilities = new Set<string>();
@@ -53,7 +55,7 @@ class Device extends Homey.Device {
         try {
           this.setRefreshIntervalProcessing(true);
           if (this.needsFullRefresh) {
-            this.fullRefresh().catch(async (error) => {
+            await this.fullRefresh().catch(async (error) => {
               const errMessage = error instanceof Error ? error.message : String(error);
               this.log('Error performing full refresh: ', errMessage);
               await this.setUnavailable(errMessage);
@@ -77,49 +79,58 @@ class Device extends Homey.Device {
     });
   }
 
-  async fullRefresh() {
+  async fullRefresh(): Promise<void> {
+    if (this.fullRefreshInFlight != null) {
+      return this.fullRefreshInFlight;
+    }
+
     this.needsFullRefresh = true;
 
-    this.refreshPromise = new Promise<void>(async (resolve, reject) => {
-      try {
-        this.address = this.getStoreValue('address');
-        this.username = this.getStoreValue('username');
-        this.password = this.getStoreValue('password');
-        this.deviceAPI = new DeviceAPI(this, this.address, this.username, this.password);
-        this.lastRefreshLoginTime = Date.now();
-        if (!await this.deviceAPI.connect()) {
-          throw new Error("Unable to connect to managed switch");
-        } 
+    const run = this.performFullRefresh();
+    this.fullRefreshInFlight = run;
+    this.refreshPromise = run;
 
-        // Await for each one in order so they are properly ordered
-        for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++ ) {
-          await this.addCapabilityIfNeeded(i);
-        }
+    void run
+      .finally(() => {
+        this.fullRefreshInFlight = null;
+      })
+      .catch(() => {
+        /* rejection is already observed via returned `run` */
+      });
 
-        await this.waitForInitialCapabilityRegistrationToFinish();
+    return run;
+  }
 
-        const promises = [];
-        for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++ ) {
-          promises.push(this.setupCapability(i));
-        }
+  private async performFullRefresh(): Promise<void> {
+    this.address = this.getStoreValue('address');
+    this.username = this.getStoreValue('username');
+    this.password = this.getStoreValue('password');
+    this.deviceAPI = new DeviceAPI(this, this.address, this.username, this.password);
+    this.lastRefreshLoginTime = Date.now();
+    if (!await this.deviceAPI.connect()) {
+      throw new Error('Unable to connect to managed switch');
+    }
 
-        promises.push(this.setEnergy(this.energyUsage()));
+    // Await each add in order so capabilities are registered in port order.
+    for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++) {
+      await this.addCapabilityIfNeeded(i);
+    }
 
-        this.handleConfigurablePortsChange(this.getSetting('configurable_ports'));
+    await this.waitForInitialCapabilityRegistrationToFinish();
 
-        await Promise.all(promises).then(async () => {
-          await this.setAvailable();
-          this.needsFullRefresh = false;
-          // Set the current values of each switch
-          return this.refreshState();
-        });
-      } catch (error) {
-        reject(error instanceof Error ? error : new Error(String(error)));
-      } finally {
-        resolve();
-      }
-    });
-    return this.refreshPromise;
+    const promises: Promise<unknown>[] = [];
+    for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++) {
+      promises.push(this.setupCapability(i));
+    }
+
+    promises.push(this.setEnergy(this.energyUsage()));
+
+    this.handleConfigurablePortsChange(this.getSetting('configurable_ports'));
+
+    await Promise.all(promises);
+    await this.setAvailable();
+    this.needsFullRefresh = false;
+    await this.refreshState();
   }
 
   async onUninit() {
