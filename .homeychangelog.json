@@ -13,5 +13,8 @@
   },
   "0.1.4": {
     "en": "Fixed a crash that could occur if the app has an error during the app loading process. Fixed a bug that allowed the app to repair and save incorrect login credentials when the password was recently correct. Fixed a bug so that the app can repair a switch that had the wrong credentials at app startup. Corrected some pairing and repair logic. Improved repair speed. Fixed a few typos."
+  },
+  "0.1.5": {
+    "en": "The app should feel more responsive when a switch is slow or temporarily unreachable, instead of waiting a long time with no feedback. Pairing and repair give clearer errors when something is wrong with the address, login, or ports. Reliability and security improvements under the hood. Removing a switch from Homey cleans up more reliably. Flow cards show clearer messages when the device or port is not available. Fixed an issue with the port link-up flow. Minor wording fixes."
   }
 }
