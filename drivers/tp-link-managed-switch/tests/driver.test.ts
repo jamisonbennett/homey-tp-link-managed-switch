@@ -1,7 +1,7 @@
 'use strict';
 
 import Homey from 'homey';
-const Device = require('../device');
+const ManagedSwitchDevice = require('../device');
 import DeviceAPI from '../deviceAPI';
 const Driver = require('../driver');
 
@@ -100,10 +100,11 @@ describe('Driver', () => {
         done: jest.fn(),
       };
 
-      const mockDevice = {
-        getData: jest.fn().mockReturnValue({ id: '00:11:22:33:44:55' }),
-        repair: jest.fn(),
-      };
+      const mockDevice = Object.create(ManagedSwitchDevice.prototype) as InstanceType<
+        typeof ManagedSwitchDevice
+      >;
+      mockDevice.getData = jest.fn().mockReturnValue({ id: '00:11:22:33:44:55' });
+      mockDevice.repair = jest.fn();
 
       await driver.onRepair(mockSession, mockDevice);
 
@@ -118,7 +119,12 @@ describe('Driver', () => {
         setHandler: jest.fn(),
       };
 
-      await expect(driver.onRepair(mockSession, null)).rejects.toThrow('Unsupported device');
+      await expect(driver.onRepair(mockSession, null as unknown as Homey.Device)).rejects.toThrow(
+        'Unsupported device',
+      );
+      await expect(
+        driver.onRepair(mockSession, { getData: jest.fn() } as unknown as Homey.Device),
+      ).rejects.toThrow('Unsupported device');
     });
   });
 

@@ -7,7 +7,7 @@ import { assertPairConnectionFields } from '../../lib/pairConnectionPayload';
 import { assertValidPairedDeviceMacId, MAX_SWITCH_PORT_COUNT } from '../../lib/switchDeviceWebData';
 import DeviceAPI from './deviceAPI';
 
-const Device = require('./device');
+const ManagedSwitchDevice = require('./device');
 
 class Driver extends Homey.Driver {
 
@@ -107,10 +107,10 @@ class Driver extends Homey.Driver {
     let password = "";
     let deviceAPI: DeviceAPI | null = null
 
-    const deviceToRepair = device as InstanceType<typeof Device>;
-    if (!deviceToRepair) {
-      throw Error('Unsupported device');
+    if (!(device instanceof ManagedSwitchDevice)) {
+      throw new Error('Unsupported device');
     }
+    const deviceToRepair = device as InstanceType<typeof ManagedSwitchDevice>;
 
     session.setHandler("getDeviceMacAddress", async (data) => {
       return {
@@ -142,7 +142,7 @@ class Driver extends Homey.Driver {
           await deviceToRepair.suspendRefresh();
           deviceAPI = new DeviceAPI(this, address, username, password);
           const result = await deviceAPI.connect();
-          if (result && this.isSameDevice(device, deviceAPI)) {
+          if (result && this.isSameDevice(deviceToRepair, deviceAPI)) {
             await deviceToRepair.repair(address, username, password);
             await session.showView('done');
           } else if (result) {
@@ -225,7 +225,7 @@ class Driver extends Homey.Driver {
     }
   }
 
-  private isSameDevice(existingDevice: InstanceType<typeof Device>, newDeviceAPI: DeviceAPI) {
+  private isSameDevice(existingDevice: InstanceType<typeof ManagedSwitchDevice>, newDeviceAPI: DeviceAPI) {
     try {
       const existingMac = assertValidPairedDeviceMacId(existingDevice.getData().id);
       const newMac = assertValidPairedDeviceMacId(newDeviceAPI.getMacAddress());
