@@ -4,6 +4,9 @@ import Homey from 'homey';
 import axios from 'axios';
 import Logger from '../../lib/Logger';
 
+/** TCP/connect/response limit so half-open or stuck LAN sessions fail fast instead of hanging. */
+const HTTP_TIMEOUT_MS = 2_000;
+
 export interface SystemInfo {
   macAddress: string;
   firmwareVersion: string;
@@ -60,6 +63,7 @@ class DeviceAPI extends Logger {
 
     try {
       const response = await axios.get(`http://${this.ipAddress}/SystemInfoRpm.htm`, {
+        timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
         }
@@ -116,6 +120,7 @@ class DeviceAPI extends Logger {
     try {
       // Post to the login page and get the cookie
       const response = await axios.post(`http://${this.ipAddress}/logon.cgi`, null, {
+        timeout: HTTP_TIMEOUT_MS,
         params: {
           username: this.username,
           password: this.password,
@@ -196,6 +201,7 @@ class DeviceAPI extends Logger {
 
     try {
       const response = await axios.get(`http://${this.ipAddress}/SystemInfoRpm.htm`, {
+        timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
         }
@@ -248,6 +254,7 @@ class DeviceAPI extends Logger {
 
     try {
       const response = await axios.get(`http://${this.ipAddress}/PortSettingRpm.htm`, {
+        timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
         }
@@ -374,6 +381,7 @@ class DeviceAPI extends Logger {
       // NOTE: The device uses HTTP GET for changing the configuration.
       const cookie = this.getCookie();
       const response = await axios.get(`http://${this.ipAddress}/port_setting.cgi`, {
+        timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
         },
@@ -418,6 +426,7 @@ class DeviceAPI extends Logger {
 
     try {
       const response = await axios.get(`http://${this.ipAddress}/TurnOnLEDRpm.htm`, {
+        timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
         }
@@ -457,6 +466,7 @@ class DeviceAPI extends Logger {
       // NOTE: The device uses HTTP GET for changing the configuration.
       const cookie = this.getCookie();
       const response = await axios.get(`http://${this.ipAddress}/led_on_set.cgi`, {
+        timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
         },
@@ -488,6 +498,7 @@ class DeviceAPI extends Logger {
     try {
       const cookie = this.getCookie();
       const response = await axios.post(`http://${this.ipAddress}/reboot.cgi`, null, {
+        timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
         }
