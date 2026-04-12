@@ -57,35 +57,10 @@ class Driver extends Homey.Driver {
     let deviceAPI: DeviceAPI | null = null
 
     session.setHandler("set_connection_info", async (data) => {
-      let fields;
-      try {
-        fields = assertPairConnectionFields(data);
-      } catch {
-        throw new Error(String(this.homey.__(
-          'settings.drivers.tp-link-managed-switch.invalidConnectionPayload',
-        )));
-      }
-      try {
-        address = assertValidSwitchHostAddress(fields.address);
-      } catch {
-        throw new Error(String(this.homey.__(
-          'settings.drivers.tp-link-managed-switch.invalidSwitchAddress',
-        )));
-      }
-      try {
-        username = assertValidSwitchUsername(fields.username);
-      } catch {
-        throw new Error(String(this.homey.__(
-          'settings.drivers.tp-link-managed-switch.invalidSwitchUsername',
-        )));
-      }
-      try {
-        password = assertValidSwitchPassword(fields.password);
-      } catch {
-        throw new Error(String(this.homey.__(
-          'settings.drivers.tp-link-managed-switch.invalidSwitchPassword',
-        )));
-      }
+      const creds = this.parseValidatedConnectionFields(data);
+      address = creds.address;
+      username = creds.username;
+      password = creds.password;
       await session.nextView();
       return true;
     });
@@ -151,39 +126,12 @@ class Driver extends Homey.Driver {
     });
 
     session.setHandler("set_connection_info", async (data) => {
-      let fields;
-      try {
-        fields = assertPairConnectionFields(data);
-      } catch {
-        throw new Error(String(this.homey.__(
-          'settings.drivers.tp-link-managed-switch.invalidConnectionPayload',
-        )));
-      }
-      try {
-        address = assertValidSwitchHostAddress(fields.address);
-      } catch {
-        throw new Error(String(this.homey.__(
-          'settings.drivers.tp-link-managed-switch.invalidSwitchAddress',
-        )));
-      }
-      try {
-        username = assertValidSwitchUsername(fields.username);
-      } catch {
-        throw new Error(String(this.homey.__(
-          'settings.drivers.tp-link-managed-switch.invalidSwitchUsername',
-        )));
-      }
-      if (fields.password == "") {
-        password = deviceToRepair.getPassword();
-      } else {
-        try {
-          password = assertValidSwitchPassword(fields.password);
-        } catch {
-          throw new Error(String(this.homey.__(
-            'settings.drivers.tp-link-managed-switch.invalidSwitchPassword',
-          )));
-        }
-      }
+      const creds = this.parseValidatedConnectionFields(data, {
+        keepPasswordOnEmpty: () => deviceToRepair.getPassword(),
+      });
+      address = creds.address;
+      username = creds.username;
+      password = creds.password;
       await session.nextView();
       return true;
     });
@@ -215,6 +163,53 @@ class Driver extends Homey.Driver {
       await session.done();
       return true;
     });
+  }
+
+  /**
+   * Parses pair/repair `set_connection_info` payloads into validated credentials.
+   * When `keepPasswordOnEmpty` is set, an empty password field reuses the existing stored password (repair flow).
+   */
+  private parseValidatedConnectionFields(
+    data: unknown,
+    options?: { keepPasswordOnEmpty: () => string },
+  ): { address: string; username: string; password: string } {
+    let fields;
+    try {
+      fields = assertPairConnectionFields(data);
+    } catch {
+      throw new Error(String(this.homey.__(
+        'settings.drivers.tp-link-managed-switch.invalidConnectionPayload',
+      )));
+    }
+    let address: string;
+    try {
+      address = assertValidSwitchHostAddress(fields.address);
+    } catch {
+      throw new Error(String(this.homey.__(
+        'settings.drivers.tp-link-managed-switch.invalidSwitchAddress',
+      )));
+    }
+    let username: string;
+    try {
+      username = assertValidSwitchUsername(fields.username);
+    } catch {
+      throw new Error(String(this.homey.__(
+        'settings.drivers.tp-link-managed-switch.invalidSwitchUsername',
+      )));
+    }
+    let password: string;
+    if (options?.keepPasswordOnEmpty && fields.password === '') {
+      password = options.keepPasswordOnEmpty();
+    } else {
+      try {
+        password = assertValidSwitchPassword(fields.password);
+      } catch {
+        throw new Error(String(this.homey.__(
+          'settings.drivers.tp-link-managed-switch.invalidSwitchPassword',
+        )));
+      }
+    }
+    return { address, username, password };
   }
 
   private validateDeviceCardArgs(args: any) {
