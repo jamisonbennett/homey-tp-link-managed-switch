@@ -15,6 +15,7 @@
   "description": "A Homey app for managing TP-Link managed switches",
   "scripts": {
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
     "test": "jest"
   },
