@@ -3,10 +3,10 @@
     {
       "id": "link_state_changed",
       "title": {
-        "en": "Switch port state changed"
+        "en": "Switch port link state changed"
       },
       "titleFormatted": {
-        "en": "Switch port link changed states"
+        "en": "Switch port link state changed"
       },
       "tokens": [
         {

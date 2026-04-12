@@ -145,7 +145,7 @@ class DeviceAPI extends Logger {
   }
 
   private async reloginIfNeeded(): Promise<boolean> {
-    // Check to see if the current login works and only login if needed.
+    // Check whether the session is still valid, and log in only when needed.
     // Cookies can expire or the session can be invalidated.
     // The device invalidates the existing session when anyone logs in.
     if (await this.isLoggedIn()) {
@@ -232,14 +232,14 @@ class DeviceAPI extends Logger {
       case 1:
         return "Invalid username or password.";
       case 2:
-        return "The user is not allowed to login.";
+        return "The user is not allowed to log in.";
       case 3:
       case 4:
         return "Too many users are logged in.";
       case 5:
         return "The session has timed out.";
       case 6:
-        return "The user must login to the switch and change the password.";
+        return "The user must log in to the switch and change the password.";
       default:
         return `There was an unknown login response type (error_type=${loginErrorCode})`;
     }
@@ -416,7 +416,7 @@ class DeviceAPI extends Logger {
   }
 
   public async setPortEnabled(port: number, enabled: boolean): Promise<boolean> {
-    // Enabled or disables a switch port.
+    // Enables or disables a switch port.
     // This logs in if needed.
     if (!this.isValidPort(port)) {
       return false;
@@ -480,7 +480,7 @@ class DeviceAPI extends Logger {
   }
 
   private async getLedSettings(): Promise<boolean | null> {
-    // Gets the device's port settings
+    // Gets the device's LED settings from the admin page.
     const cookie = this.getCookie();
 
     try {
@@ -500,7 +500,7 @@ class DeviceAPI extends Logger {
 
       const data = await response.data;
 
-      // Extract the port setting from the response
+      // Extract the LED state from the response
       const ledMatch = data.match(/var\s+led\s*=\s*(\d+)\s*/);
 
       if (!ledMatch || !ledMatch[1]) {
@@ -516,7 +516,7 @@ class DeviceAPI extends Logger {
   }
 
   public async setLedsEnabled(enabled: boolean): Promise<boolean> {
-    // Enabled or disables the LEDs
+    // Enables or disables the LEDs
     // This logs in if needed.
     const loggedIn = await this.reloginIfNeeded();
     if (!loggedIn) { 

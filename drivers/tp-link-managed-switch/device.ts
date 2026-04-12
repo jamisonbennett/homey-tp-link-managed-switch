@@ -18,8 +18,8 @@ class Device extends Homey.Device {
   private deviceAPI: DeviceAPI | null = null
   private refreshInterval: NodeJS.Timeout | null = null
   private refreshIntervalProcessing: boolean = false
-  private refreshTimeIterval = 60000; // 1 minute
-  private refreshAndLoginTimeIterval = 3600000; // 1 Hour, this will cause other users to be logged out of the managed switch so don't make it too frequent
+  private refreshTimeInterval = 60000; // 1 minute
+  private refreshAndLoginTimeInterval = 3600000; // 1 Hour, this will cause other users to be logged out of the managed switch so don't make it too frequent
   private lastRefreshLoginTime = 0;
   private lastAllLinksStatus: boolean[] | null = null;
 
@@ -60,7 +60,7 @@ class Device extends Homey.Device {
             });
           } else {
             const isLoggedIn = this.deviceAPI != null && (await this.deviceAPI.isLoggedIn());
-            const forceRefresh = Date.now() - this.lastRefreshLoginTime >= this.refreshAndLoginTimeIterval;
+            const forceRefresh = Date.now() - this.lastRefreshLoginTime >= this.refreshAndLoginTimeInterval;
             if (forceRefresh) {
               this.lastRefreshLoginTime = Date.now();
             }
@@ -73,7 +73,7 @@ class Device extends Homey.Device {
         } finally {
           this.setRefreshIntervalProcessing(false);
         }
-      }, this.refreshTimeIterval);
+      }, this.refreshTimeInterval);
     });
   }
 
@@ -145,8 +145,8 @@ class Device extends Homey.Device {
       this.registeredCapabilities.add(capability);
     }
 
-    // Avoid setting capability options (ie title) if it already is set since it is an expensive operation.
-    // Checking if its already set can thrown an exception if its not set.
+    // Avoid setting capability options (i.e. title) if it already is set since it is an expensive operation.
+    // Checking if it's already set can throw an exception if it's not set.
     let needToSetTitle = true;
     let needToSetUiQuickAction = true;
     const title = this.homey.__(`settings.drivers.tp-link-managed-switch.portName`, { number: port });
@@ -169,7 +169,7 @@ class Device extends Homey.Device {
   }
 
   private async waitForInitialCapabilityRegistrationToFinish(retries: number = 100, retryDelay: number = 100): Promise<void> {
-    // Sometimes the registered capabilities are not registered eventhough the promise for registering comes before the code that uses the capability.
+    // Sometimes the registered capabilities are not registered even though the promise for registering comes before the code that uses the capability.
     // This allows all of the capabilities to register before using them.
     const registeredCapabilities = this.getCapabilities();
     const requiredCapabilities = ["onoff.favorite", "onoff.leds"];
@@ -396,13 +396,13 @@ class Device extends Homey.Device {
     this.log("Restarting managed switch");
 
     if (this.deviceAPI == null) {
-      this.log(`Unable to restart the manged switch because the device is not initialized.`);
-      throw new Error(`Unable to restart the manged switch because the device is not initialized.`);
+      this.log(`Unable to restart the managed switch because the device is not initialized.`);
+      throw new Error(`Unable to restart the managed switch because the device is not initialized.`);
     }
     const result = await this.deviceAPI.restart();
     if (!result) {
-      this.log(`Unable to restart the manged switch.`);
-      throw new Error(`Unable to restart the manged switch.`);
+      this.log(`Unable to restart the managed switch.`);
+      throw new Error(`Unable to restart the managed switch.`);
     }
   }
 
@@ -423,7 +423,7 @@ class Device extends Homey.Device {
 
   private energyUsage() {
     if (!this.deviceAPI) {
-      throw new Error("Unable to estimate energy usage with a device that is not initilized");
+      throw new Error("Unable to estimate energy usage with a device that is not initialized");
     }
 
     // The data sheet was used for a 24 port switch.

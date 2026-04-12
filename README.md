@@ -1,10 +1,10 @@
 # TP-Link Managed Switch App for Homey
 
-Switch management that supports TP-Link managed switches
+Control TP-Link managed switches from Homey.
 
 ## Overview
 
-The **TP-Link Managed Switch** app integrates TP-Link managed switches with your Homey smart home platform. This app allows you to control your network's managed switches directly from Homey, enabling you to automate and manage your network more efficiently.
+The **TP-Link Managed Switch** app integrates TP-Link managed switches with your Homey smart home platform. You can control managed switches on your network directly from Homey and automate how they behave.
 
 ### Features
 - **Port Control**: Enable or disable individual ports on your TP-Link managed switch directly from the Homey app or through Homey flows.
@@ -18,7 +18,7 @@ The **TP-Link Managed Switch** app integrates TP-Link managed switches with your
 - TP-Link TL-SG105E (HW v5 & v5.6)
 - TP-Link TL-SG108E (HW v6 & v6.6)
 - TP-Link TL-SG116E (HW v2.20 & v2.26)
-- TP-Link TL-SG1024E (HW v4.20, v6, v6.6, v7, & v7.60)
+- TP-Link TL-SG1024DE (HW v4.20, v6, v6.6, v7, & v7.60)
 - Additional TP-Link Easy Smart Switch hardware with firmware v1.0.0 build 20230214 or later
 
 **TL-SG105E**
@@ -70,11 +70,11 @@ The **TP-Link Managed Switch** app integrates TP-Link managed switches with your
 | TL-SG1024DE v7 | 1.0.0 Build 20230616 |
 | TL-SG1024DE v7.60 | 1.0.0 Build 20230616 |
 
-Support may require the Easy Smart Switch hardware versions and latest firmware.
+Support may require a compatible Easy Smart Switch model and up-to-date firmware.
 
 ## Installation
 1. **Install the App**: Search for "TP-Link Managed Switch" in the Homey app store and install it.
-2. **Add a Device**: After installing, go to the Homey app and selecting the "TP-Link Managed Switch" app from the devices list.
+2. **Add a Device**: After installing, open the Homey app and select the "TP-Link Managed Switch" app from the device list.
 3. **Configure Settings**: Enter the IP address, username, and password for your TP-Link managed switch to allow Homey to communicate with it.
 
 ## Usage
@@ -82,7 +82,7 @@ Support may require the Easy Smart Switch hardware versions and latest firmware.
 ### Enabling/Disabling Ports
 1. **Manual Control**:
    - Open the Homey app.
-   - Select your TP-Link switch from the devices list.
+   - Select your TP-Link switch from the device list.
    - Use the provided controls to enable or disable specific ports on the switch.
 
 2. **Automated Control with Flows**:
@@ -100,7 +100,7 @@ Support may require the Easy Smart Switch hardware versions and latest firmware.
 - **Port Control Not Working**: Verify that the switch model is supported and that the firmware is up to date.
 
 ## Known Issues
-- **UI Session Logout**: The TP-Link managed switch hardware allows at most one active session. When the Homey app's connects to the switch any active sessions are logged out. This will occur on demand based on flow actions and also periodically in the background (hourly).
+- **UI Session Logout**: TP-Link managed switch hardware allows at most one active session. When the Homey app connects to the switch, any other sessions are logged out. That happens when flows run and also about once an hour in the background.
 
 ## Contributing
 We welcome contributions to enhance this app! Please submit issues or pull requests on our [GitHub repository](https://github.com/jamisonbennett/homey-tp-link-managed-switch).
@@ -120,9 +120,9 @@ npx homey app build
 
 Execute the unit tests using Jest: `npx jest`
 
-### Login to CLI
+### Log in to the CLI
 
-Login for using the cli: `npx homey login`
+Log in to use the CLI: `npx homey login`
 
 ### Run the App Locally
 

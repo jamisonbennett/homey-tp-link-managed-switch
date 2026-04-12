@@ -11,7 +11,7 @@ Supported Devices:
 - TP-Link TL-SG105E (HW v5 & v5.6)
 - TP-Link TL-SG108E (HW v6 & v6.6)
 - TP-Link TL-SG116E (HW v2.20 & v2.26)
-- TP-Link TL-SG1024E (HW v4.20, v6, v6.6, v7, & v7.60)
+- TP-Link TL-SG1024DE (HW v4.20, v6, v6.6, v7, & v7.60)
 - Additional TP-Link Easy Smart Switch hardware with firmware v1.0.0 build 20230214 or later
 
 Disclaimer:

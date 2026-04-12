@@ -6,12 +6,12 @@
     "en": "Corrected certification issues."
   },
   "0.1.2": {
-    "en": "Added monitoring of the switch port link changes. The ports link status is checked once per minute so it may not detect rapid network topology changes."
+    "en": "Added monitoring of switch port link changes. Port link status is checked once per minute, so rapid topology changes may not be detected."
   },
   "0.1.3": {
     "en": "Updated supported hardware list and added it to the error message when pairing."
   },
   "0.1.4": {
-    "en": "Fixed a crash that could occur if the app has an error during the app loading process. Fixed a bug that allowed the app to repair and save the incorrect login credentials in the case where the password was recently correct. Fixed a bug so that the app can repair a switch that had the wrong credentials at app startup. Corrected some paring and repair logic. Improved repair speed. Fixed a few typos."
+    "en": "Fixed a crash that could occur if the app has an error during the app loading process. Fixed a bug that allowed the app to repair and save incorrect login credentials when the password was recently correct. Fixed a bug so that the app can repair a switch that had the wrong credentials at app startup. Corrected some pairing and repair logic. Improved repair speed. Fixed a few typos."
   }
 }
