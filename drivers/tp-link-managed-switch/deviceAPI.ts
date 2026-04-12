@@ -1,7 +1,7 @@
 'use strict';
 
 import Homey from 'homey';
-import axios, { type RawAxiosResponseHeaders } from 'axios';
+import axios, { isAxiosError, type RawAxiosResponseHeaders } from 'axios';
 import Logger from '../../lib/Logger';
 import assertValidSwitchHostAddress from '../../lib/switchHostAddress';
 import { assertValidSwitchPassword, assertValidSwitchUsername } from '../../lib/switchCredentials';
@@ -59,12 +59,22 @@ class DeviceAPI extends Logger {
   private numPorts: number = 0;
 
   private cookie: string = "";
+  private readonly abortSignal?: AbortSignal;
 
-  constructor(logger: any, ipAddress: string, username: string, password: string) {
+  constructor(logger: any, ipAddress: string, username: string, password: string, abortSignal?: AbortSignal) {
     super(logger);
     this.ipAddress = assertValidSwitchHostAddress(ipAddress);
     this.username = assertValidSwitchUsername(username);
     this.password = assertValidSwitchPassword(password);
+    this.abortSignal = abortSignal;
+  }
+
+  private axiosAbortConfig(): { signal: AbortSignal } | Record<string, never> {
+    return this.abortSignal ? { signal: this.abortSignal } : {};
+  }
+
+  private isAbortedRequest(error: unknown): boolean {
+    return isAxiosError(error) && error.code === 'ERR_CANCELED';
   }
 
   /**
@@ -112,6 +122,7 @@ class DeviceAPI extends Logger {
     try {
       const response = await axios.get(`http://${this.ipAddress}/SystemInfoRpm.htm`, {
         ...axiosSwitchLimits,
+        ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -178,6 +189,7 @@ class DeviceAPI extends Logger {
       // Post to the login page and get the cookie
       const response = await axios.post(`http://${this.ipAddress}/logon.cgi`, null, {
         ...axiosSwitchLimits,
+        ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         params: {
           username: this.username,
@@ -210,6 +222,9 @@ class DeviceAPI extends Logger {
 
       return this.isLoggedIn();
     } catch (error) {
+      if (this.isAbortedRequest(error)) {
+        return false;
+      }
       this.log(`Error connecting to the device: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return false;
     }
@@ -263,6 +278,7 @@ class DeviceAPI extends Logger {
     try {
       const response = await axios.get(`http://${this.ipAddress}/SystemInfoRpm.htm`, {
         ...axiosSwitchLimits,
+        ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -307,6 +323,9 @@ class DeviceAPI extends Logger {
       };
       return systemInfo;
     } catch (error) {
+      if (this.isAbortedRequest(error)) {
+        return null;
+      }
       this.log(`Error fetching device info: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return null;
     }
@@ -319,6 +338,7 @@ class DeviceAPI extends Logger {
     try {
       const response = await axios.get(`http://${this.ipAddress}/PortSettingRpm.htm`, {
         ...axiosSwitchLimits,
+        ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -375,6 +395,9 @@ class DeviceAPI extends Logger {
       };
       return portSettings;
     } catch (error) {
+      if (this.isAbortedRequest(error)) {
+        return null;
+      }
       this.log(`Error fetching port settings: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return null;
     }
@@ -438,6 +461,7 @@ class DeviceAPI extends Logger {
       const cookie = this.getCookie();
       const response = await axios.get(`http://${this.ipAddress}/port_setting.cgi`, {
         ...axiosSwitchLimits,
+        ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -459,6 +483,9 @@ class DeviceAPI extends Logger {
 
       return true;
     } catch (error) {
+      if (this.isAbortedRequest(error)) {
+        return false;
+      }
       this.log(`Error setting port ${port} state: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return false;
     }
@@ -486,6 +513,7 @@ class DeviceAPI extends Logger {
     try {
       const response = await axios.get(`http://${this.ipAddress}/TurnOnLEDRpm.htm`, {
         ...axiosSwitchLimits,
+        ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -510,6 +538,9 @@ class DeviceAPI extends Logger {
       const ledVal = parseInt(ledMatch[1], 10);
       return assertLedStateFromDevice(ledVal);
     } catch (error) {
+      if (this.isAbortedRequest(error)) {
+        return null;
+      }
       this.log(`Error fetching LED settings: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return null;
     }
@@ -530,6 +561,7 @@ class DeviceAPI extends Logger {
       const cookie = this.getCookie();
       const response = await axios.get(`http://${this.ipAddress}/led_on_set.cgi`, {
         ...axiosSwitchLimits,
+        ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -548,6 +580,9 @@ class DeviceAPI extends Logger {
 
       return true;
     } catch (error) {
+      if (this.isAbortedRequest(error)) {
+        return false;
+      }
       this.log(`Error setting LED state: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return false;
     }
@@ -565,6 +600,7 @@ class DeviceAPI extends Logger {
       const cookie = this.getCookie();
       const response = await axios.post(`http://${this.ipAddress}/reboot.cgi`, null, {
         ...axiosSwitchLimits,
+        ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
           'Cookie': cookie
@@ -579,6 +615,9 @@ class DeviceAPI extends Logger {
 
       return true;
     } catch (error) {
+      if (this.isAbortedRequest(error)) {
+        return false;
+      }
       this.log(`Error restarting the switch: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return false;
     } 

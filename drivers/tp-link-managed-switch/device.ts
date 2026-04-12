@@ -18,6 +18,7 @@ class Device extends Homey.Device {
   private username: string = ""
   private password: string = ""
   private deviceAPI: DeviceAPI | null = null
+  private readonly httpAbort = new AbortController();
   private refreshInterval: NodeJS.Timeout | null = null
   private refreshIntervalProcessing: boolean = false
   private refreshTimeInterval = 60000; // 1 minute
@@ -105,7 +106,7 @@ class Device extends Homey.Device {
     this.address = this.getStoreValue('address');
     this.username = this.getStoreValue('username');
     this.password = this.getStoreValue('password');
-    this.deviceAPI = new DeviceAPI(this, this.address, this.username, this.password);
+    this.deviceAPI = new DeviceAPI(this, this.address, this.username, this.password, this.httpAbort.signal);
     this.lastRefreshLoginTime = Date.now();
     if (!await this.deviceAPI.connect()) {
       throw new Error('Unable to connect to managed switch');
@@ -134,6 +135,7 @@ class Device extends Homey.Device {
   }
 
   async onUninit() {
+    this.httpAbort.abort();
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
       this.refreshInterval = null;
@@ -203,7 +205,7 @@ class Device extends Homey.Device {
   }
 
   private async refreshState() {
-    if (this.deviceAPI == null) {
+    if (this.deviceAPI == null || this.httpAbort.signal.aborted) {
       return;
     }
 
