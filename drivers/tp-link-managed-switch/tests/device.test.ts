@@ -120,6 +120,35 @@ describe('Device Class Tests', () => {
       expect(setCapabilityValueSpy).toHaveBeenCalledWith('onoff.5', true);
     });
 
+    it('should set unavailable when initial connect fails', async () => {
+      jest.spyOn(DeviceAPI.prototype, 'connect').mockResolvedValue(false);
+      const setUnavailableSpy = jest.spyOn(device, 'setUnavailable').mockResolvedValue(undefined);
+
+      await device.onInit();
+
+      expect(setUnavailableSpy).toHaveBeenCalledWith('Unable to connect to managed switch');
+    });
+  });
+
+  describe('onUninit', () => {
+    it('aborts in-flight HTTP and clears the refresh interval after init', async () => {
+      const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+      const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
+      jest.spyOn(DeviceAPI.prototype, 'connect').mockResolvedValue(true);
+      jest.spyOn(DeviceAPI.prototype, 'getLedsEnabled').mockResolvedValue(true);
+      jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([true, true, true, true, true]);
+      jest.spyOn(device, 'getCapabilityValue').mockReturnValue(false);
+      jest.spyOn(device, 'setCapabilityValue').mockResolvedValue(undefined);
+
+      await device.onInit();
+      await device.onUninit();
+
+      expect(abortSpy).toHaveBeenCalled();
+      expect(clearIntervalSpy).toHaveBeenCalled();
+
+      abortSpy.mockRestore();
+      clearIntervalSpy.mockRestore();
+    });
   });
 
   describe('onCapabilityOnoff', () => {
@@ -188,6 +217,52 @@ describe('Device Class Tests', () => {
     });
   });
 
+  describe('onSettings favorite_port_number', () => {
+    it('rejects a non-integer favorite port', async () => {
+      await device.onInit();
+      await expect(
+        device.onSettings({
+          oldSettings: {},
+          newSettings: { favorite_port_number: 2.5 },
+          changedKeys: ['favorite_port_number'],
+        }),
+      ).rejects.toThrow(/Non-integer port number/);
+    });
+
+    it('rejects a negative favorite port', async () => {
+      await device.onInit();
+      await expect(
+        device.onSettings({
+          oldSettings: {},
+          newSettings: { favorite_port_number: -1 },
+          changedKeys: ['favorite_port_number'],
+        }),
+      ).rejects.toThrow(/Negative port number/);
+    });
+
+    it('rejects a favorite port above the device port count', async () => {
+      await device.onInit();
+      await expect(
+        device.onSettings({
+          oldSettings: {},
+          newSettings: { favorite_port_number: 99 },
+          changedKeys: ['favorite_port_number'],
+        }),
+      ).rejects.toThrow(/maximum port number on this device is 5/);
+    });
+
+    it('accepts a favorite port within range', async () => {
+      await device.onInit();
+      await expect(
+        device.onSettings({
+          oldSettings: {},
+          newSettings: { favorite_port_number: 3 },
+          changedKeys: ['favorite_port_number'],
+        }),
+      ).resolves.toBeUndefined();
+    });
+  });
+
   it('should handle onCapabilityOnoffFavorite correctly', async () => {
     const setPortEnabledSpy = jest.spyOn(DeviceAPI.prototype, 'setPortEnabled').mockResolvedValue(true);
 
@@ -200,6 +275,30 @@ describe('Device Class Tests', () => {
     expect(setPortEnabledSpy).not.toHaveBeenCalledWith(3, true);
     expect(setPortEnabledSpy).not.toHaveBeenCalledWith(4, true);
     expect(setPortEnabledSpy).not.toHaveBeenCalledWith(5, true);
+  });
+
+  it('onCapabilityOnoffFavorite with favorite port unset (0) refreshes state without setPortEnabled', async () => {
+    const setPortEnabledSpy = jest.spyOn(DeviceAPI.prototype, 'setPortEnabled').mockResolvedValue(true);
+    const getAllPortsSpy = jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([
+      true, true, true, true, true,
+    ]);
+    jest.spyOn(DeviceAPI.prototype, 'connect').mockResolvedValue(true);
+    jest.spyOn(DeviceAPI.prototype, 'getLedsEnabled').mockResolvedValue(true);
+    jest.spyOn(device, 'getCapabilityValue').mockReturnValue(false);
+    jest.spyOn(device, 'setCapabilityValue').mockResolvedValue(undefined);
+    jest.spyOn(device, 'getSetting').mockImplementation((name: string) => {
+      if (name === 'favorite_port_number') return 0;
+      return '';
+    });
+
+    await device.onInit();
+    setPortEnabledSpy.mockClear();
+    getAllPortsSpy.mockClear();
+
+    await device.onCapabilityOnoffFavorite(true);
+
+    expect(setPortEnabledSpy).not.toHaveBeenCalled();
+    expect(getAllPortsSpy).toHaveBeenCalled();
   });
 
   it('should handle onCapabilityOnoffLeds correctly', async () => {
