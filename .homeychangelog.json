@@ -16,5 +16,8 @@
   },
   "0.1.5": {
     "en": "The app should feel more responsive when a switch is slow or temporarily unreachable, instead of waiting a long time with no feedback. Pairing and repair give clearer errors when something is wrong with the address, login, or ports. Reliability and security improvements under the hood. Removing a switch from Homey cleans up more reliably. Flow cards show clearer messages when the device or port is not available. Fixed an issue with the port link-up flow. Minor wording fixes."
+  },
+  "0.1.6": {
+    "en": "Add support for the TP-Link Easy Smart Switch PoE family including TL-SG105PE, TL-SG108PE, TL-SG1016PE, TL-SG1428PE when using firmware v1.0.0 build 20230214 or later."
   }
 }
