@@ -14,9 +14,9 @@ class Device extends Homey.Device {
   private lastSuspendRefreshTime = 0;
   private needsFullRefresh = false;
   private registeredCapabilities = new Set<string>();
-  private address: string = ""
-  private username: string = ""
-  private password: string = ""
+  private address: string = ''
+  private username: string = ''
+  private password: string = ''
   private deviceAPI: DeviceAPI | null = null
   private readonly httpAbort = new AbortController();
   private refreshInterval: NodeJS.Timeout | null = null
@@ -28,11 +28,43 @@ class Device extends Homey.Device {
 
   private configurablePorts: boolean[] | null = null;
 
+  private async refreshTick(): Promise<void> {
+    if (this.getRefreshIntervalProcessing()) {
+      return;
+    }
+    if (Date.now() - this.suspendRefreshTime < this.lastSuspendRefreshTime) {
+      return;
+    }
+    try {
+      this.setRefreshIntervalProcessing(true);
+      if (this.needsFullRefresh) {
+        await this.fullRefresh().catch(async (error) => {
+          const errMessage = error instanceof Error ? error.message : String(error);
+          this.log('Error performing full refresh: ', errMessage);
+          await this.setUnavailable(errMessage);
+        });
+      } else {
+        const isLoggedIn = this.deviceAPI != null && (await this.deviceAPI.isLoggedIn());
+        const forceRefresh = Date.now() - this.lastRefreshLoginTime >= this.refreshAndLoginTimeInterval;
+        if (forceRefresh) {
+          this.lastRefreshLoginTime = Date.now();
+        }
+        if (isLoggedIn || forceRefresh) {
+          await this.refreshState().catch((error) => {
+            this.log('Error refreshing state: ', error);
+          });
+        }
+      }
+    } finally {
+      this.setRefreshIntervalProcessing(false);
+    }
+  }
+
   async onInit() {
     this.log('TP-Link managed switch device has been initialized');
 
-    this.registerCapabilityListener("onoff.favorite", this.onCapabilityOnoffFavorite.bind(this));
-    this.registerCapabilityListener("onoff.leds", this.onCapabilityOnoffLeds.bind(this));
+    this.registerCapabilityListener('onoff.favorite', this.onCapabilityOnoffFavorite.bind(this));
+    this.registerCapabilityListener('onoff.leds', this.onCapabilityOnoffLeds.bind(this));
 
     this.linkStateChanged = this.homey.flow.getDeviceTriggerCard('link_state_changed');
 
@@ -45,37 +77,11 @@ class Device extends Homey.Device {
         // Device likely no longer exists — this is NOT an error
         this.log('setUnavailable failed (device may be removed):', e);
       }
-    }).finally( () => {
-      this.refreshInterval = setInterval(async () => {
-        if (this.getRefreshIntervalProcessing()) {
-          return;
-        }
-        if (Date.now() - this.suspendRefreshTime < this.lastSuspendRefreshTime) {
-          return;
-        }
-        try {
-          this.setRefreshIntervalProcessing(true);
-          if (this.needsFullRefresh) {
-            await this.fullRefresh().catch(async (error) => {
-              const errMessage = error instanceof Error ? error.message : String(error);
-              this.log('Error performing full refresh: ', errMessage);
-              await this.setUnavailable(errMessage);
-            });
-          } else {
-            const isLoggedIn = this.deviceAPI != null && (await this.deviceAPI.isLoggedIn());
-            const forceRefresh = Date.now() - this.lastRefreshLoginTime >= this.refreshAndLoginTimeInterval;
-            if (forceRefresh) {
-              this.lastRefreshLoginTime = Date.now();
-            }
-            if (isLoggedIn || forceRefresh) {
-              this.refreshState().catch(error => {
-                this.log('Error refreshing state: ', error);
-              });
-            }
-          }
-        } finally {
-          this.setRefreshIntervalProcessing(false);
-        }
+    }).finally(() => {
+      this.refreshInterval = this.homey.setInterval(() => {
+        this.refreshTick().catch((error) => {
+          this.log('Error during refresh tick: ', error);
+        });
       }, this.refreshTimeInterval);
     });
   }
@@ -91,7 +97,7 @@ class Device extends Homey.Device {
     this.fullRefreshInFlight = run;
     this.refreshPromise = run;
 
-    void run
+    run
       .finally(() => {
         this.fullRefreshInFlight = null;
       })
@@ -137,7 +143,7 @@ class Device extends Homey.Device {
   async onUninit() {
     this.httpAbort.abort();
     if (this.refreshInterval) {
-      clearInterval(this.refreshInterval);
+      this.homey.clearInterval(this.refreshInterval);
       this.refreshInterval = null;
     }
   }
@@ -148,6 +154,7 @@ class Device extends Homey.Device {
     if (!this.getCapabilities().includes(capability)) {
       return this.addCapability(capability);
     }
+    return Promise.resolve();
   }
 
   private async setupCapability(port: number) {
@@ -162,9 +169,9 @@ class Device extends Homey.Device {
     // Checking if it's already set can throw an exception if it's not set.
     let needToSetTitle = true;
     let needToSetUiQuickAction = true;
-    const title = this.homey.__(`settings.drivers.tp-link-managed-switch.portName`, { number: port });
+    const title = this.homey.__('settings.drivers.tp-link-managed-switch.portName', { number: port });
     try {
-      needToSetTitle = title != this.getCapabilityOptions(capability).title;
+      needToSetTitle = title !== this.getCapabilityOptions(capability).title;
       needToSetUiQuickAction = !this.getCapabilityOptions(capability).uiQuickAction;
     } catch (error) {
       if (error instanceof Error && error.message.startsWith('Invalid Capability:')) {
@@ -175,38 +182,40 @@ class Device extends Homey.Device {
     }
     if (needToSetTitle || needToSetUiQuickAction) {
       return this.setCapabilityOptions(capability, {
-        title: title,
+        title,
         uiQuickAction: false,
       });
     }
+    return Promise.resolve();
   }
 
-  private async waitForInitialCapabilityRegistrationToFinish(retries: number = 100, retryDelay: number = 100): Promise<void> {
+  private waitForInitialCapabilityRegistrationToFinish(retries: number = 100, retryDelay: number = 100): Promise<void> {
     // Sometimes the registered capabilities are not registered even though the promise for registering comes before the code that uses the capability.
     // This allows all of the capabilities to register before using them.
     const registeredCapabilities = this.getCapabilities();
-    const requiredCapabilities = ["onoff.favorite", "onoff.leds"];
+    const requiredCapabilities = ['onoff.favorite', 'onoff.leds'];
     if (this.deviceAPI) {
-      for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++ ) {
+      for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++) {
         requiredCapabilities.push(`onoff.${i}`);
       }
     }
 
-    if (requiredCapabilities.every(capability => registeredCapabilities.includes(capability))) {
-      return;
+    if (requiredCapabilities.every((capability) => registeredCapabilities.includes(capability))) {
+      return Promise.resolve();
     }
 
     if (retries > 0) {
-      await new Promise(resolve => setTimeout(resolve, retryDelay));
-      return this.waitForInitialCapabilityRegistrationToFinish(retries - 1, retryDelay);
+      return new Promise<void>((resolve) => {
+        this.homey.setTimeout(resolve, retryDelay);
+      }).then(() => this.waitForInitialCapabilityRegistrationToFinish(retries - 1, retryDelay));
     }
 
-    throw new Error('Failed to register all required capabilities within the expected time.');
+    return Promise.reject(new Error('Failed to register all required capabilities within the expected time.'));
   }
 
   private async refreshState() {
     if (this.deviceAPI == null || this.httpAbort.signal.aborted) {
-      return;
+      return Promise.resolve();
     }
 
     const promises = [];
@@ -215,26 +224,26 @@ class Device extends Homey.Device {
     const portStatus = await this.deviceAPI.getAllPortsEnabled();
     if (portStatus) {
       const defaultPortNumber = this.getSetting('favorite_port_number') || 0;
-      if (defaultPortNumber == 0) {
-        promises.push(this.setCapabilityIfNeeded(`onoff.favorite`, true));
+      if (defaultPortNumber === 0) {
+        promises.push(this.setCapabilityIfNeeded('onoff.favorite', true));
       } else if (defaultPortNumber > 0 && defaultPortNumber <= portStatus.length) {
-        promises.push(this.setCapabilityIfNeeded(`onoff.favorite`, portStatus[defaultPortNumber-1]));
+        promises.push(this.setCapabilityIfNeeded('onoff.favorite', portStatus[defaultPortNumber - 1]));
       }
       for (let i = 0; i < portStatus.length; i++) {
-        promises.push(this.setCapabilityIfNeeded(`onoff.${i+1}`, portStatus[i]));
+        promises.push(this.setCapabilityIfNeeded(`onoff.${i + 1}`, portStatus[i]));
       }
     }
     const ledStatus = await this.deviceAPI.getLedsEnabled();
     if (ledStatus != null) {
-      promises.push(this.setCapabilityIfNeeded(`onoff.leds`, ledStatus));
+      promises.push(this.setCapabilityIfNeeded('onoff.leds', ledStatus));
     }
 
     // Handle link up/down triggers
     const allLinksStatus = await this.deviceAPI.getAllLinksUp();
-    if (allLinksStatus && this.lastAllLinksStatus && allLinksStatus.length == this.lastAllLinksStatus.length) {
+    if (allLinksStatus && this.lastAllLinksStatus && allLinksStatus.length === this.lastAllLinksStatus.length) {
       for (let port = 0; port < allLinksStatus.length; port++) {
-        if (allLinksStatus[port] != this.lastAllLinksStatus[port]) {
-          this.linkStateChanged?.trigger(this, {port: port+1, linkUp: allLinksStatus[port]}, {});
+        if (allLinksStatus[port] !== this.lastAllLinksStatus[port]) {
+          await this.linkStateChanged?.trigger(this, { port: port + 1, linkUp: allLinksStatus[port] }, {});
         }
       }
     }
@@ -247,9 +256,10 @@ class Device extends Homey.Device {
 
   private async setCapabilityIfNeeded(capabilityId: string, newValue: boolean) {
     const currentValue = this.getCapabilityValue(capabilityId);
-    if (currentValue != newValue) {
+    if (currentValue !== newValue) {
       return this.setCapabilityValue(capabilityId, newValue);
     }
+    return Promise.resolve();
   }
 
   async onCapabilityOnoff(port: number, value: boolean) {
@@ -258,7 +268,7 @@ class Device extends Homey.Device {
       this.log(`Unable to set the port ${port} ${value ? 'on' : 'off'} because the device is not initialized.`);
       throw new Error(`Unable to set the port ${port} ${value ? 'on' : 'off'} because the device is not initialized.`);
     }
-    if (this.configurablePorts == null || this.configurablePorts[port-1]) {
+    if (this.configurablePorts == null || this.configurablePorts[port - 1]) {
       const result = await this.deviceAPI.setPortEnabled(port, value);
       if (!result) {
         this.log(`Unable to set the port ${port} ${value ? 'on' : 'off'}`);
@@ -274,7 +284,7 @@ class Device extends Homey.Device {
   async onCapabilityOnoffFavorite(value: boolean) {
     const favoritePortNumber = this.getSetting('favorite_port_number') || 0;
     this.log(`Turning the favorite switch port ${favoritePortNumber} ${value ? 'on' : 'off'}`);
-    if (favoritePortNumber == 0) {
+    if (favoritePortNumber === 0) {
       // There is no favorite port
       return this.refreshState();
     }
@@ -282,57 +292,65 @@ class Device extends Homey.Device {
     return this.onCapabilityOnoff(favoritePortNumber, value);
   }
 
-  async onSettings({ oldSettings, newSettings, changedKeys }: { oldSettings: any, newSettings: any, changedKeys: string[] }) {
+  async onSettings(params: {
+    oldSettings: Record<string, unknown>;
+    newSettings: Record<string, unknown>;
+    changedKeys: string[];
+  }) {
+    const { newSettings, changedKeys } = params;
+    const favoritePortNumber = newSettings.favorite_port_number;
+    const configurablePorts = newSettings.configurable_ports;
 
     if (changedKeys.includes('favorite_port_number')) {
-      this.handleDefaultPortChange(newSettings.favorite_port_number);
+      await this.handleDefaultPortChange(favoritePortNumber);
     }
 
     if (changedKeys.includes('configurable_ports')) {
-      this.handleConfigurablePortsChange(newSettings.configurable_ports);
+      this.handleConfigurablePortsChange(configurablePorts);
     }
   }
 
-  private handleDefaultPortChange(newDefaultPortNumber: any) {
+  private async handleDefaultPortChange(newDefaultPortNumber: unknown): Promise<void> {
     // Ensure the device actually has the port number on it
     try {
       if (!Number.isInteger(newDefaultPortNumber)) {
         throw new Error('Non-integer port number are not supported.');
       }
-      if (newDefaultPortNumber < 0) {
+      const portNumber = newDefaultPortNumber as number;
+      if (portNumber < 0) {
         throw new Error('Negative port number are not supported');
       }
       if (this.deviceAPI != null) {
         const maxPortNumber = this.deviceAPI.getNumPorts();
-        if (newDefaultPortNumber > maxPortNumber) {
+        if (portNumber > maxPortNumber) {
           throw new Error(`The maximum port number on this device is ${this.deviceAPI.getNumPorts()}.`);
         }
       }
 
       // Refresh the favorite switch state
-      this.refreshState();
+      await this.refreshState();
     } catch (error) {
       if (error instanceof Error) {
-        this.log("Invalid favorite port number:", error.message);
+        this.log('Invalid favorite port number:', error.message);
         throw new Error(`Invalid favorite port number ${error.message}`);
       } else {
-        this.log("Invalid favorite port number");
-        throw new Error("Invalid favorite port number");
+        this.log('Invalid favorite port number');
+        throw new Error('Invalid favorite port number');
       }
     }
   }
 
-  private handleConfigurablePortsChange(newPorts: any) {
-    if (newPorts) {
+  private handleConfigurablePortsChange(newPorts: unknown) {
+    if (typeof newPorts === 'string' && newPorts) {
       const ports = this.parsePortNumbers(newPorts);
       if (this.deviceAPI != null) {
         const maxPortNumber = this.deviceAPI.getNumPorts();
-        let configurablePorts: boolean[] = new Array(maxPortNumber).fill(false);
-        ports.forEach(port => {
+        const configurablePorts: boolean[] = new Array(maxPortNumber).fill(false);
+        ports.forEach((port) => {
           if (port <= 0 || port > maxPortNumber) {
             throw new Error(`Port number out of range: ${port}`);
           }
-          configurablePorts[port-1] = true;
+          configurablePorts[port - 1] = true;
         });
         this.configurablePorts = configurablePorts;
       } else {
@@ -352,7 +370,7 @@ class Device extends Homey.Device {
     const compact = input.replace(/\s+/g, '');
     const ranges = compact.split(',');
 
-    ranges.forEach(range => {
+    ranges.forEach((range) => {
       if (range === '') {
         return;
       }
@@ -401,21 +419,21 @@ class Device extends Homey.Device {
     if (!result) {
       this.log(`Unable to set the LEDs ${value ? 'on' : 'off'}`);
       throw new Error(`Unable to set the LEDs ${value ? 'on' : 'off'}`);
-    } 
+    }
     return this.refreshState();
   }
 
   async restart() {
-    this.log("Restarting managed switch");
+    this.log('Restarting managed switch');
 
     if (this.deviceAPI == null) {
-      this.log(`Unable to restart the managed switch because the device is not initialized.`);
-      throw new Error(`Unable to restart the managed switch because the device is not initialized.`);
+      this.log('Unable to restart the managed switch because the device is not initialized.');
+      throw new Error('Unable to restart the managed switch because the device is not initialized.');
     }
     const result = await this.deviceAPI.restart();
     if (!result) {
-      this.log(`Unable to restart the managed switch.`);
-      throw new Error(`Unable to restart the managed switch.`);
+      this.log('Unable to restart the managed switch.');
+      throw new Error('Unable to restart the managed switch.');
     }
   }
 
@@ -423,33 +441,33 @@ class Device extends Homey.Device {
     this.log(`Checking if link is up for port ${port}.`);
 
     if (this.deviceAPI == null) {
-      this.log(`Unable to check if the link is up because the device is not initialized.`);
-      throw new Error(`Unable to check if the link is up because the device is not initialized.`);
+      this.log('Unable to check if the link is up because the device is not initialized.');
+      throw new Error('Unable to check if the link is up because the device is not initialized.');
     }
     const result = await this.deviceAPI.isLinkUp(port);
     if (result == null) {
-      this.log(`Unable to check if the link is up.`);
-      throw new Error(`Unable to check if the link is up.`);
+      this.log('Unable to check if the link is up.');
+      throw new Error('Unable to check if the link is up.');
     }
     return result;
-  } 
+  }
 
   private energyUsage() {
     if (!this.deviceAPI) {
-      throw new Error("Unable to estimate energy usage with a device that is not initialized");
+      throw new Error('Unable to estimate energy usage with a device that is not initialized');
     }
 
     // The data sheet was used for a 24 port switch.
     const wattsPerPort = 0.591;
     return {
       approximation: {
-        usageConstant: this.deviceAPI.getNumPorts() * wattsPerPort
-      }
+        usageConstant: this.deviceAPI.getNumPorts() * wattsPerPort,
+      },
     };
   }
 
   public async repair(address: string, username: string, password: string) {
-    this.log("Updating device");
+    this.log('Updating device');
 
     this.address = address;
     this.username = username;
@@ -457,9 +475,11 @@ class Device extends Homey.Device {
 
     await this.save();
     await this.suspendRefresh();
-    return this.fullRefresh().finally(() => {
-      this.resumeRefresh();
-    });
+    try {
+      await this.fullRefresh();
+    } finally {
+      await this.resumeRefresh();
+    }
   }
 
   public async save() {
@@ -496,7 +516,7 @@ class Device extends Homey.Device {
   }
 
   private getRefreshIntervalProcessing() {
-    const refreshIntervalProcessing = this.refreshIntervalProcessing;
+    const { refreshIntervalProcessing } = this;
     return refreshIntervalProcessing;
   }
 }

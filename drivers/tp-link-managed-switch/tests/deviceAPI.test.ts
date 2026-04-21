@@ -3,8 +3,8 @@
 import { jest } from '@jest/globals';
 
 import axios from 'axios';
-import DeviceAPI, { SystemInfo, PortSettings } from '../deviceAPI';
-import Logger, { ILogger } from '../../../lib/Logger';
+import DeviceAPI, { SystemInfo } from '../deviceAPI';
+import { ILogger } from '../../../lib/Logger';
 
 jest.mock('axios');
 
@@ -14,7 +14,7 @@ var logonInfo = new Array(
 0,0);
 var g_Lan = 1;
 var g_year=2023;
-</script>`
+</script>`;
 
 const mockLoginInfoUnsuccessful = `<script>
 var logonInfo = new Array(
@@ -22,13 +22,13 @@ var logonInfo = new Array(
 0,0);
 var g_Lan = 1;
 var g_year=2023;
-</script>`
+</script>`;
 
 const mockSystemInfo: SystemInfo = {
-  macAddress: '00:11:22:33:44:55', 
+  macAddress: '00:11:22:33:44:55',
   firmwareVersion: '1.0.0 Build 20230218 Rel.50633',
   hardwareVersion: 'TL-SG108E 6.0',
-  description: 'TL-SG108E'
+  description: 'TL-SG108E',
 };
 
 const numPorts = 8;
@@ -59,7 +59,7 @@ var info_ds = {
     ]
 };
 var tip = "";
-</script>`
+</script>`;
 
 const mockPortSettingsData = `<!DOCTYPE html>
 <script>
@@ -74,38 +74,38 @@ var all_info = {
     fc_act: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 };
 var tip = "";
-</script>`
+</script>`;
 
 const mockTurnOnLEDRpmData = `<!DOCTYPE html>
 <script>
 var led = 1
 var tip = "";
-</script>`
+</script>`;
 
 async function performSuccessfulLogin(deviceAPI: DeviceAPI) {
   // Mocking axios.post for login
   jest.spyOn(axios, 'post').mockResolvedValueOnce({
-    status: 200, 
+    status: 200,
     headers: {
       'set-cookie': ['H_P_SSID=mocked_cookie; Path=/; HttpOnly'],
     },
     data: mockLoginInfo,
-  }); 
-    
+  });
+
   // Mocking axios.get for getSystemInfo
   jest.spyOn(axios, 'get').mockResolvedValueOnce({
     status: 200,
-    data: mockSystemInfoData
+    data: mockSystemInfoData,
   });
   jest.spyOn(axios, 'get').mockResolvedValueOnce({
     status: 200,
-    data: mockSystemInfoData
+    data: mockSystemInfoData,
   });
 
   // Mocking axios.get for getPortSettings
   jest.spyOn(axios, 'get').mockResolvedValueOnce({
     status: 200,
-    data: mockPortSettingsData
+    data: mockPortSettingsData,
   });
 
   const result = await deviceAPI.connect();
@@ -235,11 +235,11 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
+        data: mockSystemInfoData,
+      });
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockPortSettingsData
+        data: mockPortSettingsData,
       });
 
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
@@ -252,7 +252,7 @@ describe('DeviceAPI', () => {
         params: expect.objectContaining({
           portid: 1,
           state: 1,
-        })
+        }),
       }));
     });
 
@@ -260,11 +260,11 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
+        data: mockSystemInfoData,
+      });
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockPortSettingsData
+        data: mockPortSettingsData,
       });
 
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
@@ -282,11 +282,11 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
+        data: mockSystemInfoData,
+      });
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockPortSettingsData
+        data: mockPortSettingsData,
       });
 
       const result = await deviceAPI.getAllPortsEnabled();
@@ -297,10 +297,10 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
+        data: mockSystemInfoData,
+      });
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
-        status: 400
+        status: 400,
       });
 
       const result = await deviceAPI.getAllPortsEnabled();
@@ -314,11 +314,11 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
+        data: mockSystemInfoData,
+      });
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockPortSettingsData
+        data: mockPortSettingsData,
       });
 
       const result = await deviceAPI.getPortEnabled(1);
@@ -329,12 +329,12 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
-      jest.spyOn(axios, 'get').mockResolvedValueOnce({
-        status: 400
+        data: mockSystemInfoData,
       });
-      
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 400,
+      });
+
       const result = await deviceAPI.getPortEnabled(1);
       expect(result).toBeNull();
     });
@@ -346,11 +346,11 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
+        data: mockSystemInfoData,
+      });
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockTurnOnLEDRpmData
+        data: mockTurnOnLEDRpmData,
       });
 
       const result = await deviceAPI.getLedsEnabled();
@@ -361,10 +361,10 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
+        data: mockSystemInfoData,
+      });
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
-        status: 400
+        status: 400,
       });
 
       const result = await deviceAPI.getLedsEnabled();
@@ -393,30 +393,30 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
-      jest.spyOn(axios, 'get').mockResolvedValueOnce({
-        status: 200
+        data: mockSystemInfoData,
       });
-  
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 200,
+      });
+
       const result = await deviceAPI.setLedsEnabled(true);
       expect(result).toEqual(true);
     });
-    
+
     it('should return false if it fails', async () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
-      jest.spyOn(axios, 'get').mockResolvedValueOnce({
-        status: 400
+        data: mockSystemInfoData,
       });
-    
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 400,
+      });
+
       const result = await deviceAPI.setLedsEnabled(true);
       expect(result).toEqual(false);
     });
-  
+
   });
 
   describe('isLinkUp', () => {
@@ -424,43 +424,43 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
+        data: mockSystemInfoData,
+      });
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockPortSettingsData
+        data: mockPortSettingsData,
       });
-      
+
       const result = await deviceAPI.isLinkUp(1);
       expect(result).toEqual(true);
     });
-   
+
     it('should return null if getPortSettings fails', async () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
-      jest.spyOn(axios, 'get').mockResolvedValueOnce({
-        status: 400
+        data: mockSystemInfoData,
       });
-      
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 400,
+      });
+
       const result = await deviceAPI.isLinkUp(1);
       expect(result).toBeNull();
     });
-      
-  }); 
+
+  });
 
   describe('getAllLinksUp', () => {
     it('should return all the link status', async () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
+        data: mockSystemInfoData,
+      });
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockPortSettingsData
+        data: mockPortSettingsData,
       });
 
       const result = await deviceAPI.getAllLinksUp();
@@ -468,19 +468,19 @@ describe('DeviceAPI', () => {
     });
 
     it('should return null if getPortSettings fails', async () => {
-      await performSuccessfulLogin(deviceAPI); 
+      await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
-      jest.spyOn(axios, 'get').mockResolvedValueOnce({
-        status: 400
+        data: mockSystemInfoData,
       });
-      
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 400,
+      });
+
       const result = await deviceAPI.getAllLinksUp();
       expect(result).toBeNull();
     });
-      
+
   });
 
   describe('restart', () => {
@@ -488,29 +488,29 @@ describe('DeviceAPI', () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
-      jest.spyOn(axios, 'post').mockResolvedValueOnce({
-        status: 200
+        data: mockSystemInfoData,
       });
-      
+      jest.spyOn(axios, 'post').mockResolvedValueOnce({
+        status: 200,
+      });
+
       const result = await deviceAPI.restart();
       expect(result).toEqual(true);
     });
-    
+
     it('should return false if it fails', async () => {
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
-        data: mockSystemInfoData
-      });;
-      jest.spyOn(axios, 'post').mockResolvedValueOnce({
-        status: 400
+        data: mockSystemInfoData,
       });
-      
+      jest.spyOn(axios, 'post').mockResolvedValueOnce({
+        status: 400,
+      });
+
       const result = await deviceAPI.restart();
       expect(result).toEqual(false);
     });
-      
-  }); 
+
+  });
 });

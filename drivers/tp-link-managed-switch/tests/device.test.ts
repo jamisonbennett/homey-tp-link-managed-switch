@@ -1,9 +1,9 @@
 'use strict';
 
-import Homey from 'homey';
-const Device = require('../device');
 import DeviceAPI from '../deviceAPI';
-  
+
+const Device = require('../device');
+
 jest.mock('homey', () => {
   return {
     Device: class {
@@ -15,7 +15,12 @@ jest.mock('homey', () => {
             registerRunListener: jest.fn(),
           }),
         },
+        setInterval: global.setInterval.bind(global),
+        clearInterval: global.clearInterval.bind(global),
+        setTimeout: global.setTimeout.bind(global),
+        clearTimeout: global.clearTimeout.bind(global),
       };
+
       log = jest.fn();
       getStoreValue = jest.fn().mockReturnValue('mockValue');
       registerCapabilityListener = jest.fn();
@@ -35,7 +40,7 @@ jest.mock('homey', () => {
 jest.mock('../deviceAPI');
 
 describe('Device Class Tests', () => {
-  let device: any;
+  let device: InstanceType<typeof Device>;
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -84,7 +89,7 @@ describe('Device Class Tests', () => {
 
     it('should set available', async () => {
       const setAvailableSpy = jest.spyOn(device, 'setAvailable');
-  
+
       await device.onInit();
 
       expect(setAvailableSpy).toHaveBeenCalled();
@@ -92,16 +97,16 @@ describe('Device Class Tests', () => {
 
     it('should set energy', async () => {
       const setEnergySpy = jest.spyOn(device, 'setEnergy');
-  
+
       await device.onInit();
 
-      expect(setEnergySpy).toHaveBeenCalledWith({approximation: {usageConstant: 2.955}});
+      expect(setEnergySpy).toHaveBeenCalledWith({ approximation: { usageConstant: 2.955 } });
     });
 
     it('should refresh state and set capabilities correctly', async () => {
       jest.spyOn(DeviceAPI.prototype, 'getLedsEnabled').mockResolvedValue(true);
       jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([true, false, true, true, true]);
-      jest.spyOn(device, 'getCapabilityValue').mockImplementation((capabilityId: any) => {
+      jest.spyOn(device, 'getCapabilityValue').mockImplementation((capabilityId: string) => {
         if (capabilityId === 'onoff.3') {
           return true;
         }
@@ -133,7 +138,7 @@ describe('Device Class Tests', () => {
   describe('onUninit', () => {
     it('aborts in-flight HTTP and clears the refresh interval after init', async () => {
       const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
-      const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
+      const clearIntervalSpy = jest.spyOn(device.homey, 'clearInterval');
       jest.spyOn(DeviceAPI.prototype, 'connect').mockResolvedValue(true);
       jest.spyOn(DeviceAPI.prototype, 'getLedsEnabled').mockResolvedValue(true);
       jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([true, true, true, true, true]);
@@ -171,7 +176,7 @@ describe('Device Class Tests', () => {
         const [settingName] = args as [string]; // Extract and type the first argument
         if (settingName === 'favorite_port_number') {
           return 0;
-        } else if (settingName === 'configurable_ports') {
+        } if (settingName === 'configurable_ports') {
           return '1-3,5';
         }
         return 0; // Default return value for other settings
@@ -306,20 +311,20 @@ describe('Device Class Tests', () => {
 
     await device.onInit();
     await device.onCapabilityOnoffLeds(true);
-  
+
     expect(setLetdsEnabledSpy).toHaveBeenCalledWith(true);
 
     await device.onCapabilityOnoffLeds(false);
-  
+
     expect(setLetdsEnabledSpy).toHaveBeenCalledWith(false);
   });
 
   it('should handle restart correctly', async () => {
     const resetSpy = jest.spyOn(DeviceAPI.prototype, 'restart').mockResolvedValue(true);
-    
+
     await device.onInit();
     await device.restart();
- 
+
     expect(resetSpy).toHaveBeenCalled();
   });
 
@@ -327,14 +332,14 @@ describe('Device Class Tests', () => {
     const isLinkUpSpy = jest.spyOn(DeviceAPI.prototype, 'isLinkUp');
     isLinkUpSpy.mockResolvedValueOnce(true);
     isLinkUpSpy.mockResolvedValueOnce(false);
-    
+
     await device.onInit();
     const linkUp1 = await device.isLinkUp(1);
     const linkUp2 = await device.isLinkUp(2);
 
-    expect(linkUp1).toEqual(true); 
+    expect(linkUp1).toEqual(true);
     expect(linkUp2).toEqual(false);
- 
+
     expect(isLinkUpSpy).toHaveBeenCalledWith(1);
     expect(isLinkUpSpy).toHaveBeenCalledWith(2);
   });
@@ -345,7 +350,7 @@ describe('Device Class Tests', () => {
 
     await device.onInit();
     await device.repair('newAddress', 'newUsername', 'newPassword');
-    
+
     expect(connectSpy).toHaveBeenCalledTimes(2);
     expect(setStoreValueSpy).toHaveBeenCalledWith('address', 'newAddress');
     expect(setStoreValueSpy).toHaveBeenCalledWith('username', 'newUsername');
@@ -358,7 +363,7 @@ describe('Device Class Tests', () => {
     await device.onInit();
     const connectSpy = jest.spyOn(DeviceAPI.prototype, 'connect').mockResolvedValue(false);
     await expect(device.repair('newAddress', 'newUsername', 'newPassword')).rejects.toThrow();
-   
+
     expect(connectSpy).toHaveBeenCalledTimes(2);
     expect(setStoreValueSpy).toHaveBeenCalledWith('address', 'newAddress');
     expect(setStoreValueSpy).toHaveBeenCalledWith('username', 'newUsername');
@@ -367,31 +372,30 @@ describe('Device Class Tests', () => {
 
   it('should update credentials on save', async () => {
     const setStoreValueSpy = jest.spyOn(device, 'setStoreValue');
-    
+
     await device.onInit();
     await device.save();
-  
+
     expect(setStoreValueSpy).toHaveBeenCalledWith('address', expect.any(String));
     expect(setStoreValueSpy).toHaveBeenCalledWith('username', expect.any(String));
     expect(setStoreValueSpy).toHaveBeenCalledWith('password', expect.any(String));
   });
 
   it('should refresh the state when fullRefresh() is called', async () => {
-    const setStoreValueSpy = jest.spyOn(device, 'setStoreValue');
     const connectSpy = jest.spyOn(DeviceAPI.prototype, 'connect').mockResolvedValue(true);
     const setEnergySpy = jest.spyOn(device, 'setEnergy');
     const setAvailable = jest.spyOn(device, 'setAvailable');
     const setCapabilityValueSpy = jest.spyOn(device, 'setCapabilityValue').mockResolvedValue(undefined);
     jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([true, true, true, true, true]);
     jest.spyOn(DeviceAPI.prototype, 'getAllLinksUp').mockResolvedValue([false, false, false, false, false]);
-  
+
     await device.onInit();
 
     jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([false, false, false, true, true]);
     await device.fullRefresh();
 
     expect(connectSpy).toHaveBeenCalledTimes(2);
-    expect(setEnergySpy).toHaveBeenCalledWith({approximation: {usageConstant: 2.955}});
+    expect(setEnergySpy).toHaveBeenCalledWith({ approximation: { usageConstant: 2.955 } });
     expect(setAvailable).toHaveBeenCalledTimes(2);
 
     expect(setCapabilityValueSpy).toHaveBeenCalledWith('onoff.favorite', true);
@@ -406,27 +410,24 @@ describe('Device Class Tests', () => {
     expect(setCapabilityValueSpy).toHaveBeenCalledWith('onoff.3', false);
     expect(setCapabilityValueSpy).not.toHaveBeenCalledWith('onoff.4', false);
     expect(setCapabilityValueSpy).not.toHaveBeenCalledWith('onoff.5', false);
-  }); 
+  });
 
   it('should invoke the trigger card when links go up/down', async () => {
-    const setStoreValueSpy = jest.spyOn(device, 'setStoreValue');
-    const connectSpy = jest.spyOn(DeviceAPI.prototype, 'connect').mockResolvedValue(true);
     const triggerCard = device.homey.flow.getDeviceTriggerCard('link_state_changed');
     const triggerSpy = jest.spyOn(triggerCard, 'trigger');
     jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([true, true, true, true, true]);
     jest.spyOn(DeviceAPI.prototype, 'getAllLinksUp').mockResolvedValue([false, false, false, true, true]);
 
     await device.onInit();
-    
+
     jest.spyOn(DeviceAPI.prototype, 'getAllLinksUp').mockResolvedValue([true, false, false, true, true]);
     await device.fullRefresh();
 
-    expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), {port: 1, linkUp: true}, {});
+    expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), { port: 1, linkUp: true }, {});
 
     jest.spyOn(DeviceAPI.prototype, 'getAllLinksUp').mockResolvedValue([true, false, false, false, true]);
     await device.fullRefresh();
-    
-    expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), {port: 4, linkUp: false}, {});
-  }); 
-});
 
+    expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), { port: 4, linkUp: false }, {});
+  });
+});

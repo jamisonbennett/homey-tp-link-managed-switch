@@ -1,25 +1,24 @@
 'use strict';
 
-import Homey from 'homey';
-const ManagedSwitchDevice = require('../device');
 import DeviceAPI from '../deviceAPI';
+
+const ManagedSwitchDevice = require('../device');
 const Driver = require('../driver');
 
 jest.mock('homey', () => {
+  class MockHomeyBase {
+    log = jest.fn();
+  }
   return {
-    Device: class {
-      log = jest.fn();
-    },
-    Driver: class {
-      log = jest.fn();
-    },
+    Device: MockHomeyBase,
+    Driver: MockHomeyBase,
   };
 });
 jest.mock('../device');
 jest.mock('../deviceAPI');
 
 describe('Driver', () => {
-  let driver: any;
+  let driver: InstanceType<typeof Driver>;
 
   beforeEach(async () => {
     driver = new Driver();
@@ -177,7 +176,9 @@ describe('Driver', () => {
     });
 
     it('list_devices returns an empty list before loading has created a DeviceAPI', async () => {
-      const mockSession = { setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn() };
+      const mockSession = {
+        setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
+      };
       driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
 
       await driver.onPair(mockSession);
@@ -189,7 +190,9 @@ describe('Driver', () => {
     });
 
     it('showView loading shows list_devices when connect succeeds', async () => {
-      const mockSession = { setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn() };
+      const mockSession = {
+        setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
+      };
       driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
@@ -226,7 +229,9 @@ describe('Driver', () => {
     });
 
     it('showView loading shows connection_error when connect fails', async () => {
-      const mockSession = { setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn() };
+      const mockSession = {
+        setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
+      };
       driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
@@ -277,11 +282,11 @@ describe('Driver', () => {
         setHandler: jest.fn(),
       };
 
-      await expect(driver.onRepair(mockSession, null as unknown as Homey.Device)).rejects.toThrow(
+      await expect(driver.onRepair(mockSession, null as unknown as InstanceType<typeof ManagedSwitchDevice>)).rejects.toThrow(
         'Unsupported device',
       );
       await expect(
-        driver.onRepair(mockSession, { getData: jest.fn() } as unknown as Homey.Device),
+        driver.onRepair(mockSession, { getData: jest.fn() } as unknown as InstanceType<typeof ManagedSwitchDevice>),
       ).rejects.toThrow('Unsupported device');
     });
 
@@ -339,8 +344,7 @@ describe('Driver', () => {
       mockDevice.getPassword = jest.fn().mockReturnValue('pw');
       mockDevice.getAddress = jest.fn().mockReturnValue('192.168.1.2');
       mockDevice.getUsername = jest.fn().mockReturnValue('admin');
-      mockDevice.suspendRefresh =
-        options?.suspendRefresh ?? jest.fn().mockResolvedValue(undefined);
+      mockDevice.suspendRefresh = options?.suspendRefresh ?? jest.fn().mockResolvedValue(undefined);
       mockDevice.resumeRefresh = jest.fn().mockResolvedValue(undefined);
       mockDevice.repair = jest.fn().mockResolvedValue(undefined);
       return mockDevice;

@@ -14,12 +14,13 @@
   "main": "app.ts",
   "description": "A Homey app for managing TP-Link managed switches",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run lint && tsc",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
     "test": "jest"
   },
   "devDependencies": {
+    "@jest/globals": "^30.3.0",
     "@tsconfig/node22": "^22.0.5",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
     "@types/jest": "^30.0.0",
@@ -28,6 +29,7 @@
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^7.32.0",
     "eslint-config-athom": "^3.1.5",
+    "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-homey-app": "^1.0.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-mocha": "^6.3.0",

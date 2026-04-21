@@ -2,5 +2,59 @@
   "extends": "athom/homey-app",
   "parserOptions": {
     "project": "./tsconfig.eslint.json"
-  }
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "test/**",
+          "tests/**",
+          "spec/**",
+          "**/__tests__/**",
+          "**/__mocks__/**",
+          "test.{js,jsx,ts,tsx}",
+          "test-*.{js,jsx,ts,tsx}",
+          "**/*{.,_}{test,spec}.{js,jsx,ts,tsx}",
+          "**/jest.config.js",
+          "**/jest.config.ts",
+          "**/jest.setup.js",
+          "**/jest.setup.ts"
+        ],
+        "optionalDependencies": false
+      }
+    ]
+  },
+  "settings": {
+    "node": {
+      "allowModules": ["homey"],
+      "tryExtensions": [".ts", ".tsx", ".js", ".jsx", ".json", ".node"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.eslint.json"
+      },
+      "node": {
+        "extensions": [".js", ".jsx", ".json", ".ts", ".tsx"]
+      }
+    }
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "ts": "never",
+            "tsx": "never",
+            "mts": "never",
+            "cts": "never"
+          }
+        ]
+      }
+    }
+  ]
 }

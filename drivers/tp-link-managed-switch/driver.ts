@@ -65,12 +65,12 @@ class Driver extends Homey.Driver {
   }
 
   async onPair(session: Homey.Driver.PairSession) {
-    let address = "";
-    let username = "";
-    let password = "";
-    let deviceAPI: DeviceAPI | null = null
+    let address = '';
+    let username = '';
+    let password = '';
+    let deviceAPI: DeviceAPI | null = null;
 
-    session.setHandler("set_connection_info", async (data) => {
+    session.setHandler('set_connection_info', async (data) => {
       const creds = this.parseValidatedConnectionFields(data);
       address = creds.address;
       username = creds.username;
@@ -91,7 +91,7 @@ class Driver extends Homey.Driver {
       }
     });
 
-    session.setHandler("list_devices", async () => {
+    session.setHandler('list_devices', async () => {
       if (deviceAPI == null) {
         return [];
       }
@@ -101,9 +101,9 @@ class Driver extends Homey.Driver {
           id: deviceAPI.getMacAddress(),
         },
         store: {
-          address: address,
-          username: username,
-          password: password,
+          address,
+          username,
+          password,
         },
       };
       return [deviceData];
@@ -116,30 +116,30 @@ class Driver extends Homey.Driver {
   }
 
   async onRepair(session: Homey.Driver.PairSession, device: Homey.Device) {
-    let address = "";
-    let username = "";
-    let password = "";
-    let deviceAPI: DeviceAPI | null = null
+    let address = '';
+    let username = '';
+    let password = '';
+    let deviceAPI: DeviceAPI | null = null;
 
     if (!(device instanceof ManagedSwitchDevice)) {
       throw new Error('Unsupported device');
     }
     const deviceToRepair = device as InstanceType<typeof ManagedSwitchDevice>;
 
-    session.setHandler("getDeviceMacAddress", async (data) => {
+    session.setHandler('getDeviceMacAddress', async (data) => {
       return {
-        macAddress: deviceToRepair.getData().id
+        macAddress: deviceToRepair.getData().id,
       };
     });
 
-    session.setHandler("getConnectionInfo", async (data) => {
+    session.setHandler('getConnectionInfo', async (data) => {
       return {
         address: deviceToRepair.getAddress(),
         username: deviceToRepair.getUsername(),
       };
     });
 
-    session.setHandler("set_connection_info", async (data) => {
+    session.setHandler('set_connection_info', async (data) => {
       const creds = this.parseValidatedConnectionFields(data, {
         keepPasswordOnEmpty: () => deviceToRepair.getPassword(),
       });
@@ -165,8 +165,8 @@ class Driver extends Homey.Driver {
             await session.showView('connection_error');
           }
         } catch (e) {
-            this.log("repair error", e);
-            await session.showView('connection_error');
+          this.log('repair error', e);
+          await session.showView('connection_error');
         } finally {
           await deviceToRepair.resumeRefresh();
         }

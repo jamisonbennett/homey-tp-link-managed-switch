@@ -80,7 +80,7 @@ export function assertPortCountFromDevice(n: number): number {
  * Parses the first {@code numPorts} comma-separated integers from a device JS array body.
  */
 export function parsePortTableIntegers(segment: string, numPorts: number, name: string): number[] {
-  const parts = segment.split(',').map(p => p.trim()).filter(p => p.length > 0);
+  const parts = segment.split(',').map((p) => p.trim()).filter((p) => p.length > 0);
   if (parts.length < numPorts) {
     throw new Error(`Incomplete ${name} data in device response`);
   }
@@ -106,7 +106,7 @@ export function mapZeroOneToBooleans(nums: number[], name: string): boolean[] {
 
 /** spd_act: non-zero means link up (per TP-Link page semantics). */
 export function mapSpeedActToLinkUp(nums: number[]): boolean[] {
-  return nums.map(n => n !== 0);
+  return nums.map((n) => n !== 0);
 }
 
 export function assertLedStateFromDevice(n: number): boolean {
@@ -135,6 +135,7 @@ export function assertValidSessionCookieHeaderPair(rawPair: string): string {
   if (value.length === 0 || value.length > MAX_SESSION_COOKIE_VALUE_LEN) {
     throw new Error('Invalid session cookie value from device');
   }
+  // eslint-disable-next-line no-control-regex -- intentional: reject CTL / NUL in cookie value (RFC6265bis)
   if (/[\s\x00-\x1f\x7f";\\]/.test(value)) {
     throw new Error('Invalid session cookie value from device');
   }

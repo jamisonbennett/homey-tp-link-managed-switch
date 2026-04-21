@@ -1,6 +1,5 @@
 'use strict';
 
-import Homey from 'homey';
 import axios, { isAxiosError, type RawAxiosResponseHeaders } from 'axios';
 import Logger, { type ILogger } from '../../lib/Logger';
 import assertValidSwitchHostAddress from '../../lib/switchHostAddress';
@@ -58,7 +57,7 @@ class DeviceAPI extends Logger {
   private systemInfo: SystemInfo | null = null;
   private numPorts: number = 0;
 
-  private cookie: string = "";
+  private cookie: string = '';
   private readonly abortSignal?: AbortSignal;
 
   constructor(logger: ILogger, ipAddress: string, username: string, password: string, abortSignal?: AbortSignal) {
@@ -86,7 +85,12 @@ class DeviceAPI extends Logger {
       return;
     }
     const raw = headers['content-type'];
-    const ct = typeof raw === 'string' ? raw : Array.isArray(raw) ? String(raw[0] ?? '') : '';
+    let ct = '';
+    if (typeof raw === 'string') {
+      ct = raw;
+    } else if (Array.isArray(raw)) {
+      ct = String(raw[0] ?? '');
+    }
     if (ct.trim() === '') {
       return;
     }
@@ -98,24 +102,24 @@ class DeviceAPI extends Logger {
   }
 
   public getName(): string {
-    return this.systemInfo ? this.systemInfo.description : "";
+    return this.systemInfo ? this.systemInfo.description : '';
   }
 
   public getMacAddress(): string {
-    return this.systemInfo ? this.systemInfo.macAddress : "";
+    return this.systemInfo ? this.systemInfo.macAddress : '';
   }
 
   public getFirmwareVersion(): string {
-    return this.systemInfo ? this.systemInfo.firmwareVersion : "";
+    return this.systemInfo ? this.systemInfo.firmwareVersion : '';
   }
 
   public getHardwareVersion(): string {
-    return this.systemInfo ? this.systemInfo.hardwareVersion : "";
+    return this.systemInfo ? this.systemInfo.hardwareVersion : '';
   }
 
   public async isLoggedIn(): Promise<boolean> {
     const cookie = this.getCookie();
-    if (!cookie || cookie == "") {
+    if (!cookie || cookie === '') {
       return false;
     }
 
@@ -125,8 +129,8 @@ class DeviceAPI extends Logger {
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
-          'Cookie': cookie
-        }
+          Cookie: cookie,
+        },
       });
 
       if (response.status !== 200) {
@@ -195,8 +199,8 @@ class DeviceAPI extends Logger {
           username: this.username,
           password: this.password,
           cpassword: '',
-          logon: 'Login'
-        }
+          logon: 'Login',
+        },
       });
 
       if (response.status !== 200) {
@@ -231,7 +235,7 @@ class DeviceAPI extends Logger {
   }
 
   private processLoginResponse(data: string): number {
-    const loginInfoMatch = data.match(/var\s+logonInfo\s*=\s*new\s+Array\s*\(\s*(-?\d+)/)
+    const loginInfoMatch = data.match(/var\s+logonInfo\s*=\s*new\s+Array\s*\(\s*(-?\d+)/);
     if (!loginInfoMatch || !loginInfoMatch[1]) {
       throw new Error('Login info not found in the response.');
     }
@@ -243,18 +247,18 @@ class DeviceAPI extends Logger {
   private loginErrorCodeToMessage(loginErrorCode: number): string {
     switch (loginErrorCode) {
       case 0:
-        return "Login was successful";
+        return 'Login was successful';
       case 1:
-        return "Invalid username or password.";
+        return 'Invalid username or password.';
       case 2:
-        return "The user is not allowed to log in.";
+        return 'The user is not allowed to log in.';
       case 3:
       case 4:
-        return "Too many users are logged in.";
+        return 'Too many users are logged in.';
       case 5:
-        return "The session has timed out.";
+        return 'The session has timed out.';
       case 6:
-        return "The user must log in to the switch and change the password.";
+        return 'The user must log in to the switch and change the password.';
       default:
         return `There was an unknown login response type (error_type=${loginErrorCode})`;
     }
@@ -262,7 +266,7 @@ class DeviceAPI extends Logger {
 
   private saveSessionCookie(setCookieHeaders: string[]) {
     // Extract the cookie for the session
-    const cookie = setCookieHeaders.find(c => c.startsWith('H_P_SSID='));
+    const cookie = setCookieHeaders.find((c) => c.startsWith('H_P_SSID='));
     if (cookie) {
       this.cookie = assertValidSessionCookieHeaderPair(cookie);
     } else {
@@ -281,8 +285,8 @@ class DeviceAPI extends Logger {
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
-          'Cookie': cookie
-        }
+          Cookie: cookie,
+        },
       });
 
       if (response.status !== 200) {
@@ -341,8 +345,8 @@ class DeviceAPI extends Logger {
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
-          'Cookie': cookie
-        }
+          Cookie: cookie,
+        },
       });
 
       if (response.status !== 200) {
@@ -408,7 +412,7 @@ class DeviceAPI extends Logger {
   }
 
   public async getAllPortsEnabled(): Promise<boolean[] | null> {
-    // Query the device for the current port enabled status. 
+    // Query the device for the current port enabled status.
     // This logs in if needed.
     const loggedIn = await this.reloginIfNeeded();
     if (!loggedIn) {
@@ -464,15 +468,15 @@ class DeviceAPI extends Logger {
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
-          'Cookie': cookie
+          Cookie: cookie,
         },
         params: {
           portid: port,
-          state: state,
-          speed: portSettings.speed[port-1],
-          flowcontrol: portSettings.flowControl[port-1] ? 1 : 0,
-          apply: "Apply"
-        }
+          state,
+          speed: portSettings.speed[port - 1],
+          flowcontrol: portSettings.flowControl[port - 1] ? 1 : 0,
+          apply: 'Apply',
+        },
       });
 
       if (response.status !== 200) {
@@ -516,8 +520,8 @@ class DeviceAPI extends Logger {
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
-          'Cookie': cookie
-        }
+          Cookie: cookie,
+        },
       });
 
       if (response.status !== 200) {
@@ -550,12 +554,12 @@ class DeviceAPI extends Logger {
     // Enables or disables the LEDs
     // This logs in if needed.
     const loggedIn = await this.reloginIfNeeded();
-    if (!loggedIn) { 
+    if (!loggedIn) {
       return false;
-    } 
-        
+    }
+
     const state = enabled ? 1 : 0;
-    
+
     try {
       // NOTE: The device uses HTTP GET for changing the configuration.
       const cookie = this.getCookie();
@@ -564,12 +568,12 @@ class DeviceAPI extends Logger {
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
-          'Cookie': cookie
+          Cookie: cookie,
         },
         params: {
           rd_led: state,
-          led_cfg: "Apply"
-        }
+          led_cfg: 'Apply',
+        },
       });
 
       if (response.status !== 200) {
@@ -595,7 +599,7 @@ class DeviceAPI extends Logger {
     if (!loggedIn) {
       return false;
     }
-  
+
     try {
       const cookie = this.getCookie();
       const response = await axios.post(`http://${this.ipAddress}/reboot.cgi`, null, {
@@ -603,10 +607,10 @@ class DeviceAPI extends Logger {
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
         headers: {
-          'Cookie': cookie
-        }
+          Cookie: cookie,
+        },
       });
-      
+
       if (response.status !== 200) {
         throw new Error(`HTTP status ${response.status}`);
       }
@@ -620,7 +624,7 @@ class DeviceAPI extends Logger {
       }
       this.log(`Error restarting the switch: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
       return false;
-    } 
+    }
   }
 
   public async isLinkUp(port: number): Promise<boolean | null> {
@@ -628,15 +632,15 @@ class DeviceAPI extends Logger {
     // This logs in if needed.
     if (!this.isValidPort(port)) {
       return null;
-    } 
+    }
     const loggedIn = await this.reloginIfNeeded();
     if (!loggedIn) {
       return null;
-    } 
+    }
     const portSettings = await this.getPortSettings();
-    if (!portSettings) { 
+    if (!portSettings) {
       return null;
-    } 
+    }
     return portSettings.linkUp[port - 1];
   }
 
@@ -655,7 +659,7 @@ class DeviceAPI extends Logger {
   }
 
   private getCookie(): string {
-    const cookie = this.cookie;
+    const { cookie } = this;
     return cookie;
   }
 

@@ -1,8 +1,8 @@
 'use strict';
 
 export interface ILogger {
-  log(...args: any[]): void;
-  error(...args: any[]): void;
+  log(...args: unknown[]): void;
+  error(...args: unknown[]): void;
 }
 
 class Logger {
@@ -12,11 +12,11 @@ class Logger {
     this.logger = logger;
   }
 
-  public log(...args: any[]): void {
+  public log(...args: unknown[]): void {
     this.logger.log(...args);
   }
 
-  public error(...args: any[]): void {
+  public error(...args: unknown[]): void {
     this.logger.error(...args);
   }
 }

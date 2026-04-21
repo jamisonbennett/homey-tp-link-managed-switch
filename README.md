@@ -160,6 +160,7 @@ Use **Node.js 22+**. Run `npm install`, then use the [Homey CLI](https://apps.de
 
 ```bash
 npm install
+npm run build            # build and lint
 npx homey app run        # run on your Homey (development)
 npx homey app validate   # check app.json and structure before publish
 npx homey app install    # install this folder on your Homey
@@ -167,7 +168,7 @@ npx homey app install    # install this folder on your Homey
 
 Log in once when needed: `npx homey login`.
 
-This app is written in TypeScript. For a local compile (e.g. CI), run `npm run build` (output under `.homeybuild/`). Unit tests: `npm test`.
+This app is written in TypeScript. Run lint with `npm run lint` and use `npm run build` for a compile (output under `.homeybuild/`); `build` runs lint first. Unit tests: `npm test`.
 
 ### Homey Compose
 
