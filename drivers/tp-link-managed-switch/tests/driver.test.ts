@@ -143,6 +143,7 @@ describe('Driver', () => {
 
     it('LED and restart actions delegate to the device', async () => {
       const device = {
+        getCapabilities: jest.fn().mockReturnValue(['onoff.leds']),
         onCapabilityOnoffLeds: jest.fn().mockResolvedValue(undefined),
         restart: jest.fn().mockResolvedValue(undefined),
       };
@@ -152,6 +153,20 @@ describe('Driver', () => {
       expect(device.onCapabilityOnoffLeds).toHaveBeenCalledWith(true);
       expect(device.onCapabilityOnoffLeds).toHaveBeenCalledWith(false);
       expect(device.restart).toHaveBeenCalled();
+    });
+
+    it('LED actions throw when the device has no LED capability', async () => {
+      const device = {
+        getCapabilities: jest.fn().mockReturnValue(['onoff.favorite']),
+        onCapabilityOnoffLeds: jest.fn().mockResolvedValue(undefined),
+      };
+      await expect(actionRunListeners['enable_leds']({ device }, {})).rejects.toThrow(
+        't:settings.drivers.tp-link-managed-switch.flowLedsNotSupported',
+      );
+      await expect(actionRunListeners['disable_leds']({ device }, {})).rejects.toThrow(
+        't:settings.drivers.tp-link-managed-switch.flowLedsNotSupported',
+      );
+      expect(device.onCapabilityOnoffLeds).not.toHaveBeenCalled();
     });
 
     it('rejects port flows when device is missing', async () => {

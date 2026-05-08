@@ -54,6 +54,8 @@ jest.mock('homey', () => {
       setEnergy = jest.fn();
       setAvailable = jest.fn();
       setUnavailable = jest.fn();
+      addCapability = jest.fn().mockResolvedValue(undefined);
+      removeCapability = jest.fn().mockResolvedValue(undefined);
     },
   };
 });
@@ -69,6 +71,7 @@ describe('Device Class Tests', () => {
     });
     device = new Device();
     jest.spyOn(DeviceAPI.prototype, 'getNumPorts').mockReturnValue(5);
+    jest.spyOn(DeviceAPI.prototype, 'getLedsEnabled').mockResolvedValue(true);
   });
 
   afterEach(() => {

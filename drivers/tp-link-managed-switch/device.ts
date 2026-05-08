@@ -30,6 +30,12 @@ class Device extends Homey.Device {
 
   private configurablePorts: boolean[] | null = null;
 
+  /** Set during full refresh after probing the switch; drives `waitForInitialCapabilityRegistrationToFinish`. */
+  private expectsLedsCapability = false;
+
+  /** When set, the next `refreshState` applies this value to `onoff.leds` instead of calling `getLedsEnabled` again. */
+  private pendingLedState: boolean | undefined;
+
   private async refreshTick(): Promise<void> {
     if (this.getRefreshIntervalProcessing()) {
       return;
@@ -66,7 +72,6 @@ class Device extends Homey.Device {
     this.log('TP-Link managed switch device has been initialized');
 
     this.registerCapabilityListener('onoff.favorite', this.onCapabilityOnoffFavorite.bind(this));
-    this.registerCapabilityListener('onoff.leds', this.onCapabilityOnoffLeds.bind(this));
 
     this.linkStateChanged = this.homey.flow.getDeviceTriggerCard('link_state_changed');
     this.alarmPortDisconnectedTrue = this.homey.flow.getDeviceTriggerCard('alarm_port_disconnected_true');
@@ -127,6 +132,8 @@ class Device extends Homey.Device {
       await this.addPortCapabilitiesIfNeeded(i);
     }
 
+    await this.addLedsCapabilityIfNeeded();
+
     await this.waitForInitialCapabilityRegistrationToFinish();
 
     const promises: Promise<unknown>[] = [];
@@ -150,6 +157,54 @@ class Device extends Homey.Device {
     if (this.refreshInterval) {
       this.homey.clearInterval(this.refreshInterval);
       this.refreshInterval = null;
+    }
+  }
+
+  /**
+   * Registers `onoff.leds` only when the firmware exposes LED settings; removes it when unsupported
+   * (same pattern as {@link addPortCapabilitiesIfNeeded}).
+   */
+  private async addLedsCapabilityIfNeeded(): Promise<void> {
+    if (!this.deviceAPI) {
+      this.expectsLedsCapability = false;
+      return;
+    }
+
+    const probedLedState = await this.deviceAPI.getLedsEnabled();
+    this.expectsLedsCapability = probedLedState !== null;
+
+    const ledsCap = 'onoff.leds';
+    if (probedLedState !== null) {
+      this.pendingLedState = probedLedState;
+      if (!this.getCapabilities().includes(ledsCap)) {
+        await this.addCapability(ledsCap);
+      }
+      if (!this.registeredCapabilities.has(ledsCap)) {
+        this.registerCapabilityListener(ledsCap, this.onCapabilityOnoffLeds.bind(this));
+        this.registeredCapabilities.add(ledsCap);
+      }
+      const title = this.homey.__('settings.drivers.tp-link-managed-switch.ledsTitle');
+      let needLedOptions = true;
+      try {
+        const opts = this.getCapabilityOptions(ledsCap) as { title?: unknown; uiQuickAction?: boolean };
+        needLedOptions = title !== opts.title || opts.uiQuickAction !== false;
+      } catch (error) {
+        if (!(error instanceof Error && error.message.startsWith('Invalid Capability:'))) {
+          throw error;
+        }
+      }
+      if (needLedOptions) {
+        await this.setCapabilityOptions(ledsCap, {
+          title,
+          uiQuickAction: false,
+        });
+      }
+    } else {
+      this.pendingLedState = undefined;
+      if (this.getCapabilities().includes(ledsCap)) {
+        await this.removeCapability(ledsCap);
+        this.registeredCapabilities.delete(ledsCap);
+      }
     }
   }
 
@@ -238,7 +293,10 @@ class Device extends Homey.Device {
     // Sometimes the registered capabilities are not registered even though the promise for registering comes before the code that uses the capability.
     // This allows all of the capabilities to register before using them.
     const registeredCapabilities = this.getCapabilities();
-    const requiredCapabilities = ['onoff.favorite', 'onoff.leds'];
+    const requiredCapabilities = ['onoff.favorite'];
+    if (this.expectsLedsCapability) {
+      requiredCapabilities.push('onoff.leds');
+    }
     if (this.deviceAPI) {
       for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++) {
         requiredCapabilities.push(`onoff.${i}`);
@@ -279,9 +337,17 @@ class Device extends Homey.Device {
         promises.push(this.setCapabilityIfNeeded(`onoff.${i + 1}`, portStatus[i]));
       }
     }
-    const ledStatus = await this.deviceAPI.getLedsEnabled();
-    if (ledStatus != null) {
-      promises.push(this.setCapabilityIfNeeded('onoff.leds', ledStatus));
+    if (this.getCapabilities().includes('onoff.leds')) {
+      let ledStatus: boolean | null = null;
+      if (this.pendingLedState !== undefined) {
+        ledStatus = this.pendingLedState;
+        this.pendingLedState = undefined;
+      } else {
+        ledStatus = await this.deviceAPI.getLedsEnabled();
+      }
+      if (ledStatus != null) {
+        promises.push(this.setCapabilityIfNeeded('onoff.leds', ledStatus));
+      }
     }
 
     const allLinksStatus = await this.deviceAPI.getAllLinksUp();

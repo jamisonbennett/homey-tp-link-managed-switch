@@ -4,19 +4,12 @@
   },
   "class": "networkrouter",
   "capabilities": [
-    "onoff.favorite",
-    "onoff.leds"
+    "onoff.favorite"
   ],
   "capabilitiesOptions": {
     "onoff.favorite": {
       "title": {
         "en": "Favorite Port"
-      },
-      "uiQuickAction": false
-    },
-    "onoff.leds": {
-      "title": {
-        "en": "LEDs"
       },
       "uiQuickAction": false
     }
