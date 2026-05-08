@@ -1,0 +1,74 @@
+{
+  "settings": {
+    "app": {
+      "license": {
+        "title": "Licence",
+        "content": "Copyright (c) 2024 Jamison Bennett<br/><br/>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br/><br/>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      },
+      "disclaimer": {
+        "title": "Avertissement",
+        "content": "Cette application est une application tierce indépendante et n’est pas affiliée, approuvée ou sponsorisée par TP-Link Technologies Co., Ltd. TP-Link est une marque déposée de TP-Link Technologies Co., Ltd. Tous les noms de produits, logos et marques appartiennent à leurs propriétaires respectifs. L’utilisation de ces noms, logos et marques n’implique aucune affiliation ni approbation de leur part."
+      }
+    },
+    "drivers": {
+      "tp-link-managed-switch": {
+        "portName": "Port __number__",
+        "ledsTitle": "LED",
+        "flowLedsNotSupported": "Ce commutateur n’expose pas les réglages des LED dans son interface web.",
+        "portDisconnected": "Port __number__ déconnecté",
+        "flowSwitchDeviceNotAvailable": "L’appareil commutateur n’est pas disponible",
+        "flowPortNumberUnknown": "Numéro de port inconnu",
+        "flowPortAlarmCapabilityMissing": "Ce port n’est pas encore disponible sur ce commutateur.",
+        "invalidSwitchAddress": "Saisissez une adresse IPv4 valide, un nom d’hôte ou une IPv6 entre crochets. Vous pouvez ajouter un port (p. ex. 192.168.0.1:8080 ou [fe80::1]:443). N’incluez pas http://, de chemins ni de nom d’utilisateur dans ce champ.",
+        "invalidSwitchUsername": "Saisissez un nom d’utilisateur valide (1 à 128 caractères ; espaces en début et fin supprimés). Les caractères de contrôle ne sont pas autorisés.",
+        "invalidSwitchPassword": "Mot de passe trop long (256 caractères max. pour cette application) ou contient des caractères de contrôle. Les espaces en début et fin sont conservés—supprimez-les uniquement si vous le souhaitez.",
+        "invalidConnectionPayload": "Le formulaire de connexion a envoyé des données invalides. Fermez et rouvrez l’appairage, ou mettez à jour l’application si le problème persiste.",
+        "pair": {
+          "connection_input": {
+            "title": "Connexion à votre commutateur géré",
+            "addressLabel": "Adresse IP ou nom d’hôte",
+            "addressPlaceholder": "192.168.0.1 ou managed-switch.local",
+            "usernameLabel": "Nom d’utilisateur",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Mot de passe",
+            "passwordPlaceholder": "mot de passe",
+            "connect": "Connecter"
+          },
+          "connection_error": {
+            "title": "Erreur de connexion",
+            "errorText": "Impossible de se connecter au commutateur géré. Vérifiez que les versions matériel et micrologiciel sont prises en charge.",
+            "supportedHardware": "Matériel pris en charge",
+            "hardwareVersion": "Version matériel",
+            "firmwareVersion": "Version du micrologiciel",
+            "close": "Fermer"
+          }
+        },
+        "repair": {
+          "connection_input": {
+            "title": "Réparer la connexion à votre commutateur géré",
+            "macLabel": "Adresse MAC",
+            "macPlaceholder": "Chargement...",
+            "addressLabel": "Adresse IP ou nom d’hôte",
+            "addressPlaceholder": "192.168.0.1 ou managed-switch.local",
+            "usernameLabel": "Nom d’utilisateur",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Mot de passe",
+            "passwordPlaceholder": "mot de passe",
+            "connect": "Connecter",
+            "errorRetrievingMacAddress": "Erreur lors de la récupération de l’adresse MAC"
+          },
+          "connection_error": {
+            "title": "Erreur de connexion",
+            "errorText": "Impossible de se connecter au commutateur géré",
+            "close": "Fermer"
+          },
+          "incorrect_device_error": {
+            "title": "Appareil incorrect",
+            "errorText": "L’adresse et le compte saisis correspondent à un autre commutateur géré.",
+            "close": "Fermer"
+          }
+        }
+      }
+    }
+  }
+}

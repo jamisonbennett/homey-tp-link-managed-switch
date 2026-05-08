@@ -1,0 +1,74 @@
+{
+  "settings": {
+    "app": {
+      "license": {
+        "title": "Licentie",
+        "content": "Copyright (c) 2024 Jamison Bennett<br/><br/>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br/><br/>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      },
+      "disclaimer": {
+        "title": "Disclaimer",
+        "content": "Deze app is een onafhankelijke applicatie van derden en is niet gelieerd aan, onderschreven door of gesponsord door TP-Link Technologies Co., Ltd. TP-Link is een geregistreerd handelsmerk van TP-Link Technologies Co., Ltd. Alle productnamen, logo's en merken zijn eigendom van hun respectieve eigenaren. Het gebruik van deze namen, logo's en merken impliceert geen samenwerking met of goedkeuring door hen."
+      }
+    },
+    "drivers": {
+      "tp-link-managed-switch": {
+        "portName": "Poort __number__",
+        "ledsTitle": "LED's",
+        "flowLedsNotSupported": "Deze switch biedt geen LED-instellingen op de webinterface.",
+        "portDisconnected": "Poort __number__ niet verbonden",
+        "flowSwitchDeviceNotAvailable": "Switch-apparaat is niet beschikbaar",
+        "flowPortNumberUnknown": "Poortnummer is onbekend",
+        "flowPortAlarmCapabilityMissing": "Die poort is op deze switch nog niet beschikbaar.",
+        "invalidSwitchAddress": "Voer een geldig IPv4-adres, hostnaam of IPv6 tussen vierkante haken in. Je kunt een poort toevoegen (bijv. 192.168.0.1:8080 of [fe80::1]:443). Voeg geen http://, paden of gebruikersnaam toe in dit veld.",
+        "invalidSwitchUsername": "Voer een geldige gebruikersnaam in (1-128 tekens; spaties aan begin en einde worden getrimd). Besturings tekens zijn niet toegestaan.",
+        "invalidSwitchPassword": "Wachtwoord is te lang (max. 256 tekens voor deze app) of bevat besturingstekens. Spaties aan begin en einde blijven behouden—verwijder ze alleen als je dat wilt.",
+        "invalidConnectionPayload": "Er zijn ongeldige gegevens ontvangen tijdens het verbinden. Sluit pairing en open het opnieuw, of werk de app bij als het probleem aanhoudt.",
+        "pair": {
+          "connection_input": {
+            "title": "Verbind met je managed switch",
+            "addressLabel": "IP-adres of hostnaam",
+            "addressPlaceholder": "192.168.0.1 of managed-switch.local",
+            "usernameLabel": "Gebruikersnaam",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Wachtwoord",
+            "passwordPlaceholder": "wachtwoord",
+            "connect": "Verbinden"
+          },
+          "connection_error": {
+            "title": "Verbindingsfout",
+            "errorText": "Kan geen verbinding maken met de managed switch. Controleer of de hardware- en firmwareversie worden ondersteund.",
+            "supportedHardware": "Ondersteunde hardware",
+            "hardwareVersion": "Hardwareversie",
+            "firmwareVersion": "Firmwareversie",
+            "close": "Sluiten"
+          }
+        },
+        "repair": {
+          "connection_input": {
+            "title": "Herstel verbinding met je managed switch",
+            "macLabel": "MAC-adres",
+            "macPlaceholder": "Laden...",
+            "addressLabel": "IP-adres of hostnaam",
+            "addressPlaceholder": "192.168.0.1 of managed-switch.local",
+            "usernameLabel": "Gebruikersnaam",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Wachtwoord",
+            "passwordPlaceholder": "wachtwoord",
+            "connect": "Verbinden",
+            "errorRetrievingMacAddress": "Fout bij ophalen MAC-adres"
+          },
+          "connection_error": {
+            "title": "Verbindingsfout",
+            "errorText": "Kan geen verbinding maken met de managed switch",
+            "close": "Sluiten"
+          },
+          "incorrect_device_error": {
+            "title": "Verkeerd apparaat",
+            "errorText": "Het adres en account dat je hebt ingevoerd horen bij een andere managed switch.",
+            "close": "Sluiten"
+          }
+        }
+      }
+    }
+  }
+}

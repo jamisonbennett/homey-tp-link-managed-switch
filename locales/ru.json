@@ -1,0 +1,74 @@
+{
+  "settings": {
+    "app": {
+      "license": {
+        "title": "Лицензия",
+        "content": "Copyright (c) 2024 Jamison Bennett<br/><br/>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br/><br/>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      },
+      "disclaimer": {
+        "title": "Отказ от ответственности",
+        "content": "Это приложение независимое стороннее ПО и не связано с TP-Link Technologies Co., Ltd., не одобрено и не спонсируется ею. TP-Link — зарегистрированный товарный знак TP-Link Technologies Co., Ltd. Все названия продуктов, логотипы и бренды принадлежат их владельцам. Использование этих названий, логотипов и брендов не означает принадлежности или одобрения."
+      }
+    },
+    "drivers": {
+      "tp-link-managed-switch": {
+        "portName": "Порт __number__",
+        "ledsTitle": "Индикаторы",
+        "flowLedsNotSupported": "Этот коммутатор не предоставляет настройки индикаторов в веб-интерфейсе.",
+        "portDisconnected": "Порт __number__ отключён",
+        "flowSwitchDeviceNotAvailable": "Устройство коммутатора недоступно",
+        "flowPortNumberUnknown": "Номер порта неизвестен",
+        "flowPortAlarmCapabilityMissing": "Этот порт пока недоступен на этом коммутаторе.",
+        "invalidSwitchAddress": "Укажите действительный IPv4-адрес, имя хоста или IPv6 в квадратных скобках. Можно указать порт (например 192.168.0.1:8080 или [fe80::1]:443). Не указывайте http://, пути или имя пользователя в этом поле.",
+        "invalidSwitchUsername": "Укажите действительное имя пользователя (1–128 символов; пробелы в начале и конце удаляются). Управляющие символы недопустимы.",
+        "invalidSwitchPassword": "Пароль слишком длинный (макс. 256 символов для этого приложения) или содержит управляющие символы. Пробелы в начале и конце сохраняются — удалите их только если это нужно.",
+        "invalidConnectionPayload": "Форма подключения отправила недопустимые данные. Закройте и снова откройте сопряжение или обновите приложение, если проблема повторяется.",
+        "pair": {
+          "connection_input": {
+            "title": "Подключение к управляемому коммутатору",
+            "addressLabel": "IP-адрес или имя хоста",
+            "addressPlaceholder": "192.168.0.1 или managed-switch.local",
+            "usernameLabel": "Имя пользователя",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Пароль",
+            "passwordPlaceholder": "пароль",
+            "connect": "Подключить"
+          },
+          "connection_error": {
+            "title": "Ошибка подключения",
+            "errorText": "Не удаётся подключиться к управляемому коммутатору. Убедитесь, что версии оборудования и прошивки поддерживаются.",
+            "supportedHardware": "Поддерживаемое оборудование",
+            "hardwareVersion": "Версия оборудования",
+            "firmwareVersion": "Версия прошивки",
+            "close": "Закрыть"
+          }
+        },
+        "repair": {
+          "connection_input": {
+            "title": "Восстановление подключения к коммутатору",
+            "macLabel": "MAC-адрес",
+            "macPlaceholder": "Загрузка...",
+            "addressLabel": "IP-адрес или имя хоста",
+            "addressPlaceholder": "192.168.0.1 или managed-switch.local",
+            "usernameLabel": "Имя пользователя",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Пароль",
+            "passwordPlaceholder": "пароль",
+            "connect": "Подключить",
+            "errorRetrievingMacAddress": "Ошибка получения MAC-адреса"
+          },
+          "connection_error": {
+            "title": "Ошибка подключения",
+            "errorText": "Не удаётся подключиться к управляемому коммутатору",
+            "close": "Закрыть"
+          },
+          "incorrect_device_error": {
+            "title": "Неверное устройство",
+            "errorText": "Указанный адрес и учётная запись относятся к другому управляемому коммутатору.",
+            "close": "Закрыть"
+          }
+        }
+      }
+    }
+  }
+}

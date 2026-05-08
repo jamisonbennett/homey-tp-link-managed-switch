@@ -26,19 +26,69 @@
     {
       "id": "alarm_port_disconnected_true",
       "title": {
-        "en": "Became disconnected"
+        "en": "Became disconnected",
+        "nl": "Niet meer verbonden",
+        "de": "Verbindung getrennt",
+        "fr": "Déconnecté",
+        "it": "Disconnesso",
+        "sv": "Frånkopplad",
+        "no": "Frakoblet",
+        "es": "Desconectado",
+        "da": "Afkoblet",
+        "ru": "Отключено",
+        "pl": "Rozłączono",
+        "ko": "연결 끊김",
+        "ar": "انقطع الاتصال"
       },
       "titleFormatted": {
-        "en": "[[port]] became disconnected"
+        "en": "[[port]] became disconnected",
+        "nl": "[[port]] niet meer verbonden is",
+        "de": "[[port]] wurde getrennt",
+        "fr": "[[port]] s'est déconnecté",
+        "it": "[[port]] si è disconnesso",
+        "sv": "[[port]] kopplades från",
+        "no": "[[port]] ble frakoblet",
+        "es": "[[port]] se desconectó",
+        "da": "[[port]] blev afkoblet",
+        "ru": "порт [[port]] отключился",
+        "pl": "[[port]] został rozłączony",
+        "ko": "[[port]]번 포트 연결이 끊어짐",
+        "ar": "انقطع اتصال المنفذ [[port]]"
       },
       "hint": {
-        "en": "When the physical link on the selected port goes down."
+        "en": "When the physical link on the selected port goes down.",
+        "nl": "Wanneer de fysieke verbinding op de geselecteerde poort wegvalt.",
+        "de": "Wenn die physische Verbindung am gewählten Port ausfällt.",
+        "fr": "Lorsque la liaison physique du port sélectionné tombe.",
+        "it": "Quando il collegamento fisico sulla porta selezionata cade.",
+        "sv": "När den fysiska länken på den valda porten bryts.",
+        "no": "Når den fysiske koblingen på den valgte porten faller.",
+        "es": "Cuando el enlace físico del puerto seleccionado cae.",
+        "da": "Når den fysiske forbindelse på den valgte port går ned.",
+        "ru": "Когда физическое соединение на выбранном порту пропадает.",
+        "pl": "Gdy fizyczne połączenie na wybranym porcie zanika.",
+        "ko": "선택한 포트의 물리적 링크가 끊어질 때.",
+        "ar": "عندما ينقطع الارتباط الفيزيائي على المنفذ المحدد."
       },
       "tokens": [
         {
           "name": "port",
           "type": "number",
-          "title": { "en": "port" },
+          "title": {
+            "en": "port",
+            "nl": "poort",
+            "de": "Port",
+            "fr": "port",
+            "it": "porta",
+            "sv": "port",
+            "no": "port",
+            "es": "puerto",
+            "da": "port",
+            "ru": "порт",
+            "pl": "port",
+            "ko": "포트",
+            "ar": "منفذ"
+          },
           "example": 1
         }
       ],
@@ -46,27 +96,105 @@
         {
           "type": "autocomplete",
           "name": "port",
-          "title": { "en": "Port" },
-          "placeholder": { "en": "Search or pick…" }
+          "title": {
+            "en": "Port",
+            "nl": "Poort",
+            "de": "Port",
+            "fr": "Port",
+            "it": "Porta",
+            "sv": "Port",
+            "no": "Port",
+            "es": "Puerto",
+            "da": "Port",
+            "ru": "Порт",
+            "pl": "Port",
+            "ko": "포트",
+            "ar": "منفذ"
+          },
+          "placeholder": {
+            "en": "Search or pick…",
+            "nl": "Zoek of kies…",
+            "de": "Suchen oder wählen…",
+            "fr": "Rechercher ou choisir…",
+            "it": "Cerca o scegli…",
+            "sv": "Sök eller välj…",
+            "no": "Søk eller velg…",
+            "es": "Buscar o elegir…",
+            "da": "Søg eller vælg…",
+            "ru": "Найти или выбрать…",
+            "pl": "Szukaj lub wybierz…",
+            "ko": "검색 또는 선택…",
+            "ar": "ابحث أو اختر…"
+          }
         }
       ]
     },
     {
       "id": "alarm_port_disconnected_false",
       "title": {
-        "en": "Became connected"
+        "en": "Became connected",
+        "nl": "Weer verbonden",
+        "de": "Wieder verbunden",
+        "fr": "Reconnecté",
+        "it": "Riconnesso",
+        "sv": "Åter ansluten",
+        "no": "Tilkoblet igjen",
+        "es": "Conectado",
+        "da": "Tilsluttet igen",
+        "ru": "Подключено",
+        "pl": "Podłączono ponownie",
+        "ko": "연결됨",
+        "ar": "تم الاتصال"
       },
       "titleFormatted": {
-        "en": "[[port]] became connected"
+        "en": "[[port]] became connected",
+        "nl": "[[port]] weer verbonden is",
+        "de": "[[port]] ist wieder verbunden",
+        "fr": "[[port]] s'est reconnecté",
+        "it": "[[port]] si è riconnesso",
+        "sv": "[[port]] kopplades an",
+        "no": "[[port]] ble tilkoblet",
+        "es": "[[port]] se conectó",
+        "da": "[[port]] blev tilsluttet",
+        "ru": "порт [[port]] подключился",
+        "pl": "[[port]] został ponownie podłączony",
+        "ko": "[[port]]번 포트 연결됨",
+        "ar": "اتصل المنفذ [[port]]"
       },
       "hint": {
-        "en": "When the physical link on the selected port comes up."
+        "en": "When the physical link on the selected port comes up.",
+        "nl": "Wanneer de fysieke verbinding op de geselecteerde poort herstelt.",
+        "de": "Wenn die physische Verbindung am gewählten Port wiederhergestellt ist.",
+        "fr": "Lorsque la liaison physique du port sélectionné revient.",
+        "it": "Quando il collegamento fisico sulla porta selezionata torna su.",
+        "sv": "När den fysiska länken på den valda porten återkommer.",
+        "no": "Når den fysiske koblingen på den valgte porten kommer opp igjen.",
+        "es": "Cuando el enlace físico del puerto seleccionado vuelve.",
+        "da": "Når den fysiske forbindelse på den valgte port kommer op igen.",
+        "ru": "Когда физическое соединение на выбранном порту восстанавливается.",
+        "pl": "Gdy fizyczne połączenie na wybranym porcie wraca.",
+        "ko": "선택한 포트의 물리적 링크가 복구될 때.",
+        "ar": "عندما يعود الارتباط الفيزيائي على المنفذ المحدد."
       },
       "tokens": [
         {
           "name": "port",
           "type": "number",
-          "title": { "en": "port" },
+          "title": {
+            "en": "port",
+            "nl": "poort",
+            "de": "Port",
+            "fr": "port",
+            "it": "porta",
+            "sv": "port",
+            "no": "port",
+            "es": "puerto",
+            "da": "port",
+            "ru": "порт",
+            "pl": "port",
+            "ko": "포트",
+            "ar": "منفذ"
+          },
           "example": 1
         }
       ],
@@ -74,8 +202,36 @@
         {
           "type": "autocomplete",
           "name": "port",
-          "title": { "en": "Port" },
-          "placeholder": { "en": "Search or pick…" }
+          "title": {
+            "en": "Port",
+            "nl": "Poort",
+            "de": "Port",
+            "fr": "Port",
+            "it": "Porta",
+            "sv": "Port",
+            "no": "Port",
+            "es": "Puerto",
+            "da": "Port",
+            "ru": "Порт",
+            "pl": "Port",
+            "ko": "포트",
+            "ar": "منفذ"
+          },
+          "placeholder": {
+            "en": "Search or pick…",
+            "nl": "Zoek of kies…",
+            "de": "Suchen oder wählen…",
+            "fr": "Rechercher ou choisir…",
+            "it": "Cerca o scegli…",
+            "sv": "Sök eller välj…",
+            "no": "Søk eller velg…",
+            "es": "Buscar o elegir…",
+            "da": "Søg eller vælg…",
+            "ru": "Найти или выбрать…",
+            "pl": "Szukaj lub wybierz…",
+            "ko": "검색 또는 선택…",
+            "ar": "ابحث أو اختر…"
+          }
         }
       ]
     }
@@ -84,20 +240,84 @@
     {
       "id": "alarm_port_disconnected_status",
       "title": {
-        "en": "[[port]] !{{is disconnected|is connected}}"
+        "en": "[[port]] !{{is disconnected|is connected}}",
+        "nl": "[[port]] !{{niet verbonden is|verbonden is}}",
+        "de": "[[port]] !{{ist getrennt|ist verbunden}}",
+        "fr": "[[port]] !{{est déconnecté|est connecté}}",
+        "it": "[[port]] !{{è disconnesso|è connesso}}",
+        "sv": "[[port]] !{{är frånkopplad|är ansluten}}",
+        "no": "[[port]] !{{er frakoblet|er tilkoblet}}",
+        "es": "[[port]] !{{está desconectado|está conectado}}",
+        "da": "[[port]] !{{er afkoblet|er tilsluttet}}",
+        "ru": "порт [[port]] !{{отключён|подключён}}",
+        "pl": "[[port]] !{{jest rozłączony|jest podłączony}}",
+        "ko": "[[port]]번 포트가 !{{연결 끊김|연결됨}}",
+        "ar": "[[port]] !{{غير متصل|متصل}}"
       },
       "titleFormatted": {
-        "en": "[[port]] !{{is disconnected|is connected}}"
+        "en": "[[port]] !{{is disconnected|is connected}}",
+        "nl": "[[port]] !{{niet verbonden is|verbonden is}}",
+        "de": "[[port]] !{{ist getrennt|ist verbunden}}",
+        "fr": "[[port]] !{{est déconnecté|est connecté}}",
+        "it": "[[port]] !{{è disconnesso|è connesso}}",
+        "sv": "[[port]] !{{är frånkopplad|är ansluten}}",
+        "no": "[[port]] !{{er frakoblet|er tilkoblet}}",
+        "es": "[[port]] !{{está desconectado|está conectado}}",
+        "da": "[[port]] !{{er afkoblet|er tilsluttet}}",
+        "ru": "порт [[port]] !{{отключён|подключён}}",
+        "pl": "[[port]] !{{jest rozłączony|jest podłączony}}",
+        "ko": "[[port]]번 포트가 !{{연결 끊김|연결됨}}",
+        "ar": "[[port]] !{{غير متصل|متصل}}"
       },
       "hint": {
-        "en": "Checks the physical link state of the selected port."
+        "en": "Checks the physical link state of the selected port.",
+        "nl": "Controleert de fysieke verbindingsstatus van de geselecteerde poort.",
+        "de": "Prüft den physischen Verbindungsstatus des gewählten Ports.",
+        "fr": "Vérifie l'état de la liaison physique du port sélectionné.",
+        "it": "Controlla lo stato del collegamento fisico sulla porta selezionata.",
+        "sv": "Kontrollerar den fysiska länkstatusen för den valda porten.",
+        "no": "Sjekker den fysiske koblingsstatusen til den valgte porten.",
+        "es": "Comprueba el estado del enlace físico del puerto seleccionado.",
+        "da": "Tjekker den fysiske forbindelsesstatus for den valgte port.",
+        "ru": "Проверяет состояние физического соединения выбранного порта.",
+        "pl": "Sprawdza stan fizycznego połączenia wybranego portu.",
+        "ko": "선택한 포트의 물리적 링크 상태를 확인합니다.",
+        "ar": "يتحقق من حالة الارتباط الفيزيائي للمنفذ المحدد."
       },
       "args": [
         {
           "type": "autocomplete",
           "name": "port",
-          "title": { "en": "Port" },
-          "placeholder": { "en": "Search or pick…" }
+          "title": {
+            "en": "Port",
+            "nl": "Poort",
+            "de": "Port",
+            "fr": "Port",
+            "it": "Porta",
+            "sv": "Port",
+            "no": "Port",
+            "es": "Puerto",
+            "da": "Port",
+            "ru": "Порт",
+            "pl": "Port",
+            "ko": "포트",
+            "ar": "منفذ"
+          },
+          "placeholder": {
+            "en": "Search or pick…",
+            "nl": "Zoek of kies…",
+            "de": "Suchen oder wählen…",
+            "fr": "Rechercher ou choisir…",
+            "it": "Cerca o scegli…",
+            "sv": "Sök eller välj…",
+            "no": "Søk eller velg…",
+            "es": "Buscar o elegir…",
+            "da": "Søg eller vælg…",
+            "ru": "Найти или выбрать…",
+            "pl": "Szukaj lub wybierz…",
+            "ko": "검색 또는 선택…",
+            "ar": "ابحث أو اختر…"
+          }
         }
       ]
     },
@@ -127,40 +347,168 @@
     {
       "id": "turnOn_port",
       "title": {
-        "en": "Enable [[port]]"
+        "en": "Enable [[port]]",
+        "nl": "[[port]] inschakelen",
+        "de": "[[port]] aktivieren",
+        "fr": "Activer [[port]]",
+        "it": "Abilita [[port]]",
+        "sv": "Aktivera [[port]]",
+        "no": "Aktiver [[port]]",
+        "es": "Habilitar [[port]]",
+        "da": "Aktivér [[port]]",
+        "ru": "Включить [[port]]",
+        "pl": "Włącz [[port]]",
+        "ko": "[[port]] 활성화",
+        "ar": "تفعيل [[port]]"
       },
       "titleFormatted": {
-        "en": "Enable [[port]]"
+        "en": "Enable [[port]]",
+        "nl": "Schakel [[port]] in",
+        "de": "[[port]] aktivieren",
+        "fr": "Activer [[port]]",
+        "it": "Abilita [[port]]",
+        "sv": "Aktivera [[port]]",
+        "no": "Aktiver [[port]]",
+        "es": "Habilitar [[port]]",
+        "da": "Aktivér [[port]]",
+        "ru": "включить [[port]]",
+        "pl": "Włącz [[port]]",
+        "ko": "[[port]] 활성화",
+        "ar": "تفعيل [[port]]"
       },
       "hint": {
-        "en": "Same as enabling that port in the device capabilities."
+        "en": "Enables the selected port on the switch.",
+        "nl": "Schakelt de geselecteerde poort op de switch in.",
+        "de": "Aktiviert den gewählten Port am Switch.",
+        "fr": "Active le port sélectionné sur le commutateur.",
+        "it": "Abilita la porta selezionata sullo switch.",
+        "sv": "Aktiverar den valda porten på switchen.",
+        "no": "Aktiverer den valgte porten på switchen.",
+        "es": "Habilita el puerto seleccionado en el switch.",
+        "da": "Aktiverer den valgte port på switchen.",
+        "ru": "Включает выбранный порт на коммутаторе.",
+        "pl": "Włącza wybrany port na przełączniku.",
+        "ko": "스위치에서 선택한 포트를 활성화합니다.",
+        "ar": "يفعّل المنفذ المحدد على المبدّل."
       },
       "args": [
         {
           "type": "autocomplete",
           "name": "port",
-          "title": { "en": "Number" },
-          "placeholder": { "en": "Search or pick…" }
+          "title": {
+            "en": "Number",
+            "nl": "Nummer",
+            "de": "Nummer",
+            "fr": "Numéro",
+            "it": "Numero",
+            "sv": "Nummer",
+            "no": "Nummer",
+            "es": "Número",
+            "da": "Nummer",
+            "ru": "Номер",
+            "pl": "Numer",
+            "ko": "번호",
+            "ar": "الرقم"
+          },
+          "placeholder": {
+            "en": "Search or pick…",
+            "nl": "Zoek of kies…",
+            "de": "Suchen oder wählen…",
+            "fr": "Rechercher ou choisir…",
+            "it": "Cerca o scegli…",
+            "sv": "Sök eller välj…",
+            "no": "Søk eller velg…",
+            "es": "Buscar o elegir…",
+            "da": "Søg eller vælg…",
+            "ru": "Найти или выбрать…",
+            "pl": "Szukaj lub wybierz…",
+            "ko": "검색 또는 선택…",
+            "ar": "ابحث أو اختر…"
+          }
         }
       ]
     },
     {
       "id": "turnOff_port",
       "title": {
-        "en": "Disable [[port]]"
+        "en": "Disable [[port]]",
+        "nl": "[[port]] uitschakelen",
+        "de": "[[port]] deaktivieren",
+        "fr": "Désactiver [[port]]",
+        "it": "Disabilita [[port]]",
+        "sv": "Inaktivera [[port]]",
+        "no": "Deaktiver [[port]]",
+        "es": "Deshabilitar [[port]]",
+        "da": "Deaktivér [[port]]",
+        "ru": "Отключить [[port]]",
+        "pl": "Wyłącz [[port]]",
+        "ko": "[[port]] 비활성화",
+        "ar": "تعطيل [[port]]"
       },
       "titleFormatted": {
-        "en": "Disable [[port]]"
+        "en": "Disable [[port]]",
+        "nl": "Schakel [[port]] uit",
+        "de": "[[port]] deaktivieren",
+        "fr": "Désactiver [[port]]",
+        "it": "Disabilita [[port]]",
+        "sv": "Inaktivera [[port]]",
+        "no": "Deaktiver [[port]]",
+        "es": "Deshabilitar [[port]]",
+        "da": "Deaktivér [[port]]",
+        "ru": "отключить [[port]]",
+        "pl": "Wyłącz [[port]]",
+        "ko": "[[port]] 비활성화",
+        "ar": "تعطيل [[port]]"
       },
       "hint": {
-        "en": "Same as disabling that port in the device capabilities."
+        "en": "Disables the selected port on the switch.",
+        "nl": "Schakelt de geselecteerde poort op de switch uit.",
+        "de": "Deaktiviert den gewählten Port am Switch.",
+        "fr": "Désactive le port sélectionné sur le commutateur.",
+        "it": "Disabilita la porta selezionata sullo switch.",
+        "sv": "Inaktiverar den valda porten på switchen.",
+        "no": "Deaktiverer den valgte porten på switchen.",
+        "es": "Deshabilita el puerto seleccionado en el switch.",
+        "da": "Deaktiverer den valgte port på switchen.",
+        "ru": "Отключает выбранный порт на коммутаторе.",
+        "pl": "Wyłącza wybrany port na przełączniku.",
+        "ko": "스위치에서 선택한 포트를 비활성화합니다.",
+        "ar": "يعطّل المنفذ المحدد على المبدّل."
       },
       "args": [
         {
           "type": "autocomplete",
           "name": "port",
-          "title": { "en": "Number" },
-          "placeholder": { "en": "Search or pick…" }
+          "title": {
+            "en": "Number",
+            "nl": "Nummer",
+            "de": "Nummer",
+            "fr": "Numéro",
+            "it": "Numero",
+            "sv": "Nummer",
+            "no": "Nummer",
+            "es": "Número",
+            "da": "Nummer",
+            "ru": "Номер",
+            "pl": "Numer",
+            "ko": "번호",
+            "ar": "الرقم"
+          },
+          "placeholder": {
+            "en": "Search or pick…",
+            "nl": "Zoek of kies…",
+            "de": "Suchen oder wählen…",
+            "fr": "Rechercher ou choisir…",
+            "it": "Cerca o scegli…",
+            "sv": "Sök eller välj…",
+            "no": "Søk eller velg…",
+            "es": "Buscar o elegir…",
+            "da": "Søg eller vælg…",
+            "ru": "Найти или выбрать…",
+            "pl": "Szukaj lub wybierz…",
+            "ko": "검색 또는 선택…",
+            "ar": "ابحث أو اختر…"
+          }
         }
       ]
     },
@@ -209,28 +557,145 @@
     {
       "id": "enable_leds",
       "title": {
-        "en": "Enable LEDs"
+        "en": "Enable LEDs",
+        "nl": "LEDs inschakelen",
+        "de": "LEDs aktivieren",
+        "fr": "Activer les voyants",
+        "it": "Abilita i LED",
+        "sv": "Aktivera lysdioder",
+        "no": "Aktiver LED-er",
+        "es": "Habilitar LEDs",
+        "da": "Aktivér LED'er",
+        "ru": "Включить индикаторы",
+        "pl": "Włącz diody LED",
+        "ko": "LED 켜기",
+        "ar": "تفعيل مصابيح LED"
       },
       "titleFormatted": {
-        "en": "Enable LEDs"
+        "en": "Enable LEDs",
+        "nl": "Schakel LEDs in",
+        "de": "LEDs aktivieren",
+        "fr": "Activer les voyants",
+        "it": "Abilita i LED",
+        "sv": "Aktivera lysdioder",
+        "no": "Aktiver LED-er",
+        "es": "Habilitar LEDs",
+        "da": "Aktivér LED'er",
+        "ru": "включить индикаторы",
+        "pl": "Włącz diody LED",
+        "ko": "LED 켜기",
+        "ar": "تفعيل مصابيح LED"
+      },
+      "hint": {
+        "en": "Turns on the port and status LEDs on the switch.",
+        "nl": "Zet de poort- en status-LEDs van de switch aan.",
+        "de": "Schaltet die Port- und Status-LEDs der Switch ein.",
+        "fr": "Allume les voyants de ports et d'état du commutateur.",
+        "it": "Accende i LED delle porte e di stato sullo switch.",
+        "sv": "Sätter på port- och statuslysdioderna på switchen.",
+        "no": "Slår på port- og status-LED-ene på switchen.",
+        "es": "Enciende los LEDs de puertos y de estado del switch.",
+        "da": "Tænder port- og statuslysdioderne på switchen.",
+        "ru": "Включает индикаторы портов и состояния на коммутаторе.",
+        "pl": "Włącza diody LED portów i stanu na przełączniku.",
+        "ko": "스위치에서 포트 및 상태 표시 LED를 켭니다.",
+        "ar": "يشغّل مصابيح LED الخاصة بالمنافذ والحالة على المبدّل."
       }
     },
     {
       "id": "disable_leds",
       "title": {
-        "en": "Disable LEDs"
+        "en": "Disable LEDs",
+        "nl": "LEDs uitschakelen",
+        "de": "LEDs deaktivieren",
+        "fr": "Désactiver les voyants",
+        "it": "Disabilita i LED",
+        "sv": "Inaktivera lysdioder",
+        "no": "Deaktiver LED-er",
+        "es": "Deshabilitar LEDs",
+        "da": "Deaktivér LED'er",
+        "ru": "Выключить индикаторы",
+        "pl": "Wyłącz diody LED",
+        "ko": "LED 끄기",
+        "ar": "إطفاء مصابيح LED"
       },
       "titleFormatted": {
-        "en": "Disable LEDs"
+        "en": "Disable LEDs",
+        "nl": "Schakel LEDs uit",
+        "de": "LEDs deaktivieren",
+        "fr": "Désactiver les voyants",
+        "it": "Disabilita i LED",
+        "sv": "Inaktivera lysdioder",
+        "no": "Deaktiver LED-er",
+        "es": "Deshabilitar LEDs",
+        "da": "Deaktivér LED'er",
+        "ru": "выключить индикаторы",
+        "pl": "Wyłącz diody LED",
+        "ko": "LED 끄기",
+        "ar": "إطفاء مصابيح LED"
+      },
+      "hint": {
+        "en": "Turns off the port and status LEDs on the switch.",
+        "nl": "Zet de poort- en status-LEDs van de switch uit.",
+        "de": "Schaltet die Port- und Status-LEDs der Switch aus.",
+        "fr": "Éteint les voyants de ports et d'état du commutateur.",
+        "it": "Spegne i LED delle porte e di stato sullo switch.",
+        "sv": "Slår av port- och statuslysdioderna på switchen.",
+        "no": "Slår av port- og status-LED-ene på switchen.",
+        "es": "Apaga los LEDs de puertos y de estado del switch.",
+        "da": "Slukker port- og statuslysdioderne på switchen.",
+        "ru": "Выключает индикаторы портов и состояния на коммутаторе.",
+        "pl": "Wyłącza diody LED portów i stanu na przełączniku.",
+        "ko": "스위치의 포트 및 상태 표시 LED를 끕니다.",
+        "ar": "يطفئ مصابيح LED الخاصة بالمنافذ والحالة على المبدّل."
       }
     },
     {
       "id": "restart",
       "title": {
-        "en": "Restart"
+        "en": "Restart",
+        "nl": "Herstarten",
+        "de": "Neu starten",
+        "fr": "Redémarrer",
+        "it": "Riavvia",
+        "sv": "Starta om",
+        "no": "Omstart",
+        "es": "Reiniciar",
+        "da": "Genstart",
+        "ru": "Перезагрузка",
+        "pl": "Uruchom ponownie",
+        "ko": "재시작",
+        "ar": "إعادة التشغيل"
       },
       "titleFormatted": {
-        "en": "Restart"
+        "en": "Restart the switch",
+        "nl": "Herstart de switch",
+        "de": "Switch neu starten",
+        "fr": "Redémarrer le commutateur",
+        "it": "Riavvia lo switch",
+        "sv": "Starta om switchen",
+        "no": "Start switchen på nytt",
+        "es": "Reiniciar el switch",
+        "da": "Genstart switchen",
+        "ru": "перезагрузить коммутатор",
+        "pl": "Uruchom przełącznik ponownie",
+        "ko": "스위치 재시작",
+        "ar": "إعادة تشغيل المبدّل"
+      },
+      "hint": {
+        "en": "Restarts the managed switch. The device may be unreachable for a short time.",
+        "nl": "Start de beheerde switch opnieuw. Het apparaat kan kort onbereikbaar zijn.",
+        "de": "Startet den verwalteten Switch neu. Das Gerät kann kurz nicht erreichbar sein.",
+        "fr": "Redémarre le commutateur géré. L'appareil peut être injoignable brièvement.",
+        "it": "Riavvia lo switch gestito. Il dispositivo può risultare irraggiungibile per un attimo.",
+        "sv": "Startar om den hanterade switchen. Enheten kan vara omöjlig att nå en kort stund.",
+        "no": "Starter den administrerte switchen på nytt. Enheten kan være utilgjengelig en kort stund.",
+        "es": "Reinicia el switch gestionado. El dispositivo puede quedar inalcanzable unos instantes.",
+        "da": "Genstarter den administrerede switch. Enheden kan være utilgængelig i kort tid.",
+        "ru": "Перезагружает управляемый коммутатор. Устройство может быть недоступно короткое время.",
+        "pl": "Ponownie uruchamia zarządzany przełącznik. Urządzenie może być chwilowo niedostępne.",
+        "ko": "관리형 스위치를 재시작합니다. 잠시 동안 연결되지 않을 수 있습니다.",
+        "ar": "يعيد تشغيل المبدّل المُدار. قد يصبح الجهاز غير متاحًا لوقت قصير."
       }
     }
   ]

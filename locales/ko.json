@@ -1,0 +1,74 @@
+{
+  "settings": {
+    "app": {
+      "license": {
+        "title": "라이선스",
+        "content": "Copyright (c) 2024 Jamison Bennett<br/><br/>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br/><br/>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      },
+      "disclaimer": {
+        "title": "면책 조항",
+        "content": "이 앱은 독립적인 제3자 애플리케이션이며 TP-Link Technologies Co., Ltd.와 제휴, 보증 또는 후원 관계가 아닙니다. TP-Link는 TP-Link Technologies Co., Ltd.의 등록 상표입니다. 모든 제품명, 로고 및 브랜드는 각 소유자의 재산입니다. 해당 이름, 로고 및 브랜드 사용은 소유자와의 제휴나 승인을 의미하지 않습니다."
+      }
+    },
+    "drivers": {
+      "tp-link-managed-switch": {
+        "portName": "포트 __number__",
+        "ledsTitle": "LED",
+        "flowLedsNotSupported": "이 스위치는 웹 인터페이스에서 LED 설정을 제공하지 않습니다.",
+        "portDisconnected": "포트 __number__ 연결 끊김",
+        "flowSwitchDeviceNotAvailable": "스위치 기기를 사용할 수 없음",
+        "flowPortNumberUnknown": "포트 번호를 알 수 없음",
+        "flowPortAlarmCapabilityMissing": "해당 포트는 아직 이 스위치에서 사용할 수 없습니다.",
+        "invalidSwitchAddress": "유효한 IPv4 주소, 호스트 이름 또는 대괄호로 감싼 IPv6를 입력하세요. 포트를 추가할 수 있습니다(예: 192.168.0.1:8080 또는 [fe80::1]:443). 이 필드에 http://, 경로 또는 사용자 이름을 넣지 마세요.",
+        "invalidSwitchUsername": "유효한 사용자 이름을 입력하세요(1–128자, 앞뒤 공백은 제거됨). 제어 문자는 사용할 수 없습니다.",
+        "invalidSwitchPassword": "비밀번호가 너무 깁니다(이 앱 최대 256자) 또는 제어 문자가 포함되어 있습니다. 앞뒤 공백은 유지됩니다—의도한 경우에만 제거하세요.",
+        "invalidConnectionPayload": "연결 양식에서 잘못된 데이터가 전송되었습니다. 페어링을 닫았다가 다시 열거나 문제가 계속되면 앱을 업데이트하세요.",
+        "pair": {
+          "connection_input": {
+            "title": "관리형 스위치에 연결",
+            "addressLabel": "IP 주소 또는 호스트 이름",
+            "addressPlaceholder": "192.168.0.1 또는 managed-switch.local",
+            "usernameLabel": "사용자 이름",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "비밀번호",
+            "passwordPlaceholder": "비밀번호",
+            "connect": "연결"
+          },
+          "connection_error": {
+            "title": "연결 오류",
+            "errorText": "관리형 스위치에 연결할 수 없습니다. 하드웨어 및 펌웨어 버전이 지원되는지 확인하세요.",
+            "supportedHardware": "지원 하드웨어",
+            "hardwareVersion": "하드웨어 버전",
+            "firmwareVersion": "펌웨어 버전",
+            "close": "닫기"
+          }
+        },
+        "repair": {
+          "connection_input": {
+            "title": "관리형 스위치 연결 복구",
+            "macLabel": "MAC 주소",
+            "macPlaceholder": "로드 중...",
+            "addressLabel": "IP 주소 또는 호스트 이름",
+            "addressPlaceholder": "192.168.0.1 또는 managed-switch.local",
+            "usernameLabel": "사용자 이름",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "비밀번호",
+            "passwordPlaceholder": "비밀번호",
+            "connect": "연결",
+            "errorRetrievingMacAddress": "MAC 주소를 가져오는 중 오류"
+          },
+          "connection_error": {
+            "title": "연결 오류",
+            "errorText": "관리형 스위치에 연결할 수 없습니다",
+            "close": "닫기"
+          },
+          "incorrect_device_error": {
+            "title": "잘못된 기기",
+            "errorText": "입력한 주소와 계정은 다른 관리형 스위치에 해당합니다.",
+            "close": "닫기"
+          }
+        }
+      }
+    }
+  }
+}

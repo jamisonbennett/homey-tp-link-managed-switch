@@ -1,0 +1,74 @@
+{
+  "settings": {
+    "app": {
+      "license": {
+        "title": "Licencia",
+        "content": "Copyright (c) 2024 Jamison Bennett<br/><br/>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br/><br/>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      },
+      "disclaimer": {
+        "title": "Aviso legal",
+        "content": "Esta aplicación es independiente de terceros y no está afiliada, respaldada ni patrocinada por TP-Link Technologies Co., Ltd. TP-Link es una marca registrada de TP-Link Technologies Co., Ltd. Todos los nombres de productos, logotipos y marcas son propiedad de sus respectivos titulares. El uso de estos nombres, logotipos y marcas no implica afiliación ni respaldo por parte de ellos."
+      }
+    },
+    "drivers": {
+      "tp-link-managed-switch": {
+        "portName": "Puerto __number__",
+        "ledsTitle": "LED",
+        "flowLedsNotSupported": "Este conmutador no expone la configuración de LED en su interfaz web.",
+        "portDisconnected": "Puerto __number__ desconectado",
+        "flowSwitchDeviceNotAvailable": "El dispositivo conmutador no está disponible",
+        "flowPortNumberUnknown": "Número de puerto desconocido",
+        "flowPortAlarmCapabilityMissing": "Ese puerto aún no está disponible en este conmutador.",
+        "invalidSwitchAddress": "Introduce una dirección IPv4 válida, un nombre de host o IPv6 entre corchetes. Puedes añadir un puerto (p. ej. 192.168.0.1:8080 o [fe80::1]:443). No incluyas http://, rutas ni nombre de usuario en este campo.",
+        "invalidSwitchUsername": "Introduce un nombre de usuario válido (1-128 caracteres; se recortan espacios al inicio y al final). No se permiten caracteres de control.",
+        "invalidSwitchPassword": "La contraseña es demasiado larga (máx. 256 caracteres para esta app) o contiene caracteres de control. Los espacios al inicio y al final se conservan; elimínalos solo si lo deseas.",
+        "invalidConnectionPayload": "El formulario de conexión envió datos no válidos. Cierra y vuelve a abrir el emparejamiento, o actualiza la app si el problema continúa.",
+        "pair": {
+          "connection_input": {
+            "title": "Conectar al conmutador gestionado",
+            "addressLabel": "Dirección IP o nombre de host",
+            "addressPlaceholder": "192.168.0.1 o managed-switch.local",
+            "usernameLabel": "Nombre de usuario",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Contraseña",
+            "passwordPlaceholder": "contraseña",
+            "connect": "Conectar"
+          },
+          "connection_error": {
+            "title": "Error de conexión",
+            "errorText": "No se puede conectar al conmutador gestionado. Comprueba que las versiones de hardware y firmware son compatibles.",
+            "supportedHardware": "Hardware compatible",
+            "hardwareVersion": "Versión de hardware",
+            "firmwareVersion": "Versión de firmware",
+            "close": "Cerrar"
+          }
+        },
+        "repair": {
+          "connection_input": {
+            "title": "Reparar conexión al conmutador gestionado",
+            "macLabel": "Dirección MAC",
+            "macPlaceholder": "Cargando...",
+            "addressLabel": "Dirección IP o nombre de host",
+            "addressPlaceholder": "192.168.0.1 o managed-switch.local",
+            "usernameLabel": "Nombre de usuario",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Contraseña",
+            "passwordPlaceholder": "contraseña",
+            "connect": "Conectar",
+            "errorRetrievingMacAddress": "Error al obtener la dirección MAC"
+          },
+          "connection_error": {
+            "title": "Error de conexión",
+            "errorText": "No se puede conectar al conmutador gestionado",
+            "close": "Cerrar"
+          },
+          "incorrect_device_error": {
+            "title": "Dispositivo incorrecto",
+            "errorText": "La dirección y la cuenta introducidas pertenecen a otro conmutador gestionado.",
+            "close": "Cerrar"
+          }
+        }
+      }
+    }
+  }
+}
