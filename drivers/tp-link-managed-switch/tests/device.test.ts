@@ -4,15 +4,20 @@ import DeviceAPI from '../deviceAPI';
 
 const Device = require('../device');
 
+/** Per trigger id so tests can assert the correct device Flow card `trigger` calls. */
+const deviceFlowTriggerInstances: Record<string, { trigger: jest.Mock }> = {};
+
 jest.mock('homey', () => {
   return {
     Device: class {
       homey = {
         __: jest.fn().mockReturnValue('mockValue'),
         flow: {
-          getDeviceTriggerCard: jest.fn().mockReturnValue({
-            trigger: jest.fn(),
-            registerRunListener: jest.fn(),
+          getDeviceTriggerCard: jest.fn((id: string) => {
+            if (!deviceFlowTriggerInstances[id]) {
+              deviceFlowTriggerInstances[id] = { trigger: jest.fn() };
+            }
+            return deviceFlowTriggerInstances[id];
           }),
         },
         setInterval: global.setInterval.bind(global),
@@ -59,6 +64,9 @@ describe('Device Class Tests', () => {
 
   beforeEach(() => {
     jest.useFakeTimers();
+    Object.keys(deviceFlowTriggerInstances).forEach((k) => {
+      delete deviceFlowTriggerInstances[k];
+    });
     device = new Device();
     jest.spyOn(DeviceAPI.prototype, 'getNumPorts').mockReturnValue(5);
   });
@@ -460,21 +468,25 @@ describe('Device Class Tests', () => {
   });
 
   it('should invoke the trigger card when links go up/down', async () => {
-    const triggerCard = device.homey.flow.getDeviceTriggerCard('link_state_changed');
-    const triggerSpy = jest.spyOn(triggerCard, 'trigger');
     jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([true, true, true, true, true]);
     jest.spyOn(DeviceAPI.prototype, 'getAllLinksUp').mockResolvedValue([false, false, false, true, true]);
 
     await device.onInit();
 
+    const linkTriggerSpy = deviceFlowTriggerInstances.link_state_changed.trigger;
+    const alarmTrueSpy = deviceFlowTriggerInstances.alarm_port_disconnected_true.trigger;
+    const alarmFalseSpy = deviceFlowTriggerInstances.alarm_port_disconnected_false.trigger;
+
     jest.spyOn(DeviceAPI.prototype, 'getAllLinksUp').mockResolvedValue([true, false, false, true, true]);
     await device.fullRefresh();
 
-    expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), { port: 1, linkUp: true }, {});
+    expect(linkTriggerSpy).toHaveBeenCalledWith(device, { port: 1, linkUp: true }, {});
+    expect(alarmFalseSpy).toHaveBeenCalledWith(device, { port: 1 }, { port: 1 });
 
     jest.spyOn(DeviceAPI.prototype, 'getAllLinksUp').mockResolvedValue([true, false, false, false, true]);
     await device.fullRefresh();
 
-    expect(triggerSpy).toHaveBeenCalledWith(expect.anything(), { port: 4, linkUp: false }, {});
+    expect(linkTriggerSpy).toHaveBeenCalledWith(device, { port: 4, linkUp: false }, {});
+    expect(alarmTrueSpy).toHaveBeenCalledWith(device, { port: 4 }, { port: 4 });
   });
 });

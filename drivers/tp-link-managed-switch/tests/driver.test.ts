@@ -33,9 +33,15 @@ describe('Driver', () => {
       const mockFlow = {
         getConditionCard: jest.fn().mockReturnValue({
           registerRunListener: jest.fn(),
+          registerArgumentAutocompleteListener: jest.fn(),
         }),
         getActionCard: jest.fn().mockReturnValue({
           registerRunListener: jest.fn(),
+          registerArgumentAutocompleteListener: jest.fn(),
+        }),
+        getDeviceTriggerCard: jest.fn().mockReturnValue({
+          registerRunListener: jest.fn(),
+          registerArgumentAutocompleteListener: jest.fn(),
         }),
       };
 
@@ -43,7 +49,12 @@ describe('Driver', () => {
 
       await driver.onInit();
 
+      expect(mockFlow.getDeviceTriggerCard).toHaveBeenCalledWith('alarm_port_disconnected_true');
+      expect(mockFlow.getDeviceTriggerCard).toHaveBeenCalledWith('alarm_port_disconnected_false');
+      expect(mockFlow.getConditionCard).toHaveBeenCalledWith('alarm_port_disconnected_status');
       expect(mockFlow.getConditionCard).toHaveBeenCalledWith('link_up');
+      expect(mockFlow.getActionCard).toHaveBeenCalledWith('turnOn_port');
+      expect(mockFlow.getActionCard).toHaveBeenCalledWith('turnOff_port');
       expect(mockFlow.getActionCard).toHaveBeenCalledWith('enable_port');
       expect(mockFlow.getActionCard).toHaveBeenCalledWith('disable_port');
       expect(mockFlow.getActionCard).toHaveBeenCalledWith('enable_leds');
@@ -55,8 +66,17 @@ describe('Driver', () => {
   describe('flow card run listeners', () => {
     const conditionRunListeners: Record<string, (args: unknown, state: unknown) => Promise<unknown>> = {};
     const actionRunListeners: Record<string, (args: unknown, state: unknown) => Promise<unknown>> = {};
+    const deviceTriggerRunListeners: Record<string, (args: unknown, state: unknown) => Promise<unknown>> = {};
+    const autocompleteListeners: {
+      condition: Record<string, Record<string, (q: string, args: unknown) => Promise<unknown>>>;
+      deviceTrigger: Record<string, Record<string, (q: string, args: unknown) => Promise<unknown>>>;
+      action: Record<string, Record<string, (q: string, args: unknown) => Promise<unknown>>>;
+    } = { condition: {}, deviceTrigger: {}, action: {} };
 
     beforeEach(async () => {
+      autocompleteListeners.condition = {};
+      autocompleteListeners.deviceTrigger = {};
+      autocompleteListeners.action = {};
       driver.homey = {
         __: jest.fn((key: string) => `t:${key}`),
         flow: {
@@ -64,10 +84,27 @@ describe('Driver', () => {
             registerRunListener: jest.fn((fn: (args: unknown, state: unknown) => Promise<unknown>) => {
               conditionRunListeners[id] = fn;
             }),
+            registerArgumentAutocompleteListener: jest.fn((name: string, fn: (q: string, a: unknown) => Promise<unknown>) => {
+              autocompleteListeners.condition[id] = autocompleteListeners.condition[id] || {};
+              autocompleteListeners.condition[id][name] = fn;
+            }),
           })),
           getActionCard: jest.fn((id: string) => ({
             registerRunListener: jest.fn((fn: (args: unknown, state: unknown) => Promise<unknown>) => {
               actionRunListeners[id] = fn;
+            }),
+            registerArgumentAutocompleteListener: jest.fn((name: string, fn: (q: string, a: unknown) => Promise<unknown>) => {
+              autocompleteListeners.action[id] = autocompleteListeners.action[id] || {};
+              autocompleteListeners.action[id][name] = fn;
+            }),
+          })),
+          getDeviceTriggerCard: jest.fn((id: string) => ({
+            registerRunListener: jest.fn((fn: (args: unknown, state: unknown) => Promise<unknown>) => {
+              deviceTriggerRunListeners[id] = fn;
+            }),
+            registerArgumentAutocompleteListener: jest.fn((name: string, fn: (q: string, a: unknown) => Promise<unknown>) => {
+              autocompleteListeners.deviceTrigger[id] = autocompleteListeners.deviceTrigger[id] || {};
+              autocompleteListeners.deviceTrigger[id][name] = fn;
             }),
           })),
         },
@@ -78,6 +115,7 @@ describe('Driver', () => {
     afterEach(() => {
       Object.keys(conditionRunListeners).forEach((k) => delete conditionRunListeners[k]);
       Object.keys(actionRunListeners).forEach((k) => delete actionRunListeners[k]);
+      Object.keys(deviceTriggerRunListeners).forEach((k) => delete deviceTriggerRunListeners[k]);
     });
 
     it('link_up delegates to device.isLinkUp(port)', async () => {
@@ -93,6 +131,14 @@ describe('Driver', () => {
       await actionRunListeners['disable_port']({ device, port: 3 }, {});
       expect(device.onCapabilityOnoff).toHaveBeenCalledWith(1, true);
       expect(device.onCapabilityOnoff).toHaveBeenCalledWith(3, false);
+    });
+
+    it('turnOn_port and turnOff_port delegate to onCapabilityOnoff with autocomplete port', async () => {
+      const device = { onCapabilityOnoff: jest.fn().mockResolvedValue(undefined) };
+      await actionRunListeners['turnOn_port']({ device, port: { name: 'Port 2', port: 2 } }, {});
+      await actionRunListeners['turnOff_port']({ device, port: { name: 'Port 4', port: 4 } }, {});
+      expect(device.onCapabilityOnoff).toHaveBeenCalledWith(2, true);
+      expect(device.onCapabilityOnoff).toHaveBeenCalledWith(4, false);
     });
 
     it('LED and restart actions delegate to the device', async () => {
@@ -115,6 +161,9 @@ describe('Driver', () => {
       await expect(actionRunListeners['enable_port']({ port: 1 }, {})).rejects.toThrow(
         't:settings.drivers.tp-link-managed-switch.flowSwitchDeviceNotAvailable',
       );
+      await expect(actionRunListeners['turnOn_port']({ port: { port: 1 } }, {})).rejects.toThrow(
+        't:settings.drivers.tp-link-managed-switch.flowSwitchDeviceNotAvailable',
+      );
     });
 
     it('rejects port flows when port is out of range or not an integer', async () => {
@@ -135,6 +184,55 @@ describe('Driver', () => {
       await expect(actionRunListeners['restart']({}, {})).rejects.toThrow(
         't:settings.drivers.tp-link-managed-switch.flowSwitchDeviceNotAvailable',
       );
+    });
+
+    it('alarm_port_disconnected_status reads the per-port alarm capability', async () => {
+      const device = {
+        getCapabilities: jest.fn().mockReturnValue(['alarm_port_disconnected.2']),
+        getCapabilityValue: jest.fn().mockResolvedValue(true),
+      };
+      const result = await conditionRunListeners['alarm_port_disconnected_status'](
+        { device, port: { name: 'Port 2', port: 2 } },
+        { inverted: false },
+      );
+      expect(result).toBe(true);
+      expect(device.getCapabilityValue).toHaveBeenCalledWith('alarm_port_disconnected.2');
+    });
+
+    it('alarm_port_disconnected_status respects inverted state', async () => {
+      const device = {
+        getCapabilities: jest.fn().mockReturnValue(['alarm_port_disconnected.1']),
+        getCapabilityValue: jest.fn().mockResolvedValue(true),
+      };
+      const inverted = await conditionRunListeners['alarm_port_disconnected_status'](
+        { device, port: { port: 1 } },
+        { inverted: true },
+      );
+      expect(inverted).toBe(false);
+    });
+
+    it('port autocomplete lists ports from the selected device', async () => {
+      const device = { getSwitchPortCount: jest.fn().mockReturnValue(3) };
+      const fn = autocompleteListeners.condition.alarm_port_disconnected_status.port;
+      const rows = await fn('', { device });
+      expect(rows).toEqual([
+        { name: 't:settings.drivers.tp-link-managed-switch.portName', port: 1 },
+        { name: 't:settings.drivers.tp-link-managed-switch.portName', port: 2 },
+        { name: 't:settings.drivers.tp-link-managed-switch.portName', port: 3 },
+      ]);
+    });
+
+    it('alarm disconnect device triggers only match the configured port', async () => {
+      const match = await deviceTriggerRunListeners.alarm_port_disconnected_true(
+        { port: { name: 'Port 2', port: 2 } },
+        { port: 2 },
+      );
+      const noMatch = await deviceTriggerRunListeners.alarm_port_disconnected_true(
+        { port: { name: 'Port 2', port: 2 } },
+        { port: 3 },
+      );
+      expect(match).toBe(true);
+      expect(noMatch).toBe(false);
     });
   });
 
@@ -163,7 +261,20 @@ describe('Driver', () => {
         done: jest.fn(),
       };
       const __ = jest.fn((key: string) => `t:${key}`);
-      driver.homey = { __, flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __,
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       await driver.onPair(mockSession);
 
@@ -179,7 +290,20 @@ describe('Driver', () => {
       const mockSession = {
         setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
       };
-      driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((k: string) => k),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       await driver.onPair(mockSession);
 
@@ -193,7 +317,20 @@ describe('Driver', () => {
       const mockSession = {
         setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
       };
-      driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((k: string) => k),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
         connect: jest.fn().mockResolvedValue(true),
@@ -240,7 +377,20 @@ describe('Driver', () => {
       const mockSession = {
         setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
       };
-      driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((k: string) => k),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
         connect: jest.fn().mockResolvedValue(true),
@@ -272,7 +422,20 @@ describe('Driver', () => {
       const mockSession = {
         setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
       };
-      driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((k: string) => k),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
         connect: jest.fn().mockResolvedValue(true),
@@ -304,7 +467,20 @@ describe('Driver', () => {
       const mockSession = {
         setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
       };
-      driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((k: string) => k),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
         connect: jest.fn().mockResolvedValue(false),
@@ -386,7 +562,20 @@ describe('Driver', () => {
       const getMacAddress = jest.fn().mockReturnValue('00:11:22:33:44:55');
       (DeviceAPI as jest.Mock).mockImplementationOnce(() => ({ connect, getMacAddress }));
 
-      driver.homey = { __: jest.fn((key: string) => key), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((key: string) => key),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       await driver.onRepair(mockSession, mockDevice);
 
@@ -436,7 +625,20 @@ describe('Driver', () => {
         getMacAddress: jest.fn().mockReturnValue('00:11:22:33:44:55'),
       }));
 
-      driver.homey = { __: jest.fn((key: string) => key), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((key: string) => key),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       await driver.onRepair(mockSession, mockDevice);
 
@@ -472,7 +674,20 @@ describe('Driver', () => {
         getMacAddress: jest.fn().mockReturnValue('aa:bb:cc:dd:ee:ff'),
       }));
 
-      driver.homey = { __: jest.fn((key: string) => key), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((key: string) => key),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       await driver.onRepair(mockSession, mockDevice);
 
@@ -506,7 +721,20 @@ describe('Driver', () => {
         connect: jest.fn().mockResolvedValue(false),
       }));
 
-      driver.homey = { __: jest.fn((key: string) => key), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((key: string) => key),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       await driver.onRepair(mockSession, mockDevice);
 
@@ -538,7 +766,20 @@ describe('Driver', () => {
         suspendRefresh: jest.fn().mockRejectedValue(new Error('suspend failed')),
       });
 
-      driver.homey = { __: jest.fn((key: string) => key), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+      driver.homey = {
+        __: jest.fn((key: string) => key),
+        flow: {
+          getConditionCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+          getActionCard: jest.fn().mockReturnValue({ registerRunListener: jest.fn() }),
+          getDeviceTriggerCard: jest.fn().mockReturnValue({
+            registerRunListener: jest.fn(),
+            registerArgumentAutocompleteListener: jest.fn(),
+          }),
+        },
+      };
 
       await driver.onRepair(mockSession, mockDevice);
 

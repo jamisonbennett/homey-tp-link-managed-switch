@@ -27,9 +27,20 @@ interface FlowSwitchDeviceArgs {
   device: ManagedSwitchDeviceInstance;
 }
 
-/** Flow card args that include a port number (link check, enable/disable port). */
-interface FlowSwitchPortArgs extends FlowSwitchDeviceArgs {
+/** Row returned by Flow `autocomplete` port pickers and stored on `args.port`. */
+interface PortAutocompleteItem {
+  name: string;
   port: number;
+}
+
+/** Flow card args that include a port number or autocomplete row (link check, port on/off). */
+interface FlowSwitchPortArgs extends FlowSwitchDeviceArgs {
+  port: number | PortAutocompleteItem;
+}
+
+/** Condition cards using `!{{option A|option B}}` set `state.inverted` when the second option is selected. */
+interface FlowCardInvertedState {
+  inverted?: boolean;
 }
 
 /** State object for flow run listeners (unused for these cards; typed for API consistency). */
@@ -40,22 +51,39 @@ class Driver extends Homey.Driver {
   async onInit() {
     this.log('TP-Link managed switch driver has been initialized');
 
+    const portAutocomplete = this.createPortAutocompleteListener();
+    this.registerPortLinkAlarmFlowCards(portAutocomplete);
+
     const linkUpCondition = this.homey.flow.getConditionCard('link_up');
     linkUpCondition.registerRunListener(async (args: FlowSwitchPortArgs, _state: FlowCardRunState) => {
-      this.validatePortCardArgs(args);
-      return args.device.isLinkUp(args.port);
+      const port = this.parseFlowPortArg(args);
+      return args.device.isLinkUp(port);
+    });
+
+    const turnOnPortAction = this.homey.flow.getActionCard('turnOn_port');
+    turnOnPortAction.registerArgumentAutocompleteListener('port', portAutocomplete);
+    turnOnPortAction.registerRunListener(async (args: FlowSwitchPortArgs, _state: FlowCardRunState) => {
+      const port = this.parseFlowPortArg(args);
+      return args.device.onCapabilityOnoff(port, true);
+    });
+
+    const turnOffPortAction = this.homey.flow.getActionCard('turnOff_port');
+    turnOffPortAction.registerArgumentAutocompleteListener('port', portAutocomplete);
+    turnOffPortAction.registerRunListener(async (args: FlowSwitchPortArgs, _state: FlowCardRunState) => {
+      const port = this.parseFlowPortArg(args);
+      return args.device.onCapabilityOnoff(port, false);
     });
 
     const enablePortAction = this.homey.flow.getActionCard('enable_port');
     enablePortAction.registerRunListener(async (args: FlowSwitchPortArgs, _state: FlowCardRunState) => {
-      this.validatePortCardArgs(args);
-      return args.device.onCapabilityOnoff(args.port, true);
+      const port = this.parseFlowPortArg(args);
+      return args.device.onCapabilityOnoff(port, true);
     });
 
     const disablePortAction = this.homey.flow.getActionCard('disable_port');
     disablePortAction.registerRunListener(async (args: FlowSwitchPortArgs, _state: FlowCardRunState) => {
-      this.validatePortCardArgs(args);
-      return args.device.onCapabilityOnoff(args.port, false);
+      const port = this.parseFlowPortArg(args);
+      return args.device.onCapabilityOnoff(port, false);
     });
 
     const enableLedsAction = this.homey.flow.getActionCard('enable_leds');
@@ -255,17 +283,117 @@ class Driver extends Homey.Driver {
     }
   }
 
-  private validatePortCardArgs(args: FlowSwitchPortArgs) {
+  /**
+   * Validates device + port Flow args and returns the 1-based port index.
+   */
+  private parseFlowPortArg(args: FlowSwitchPortArgs): number {
     this.validateDeviceCardArgs(args);
-    if (!Number.isInteger(args.port) || args.port < 1 || args.port > MAX_SWITCH_PORT_COUNT) {
+    const port = this.resolveFlowPortArg(args.port);
+    if (!Number.isInteger(port) || port < 1 || port > MAX_SWITCH_PORT_COUNT) {
       throw new Error(String(this.homey.__(
         'settings.drivers.tp-link-managed-switch.flowPortNumberUnknown',
       )));
     }
+    return port;
   }
 
   /**
-   * Picks the bundled per-port-count SVG so paired devices show artwork that matches their hardware.
+   * Shared autocomplete handler for per-port Flow arguments (actions, triggers, conditions).
+   */
+  private createPortAutocompleteListener(): (
+    query: string,
+    args: { device?: ManagedSwitchDeviceInstance },
+  ) => Promise<PortAutocompleteItem[]> {
+    return (query, args) => Promise.resolve(this.buildPortAutocompleteResults(query, args.device));
+  }
+
+  /**
+   * Resolves a Flow `port` argument from legacy numeric fields or `autocomplete` rows.
+   */
+  private resolveFlowPortArg(portArg: unknown): number {
+    if (typeof portArg === 'number' && Number.isInteger(portArg)) {
+      return portArg;
+    }
+    if (portArg && typeof portArg === 'object' && 'port' in portArg) {
+      const p = (portArg as { port: unknown }).port;
+      if (typeof p === 'number' && Number.isInteger(p)) {
+        return p;
+      }
+    }
+    throw new Error(String(this.homey.__(
+      'settings.drivers.tp-link-managed-switch.flowPortNumberUnknown',
+    )));
+  }
+
+  /**
+   * Builds port labels for Flow autocomplete, limited to the selected device's port count.
+   */
+  private buildPortAutocompleteResults(
+    query: string,
+    device: ManagedSwitchDeviceInstance | undefined,
+  ): PortAutocompleteItem[] {
+    if (!device || typeof device.getSwitchPortCount !== 'function') {
+      return [];
+    }
+    const n = device.getSwitchPortCount();
+    if (n < 1) {
+      return [];
+    }
+    const q = query.trim().toLowerCase();
+    const items: PortAutocompleteItem[] = [];
+    for (let p = 1; p <= n; p++) {
+      const name = String(this.homey.__('settings.drivers.tp-link-managed-switch.portName', { number: p }));
+      if (!q || name.toLowerCase().includes(q) || String(p).includes(q)) {
+        items.push({ name, port: p });
+      }
+    }
+    return items;
+  }
+
+  /**
+   * Registers port autocomplete and run listeners for per-port disconnect/connect triggers and status condition.
+   */
+  private registerPortLinkAlarmFlowCards(
+    portAutocomplete: (
+      query: string,
+      args: { device?: ManagedSwitchDeviceInstance },
+    ) => Promise<PortAutocompleteItem[]>,
+  ): void {
+    const deviceTriggerMatcher = (
+      args: { port?: PortAutocompleteItem },
+      state: { port?: number },
+    ): Promise<boolean> => {
+      const selected = args.port?.port;
+      return Promise.resolve(typeof selected === 'number' && selected === state.port);
+    };
+
+    const alarmPortTrue = this.homey.flow.getDeviceTriggerCard('alarm_port_disconnected_true');
+    alarmPortTrue.registerArgumentAutocompleteListener('port', portAutocomplete);
+    alarmPortTrue.registerRunListener(deviceTriggerMatcher);
+
+    const alarmPortFalse = this.homey.flow.getDeviceTriggerCard('alarm_port_disconnected_false');
+    alarmPortFalse.registerArgumentAutocompleteListener('port', portAutocomplete);
+    alarmPortFalse.registerRunListener(deviceTriggerMatcher);
+
+    const alarmPortStatus = this.homey.flow.getConditionCard('alarm_port_disconnected_status');
+    alarmPortStatus.registerArgumentAutocompleteListener('port', portAutocomplete);
+    alarmPortStatus.registerRunListener(async (args: FlowSwitchPortArgs, state: FlowCardInvertedState) => {
+      const port = this.parseFlowPortArg(args);
+      const capId = `alarm_port_disconnected.${port}`;
+      if (!args.device.getCapabilities().includes(capId)) {
+        throw new Error(String(this.homey.__(
+          'settings.drivers.tp-link-managed-switch.flowPortAlarmCapabilityMissing',
+        )));
+      }
+      const disconnectedRaw = await args.device.getCapabilityValue(capId);
+      const isDisconnected = disconnectedRaw === true;
+      const isConnected = !isDisconnected;
+      return state.inverted ? isConnected : isDisconnected;
+    });
+  }
+
+  /**
+   * Picks the bundled per-port-count SVG so paired devices get icons that match their hardware.
    * Returns a path relative to the driver's `assets/` folder (Homey's pair `icon` convention) or `null`
    * when no suitable icon exists on disk so the driver falls back to the default device image.
    */
