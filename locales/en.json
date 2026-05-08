@@ -13,6 +13,8 @@
     "drivers": {
       "tp-link-managed-switch": {
         "portName": "Port __number__",
+        "ledsTitle": "LEDs",
+        "flowLedsNotSupported": "This switch does not expose LED settings on its web interface.",
         "portDisconnected": "Port __number__ Disconnected",
         "flowSwitchDeviceNotAvailable": "Switch device is not available",
         "flowPortNumberUnknown": "Port number is unknown",

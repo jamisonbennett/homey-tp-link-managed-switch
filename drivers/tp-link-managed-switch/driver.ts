@@ -89,11 +89,17 @@ class Driver extends Homey.Driver {
     const enableLedsAction = this.homey.flow.getActionCard('enable_leds');
     enableLedsAction.registerRunListener(async (args: FlowSwitchDeviceArgs, _state: FlowCardRunState) => {
       this.validateDeviceCardArgs(args);
+      if (!args.device.getCapabilities().includes('onoff.leds')) {
+        throw new Error(this.homey.__('settings.drivers.tp-link-managed-switch.flowLedsNotSupported'));
+      }
       return args.device.onCapabilityOnoffLeds(true);
     });
     const disableLedsAction = this.homey.flow.getActionCard('disable_leds');
     disableLedsAction.registerRunListener(async (args: FlowSwitchDeviceArgs, _state: FlowCardRunState) => {
       this.validateDeviceCardArgs(args);
+      if (!args.device.getCapabilities().includes('onoff.leds')) {
+        throw new Error(this.homey.__('settings.drivers.tp-link-managed-switch.flowLedsNotSupported'));
+      }
       return args.device.onCapabilityOnoffLeds(false);
     });
 

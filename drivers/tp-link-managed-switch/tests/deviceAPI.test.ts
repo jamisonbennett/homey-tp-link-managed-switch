@@ -382,7 +382,8 @@ describe('DeviceAPI', () => {
       expect(result).toEqual(true);
     });
 
-    it('should return null if getLedSettings fails', async () => {
+    it('should return null and log if getLedSettings fails', async () => {
+      const logSpy = jest.spyOn(deviceAPI, 'log');
       await performSuccessfulLogin(deviceAPI);
       jest.spyOn(axios, 'get').mockResolvedValueOnce({
         status: 200,
@@ -394,6 +395,7 @@ describe('DeviceAPI', () => {
 
       const result = await deviceAPI.getLedsEnabled();
       expect(result).toBeNull();
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Error fetching LED settings'));
     });
 
     it('should return null when LED field is not 0 or 1', async () => {
