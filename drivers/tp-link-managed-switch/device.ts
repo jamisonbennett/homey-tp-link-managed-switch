@@ -120,7 +120,7 @@ class Device extends Homey.Device {
 
     // Await each add in order so capabilities are registered in port order.
     for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++) {
-      await this.addCapabilityIfNeeded(i);
+      await this.addPortCapabilitiesIfNeeded(i);
     }
 
     await this.waitForInitialCapabilityRegistrationToFinish();
@@ -149,31 +149,36 @@ class Device extends Homey.Device {
     }
   }
 
-  private async addCapabilityIfNeeded(port: number) {
-    // Avoid adding a capability that already exists since it is an expensive operation
-    const capability = `onoff.${port}`;
-    if (!this.getCapabilities().includes(capability)) {
-      return this.addCapability(capability);
+  /**
+   * Adds per-port capabilities discovered at runtime so port count matches the physical switch.
+   */
+  private async addPortCapabilitiesIfNeeded(port: number) {
+    const onoffCap = `onoff.${port}`;
+    if (!this.getCapabilities().includes(onoffCap)) {
+      await this.addCapability(onoffCap);
     }
-    return Promise.resolve();
+    const alarmCap = `alarm_port_disconnected.${port}`;
+    if (!this.getCapabilities().includes(alarmCap)) {
+      await this.addCapability(alarmCap);
+    }
   }
 
   private async setupCapability(port: number) {
-    const capability = `onoff.${port}`;
+    const onoffCap = `onoff.${port}`;
 
-    if (!this.registeredCapabilities.has(capability)) {
-      this.registerCapabilityListener(capability, this.onCapabilityOnoff.bind(this, port));
-      this.registeredCapabilities.add(capability);
+    if (!this.registeredCapabilities.has(onoffCap)) {
+      this.registerCapabilityListener(onoffCap, this.onCapabilityOnoff.bind(this, port));
+      this.registeredCapabilities.add(onoffCap);
     }
 
     // Avoid setting capability options (i.e. title) if it already is set since it is an expensive operation.
     // Checking if it's already set can throw an exception if it's not set.
-    let needToSetTitle = true;
+    let needToSetOnoffTitle = true;
     let needToSetUiQuickAction = true;
-    const title = this.homey.__('settings.drivers.tp-link-managed-switch.portName', { number: port });
+    const onoffTitle = this.homey.__('settings.drivers.tp-link-managed-switch.portName', { number: port });
     try {
-      needToSetTitle = title !== this.getCapabilityOptions(capability).title;
-      needToSetUiQuickAction = !this.getCapabilityOptions(capability).uiQuickAction;
+      needToSetOnoffTitle = onoffTitle !== this.getCapabilityOptions(onoffCap).title;
+      needToSetUiQuickAction = !this.getCapabilityOptions(onoffCap).uiQuickAction;
     } catch (error) {
       if (error instanceof Error && error.message.startsWith('Invalid Capability:')) {
         // ignore if the capability is not registered because this just means it needs to be registered
@@ -181,13 +186,30 @@ class Device extends Homey.Device {
         throw error;
       }
     }
-    if (needToSetTitle || needToSetUiQuickAction) {
-      return this.setCapabilityOptions(capability, {
-        title,
+    const onoffOptionsPromise = (needToSetOnoffTitle || needToSetUiQuickAction)
+      ? this.setCapabilityOptions(onoffCap, {
+        title: onoffTitle,
         uiQuickAction: false,
-      });
+      })
+      : Promise.resolve();
+
+    const alarmCap = `alarm_port_disconnected.${port}`;
+    const alarmTitle = this.homey.__('settings.drivers.tp-link-managed-switch.portDisconnected', { number: port });
+    let needToSetAlarmTitle = true;
+    try {
+      needToSetAlarmTitle = alarmTitle !== this.getCapabilityOptions(alarmCap).title;
+    } catch (error) {
+      if (error instanceof Error && error.message.startsWith('Invalid Capability:')) {
+        // ignore if the capability is not registered because this just means it needs to be registered
+      } else {
+        throw error;
+      }
     }
-    return Promise.resolve();
+    const alarmOptionsPromise = needToSetAlarmTitle
+      ? this.setCapabilityOptions(alarmCap, { title: alarmTitle })
+      : Promise.resolve();
+
+    await Promise.all([onoffOptionsPromise, alarmOptionsPromise]);
   }
 
   /**
@@ -216,6 +238,7 @@ class Device extends Homey.Device {
     if (this.deviceAPI) {
       for (let i = 1; i <= this.deviceAPI.getNumPorts(); i++) {
         requiredCapabilities.push(`onoff.${i}`);
+        requiredCapabilities.push(`alarm_port_disconnected.${i}`);
       }
     }
 
@@ -257,8 +280,17 @@ class Device extends Homey.Device {
       promises.push(this.setCapabilityIfNeeded('onoff.leds', ledStatus));
     }
 
-    // Handle link up/down triggers
     const allLinksStatus = await this.deviceAPI.getAllLinksUp();
+    if (allLinksStatus) {
+      for (let i = 0; i < allLinksStatus.length; i++) {
+        const capId = `alarm_port_disconnected.${i + 1}`;
+        if (this.getCapabilities().includes(capId)) {
+          promises.push(this.setCapabilityIfNeeded(capId, !allLinksStatus[i]));
+        }
+      }
+    }
+
+    // Handle link up/down triggers
     if (allLinksStatus && this.lastAllLinksStatus && allLinksStatus.length === this.lastAllLinksStatus.length) {
       for (let port = 0; port < allLinksStatus.length; port++) {
         if (allLinksStatus[port] !== this.lastAllLinksStatus[port]) {
