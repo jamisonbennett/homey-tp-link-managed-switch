@@ -1,0 +1,74 @@
+{
+  "settings": {
+    "app": {
+      "license": {
+        "title": "Licens",
+        "content": "Copyright (c) 2024 Jamison Bennett<br/><br/>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br/><br/>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      },
+      "disclaimer": {
+        "title": "Ansvarsfriskrivning",
+        "content": "Denna app är en oberoende tredjepartsapplikation och är inte ansluten till, stödd eller sponsrad av TP-Link Technologies Co., Ltd. TP-Link är ett registrerat varumärke som tillhör TP-Link Technologies Co., Ltd. Alla produktnamn, logotyper och varumärken tillhör sina respektive ägare. Användning av dessa namn, logotyper och varumärken innebär ingen anknytning till eller godkännande från dem."
+      }
+    },
+    "drivers": {
+      "tp-link-managed-switch": {
+        "portName": "Port __number__",
+        "ledsTitle": "LED-indikatorer",
+        "flowLedsNotSupported": "Denna switch visar inga LED-inställningar i webbgränssnittet.",
+        "portDisconnected": "Port __number__ frånkopplad",
+        "flowSwitchDeviceNotAvailable": "Switch-enheten är inte tillgänglig",
+        "flowPortNumberUnknown": "Portnummer okänt",
+        "flowPortAlarmCapabilityMissing": "Den porten är inte tillgänglig på denna switch ännu.",
+        "invalidSwitchAddress": "Ange en giltig IPv4-adress, värdnamn eller IPv6 inom hakparenteser. Du kan lägga till en port (t.ex. 192.168.0.1:8080 eller [fe80::1]:443). Inkludera inte http://, sökvägar eller användarnamn i detta fält.",
+        "invalidSwitchUsername": "Ange ett giltigt användarnamn (1–128 tecken; inledande och avslutande mellanslag trimmas). Kontrolltecken är inte tillåtna.",
+        "invalidSwitchPassword": "Lösenordet är för långt (max 256 tecken för denna app) eller innehåller kontrolltecken. Inledande och avslutande mellanslag behålls—ta bara bort dem om du menar det.",
+        "invalidConnectionPayload": "Anslutningsformuläret skickade ogiltiga data. Stäng och öppna parkopplingen igen, eller uppdatera appen om problemet kvarstår.",
+        "pair": {
+          "connection_input": {
+            "title": "Anslut till din hanterade switch",
+            "addressLabel": "IP-adress eller värdnamn",
+            "addressPlaceholder": "192.168.0.1 eller managed-switch.local",
+            "usernameLabel": "Användarnamn",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Lösenord",
+            "passwordPlaceholder": "lösenord",
+            "connect": "Anslut"
+          },
+          "connection_error": {
+            "title": "Anslutningsfel",
+            "errorText": "Kan inte ansluta till den hanterade switchen. Kontrollera att hårdvaru- och firmwareversionen stöds.",
+            "supportedHardware": "Stödd hårdvara",
+            "hardwareVersion": "Hårdvaruversion",
+            "firmwareVersion": "Firmwareversion",
+            "close": "Stäng"
+          }
+        },
+        "repair": {
+          "connection_input": {
+            "title": "Reparera anslutningen till din hanterade switch",
+            "macLabel": "MAC-adress",
+            "macPlaceholder": "Laddar...",
+            "addressLabel": "IP-adress eller värdnamn",
+            "addressPlaceholder": "192.168.0.1 eller managed-switch.local",
+            "usernameLabel": "Användarnamn",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Lösenord",
+            "passwordPlaceholder": "lösenord",
+            "connect": "Anslut",
+            "errorRetrievingMacAddress": "Fel vid hämtning av MAC-adress"
+          },
+          "connection_error": {
+            "title": "Anslutningsfel",
+            "errorText": "Kan inte ansluta till den hanterade switchen",
+            "close": "Stäng"
+          },
+          "incorrect_device_error": {
+            "title": "Fel enhet",
+            "errorText": "Adressen och kontot du angav tillhör en annan hanterad switch.",
+            "close": "Stäng"
+          }
+        }
+      }
+    }
+  }
+}

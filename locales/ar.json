@@ -1,0 +1,74 @@
+{
+  "settings": {
+    "app": {
+      "license": {
+        "title": "الترخيص",
+        "content": "Copyright (c) 2024 Jamison Bennett<br/><br/>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br/><br/>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      },
+      "disclaimer": {
+        "title": "إخلاء المسؤولية",
+        "content": "هذا التطبيق تطبيق مستقل من طرف ثالث وليس تابعًا لشركة TP-Link Technologies Co., Ltd. ولا يؤيدها ولا يرعاها. TP-Link علامة تجارية مسجلة لشركة TP-Link Technologies Co., Ltd. جميع أسماء المنتجات والشعارات والعلامات التجارية مملوكة لأصحابها. استخدام هذه الأسماء والشعارات والعلامات لا يعني أي انتماء أو تأييد من جانبهم."
+      }
+    },
+    "drivers": {
+      "tp-link-managed-switch": {
+        "portName": "المنفذ __number__",
+        "ledsTitle": "مؤشرات LED",
+        "flowLedsNotSupported": "لا يعرض هذا المبدّل إعدادات LED في واجهة الويب.",
+        "portDisconnected": "المنفذ __number__ غير متصل",
+        "flowSwitchDeviceNotAvailable": "جهاز المبدّل غير متاح",
+        "flowPortNumberUnknown": "رقم المنفذ غير معروف",
+        "flowPortAlarmCapabilityMissing": "هذا المنفذ غير متاح على هذا المبدّل بعد.",
+        "invalidSwitchAddress": "أدخل عنوان IPv4 صالحًا أو اسم مضيف أو IPv6 بين قوسين مربعين. يمكنك إضافة منفذ (مثل 192.168.0.1:8080 أو [fe80::1]:443). لا تضمّن http:// أو مسارات أو اسم مستخدم في هذا الحقل.",
+        "invalidSwitchUsername": "أدخل اسم مستخدم صالحًا (1–128 حرفًا؛ تُزال المسافات البادئة واللاحقة). الأحرف التحكمية غير مسموحة.",
+        "invalidSwitchPassword": "كلمة المرور طويلة جدًا (حد أقصى 256 حرفًا لهذا التطبيق) أو تحتوي على أحرف تحكمية. تُحفظ المسافات البادئة واللاحقة—احذفها فقط إذا قصدت ذلك.",
+        "invalidConnectionPayload": "أرسل نموذج الاتصال بيانات غير صالحة. أغلق الاقتران وأعد فتحه، أو حدّث التطبيق إذا استمرت المشكلة.",
+        "pair": {
+          "connection_input": {
+            "title": "الاتصال بالمبدّل المُدار",
+            "addressLabel": "عنوان IP أو اسم المضيف",
+            "addressPlaceholder": "192.168.0.1 أو managed-switch.local",
+            "usernameLabel": "اسم المستخدم",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "كلمة المرور",
+            "passwordPlaceholder": "كلمة المرور",
+            "connect": "اتصال"
+          },
+          "connection_error": {
+            "title": "خطأ في الاتصال",
+            "errorText": "تعذّر الاتصال بالمبدّل المُدار. تأكد من أن إصداري الجهاز والبرنامج الثابت مدعومان.",
+            "supportedHardware": "الأجهزة المدعومة",
+            "hardwareVersion": "إصدار الجهاز",
+            "firmwareVersion": "إصدار البرنامج الثابت",
+            "close": "إغلاق"
+          }
+        },
+        "repair": {
+          "connection_input": {
+            "title": "إصلاح الاتصال بالمبدّل المُدار",
+            "macLabel": "عنوان MAC",
+            "macPlaceholder": "جارٍ التحميل...",
+            "addressLabel": "عنوان IP أو اسم المضيف",
+            "addressPlaceholder": "192.168.0.1 أو managed-switch.local",
+            "usernameLabel": "اسم المستخدم",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "كلمة المرور",
+            "passwordPlaceholder": "كلمة المرور",
+            "connect": "اتصال",
+            "errorRetrievingMacAddress": "خطأ أثناء جلب عنوان MAC"
+          },
+          "connection_error": {
+            "title": "خطأ في الاتصال",
+            "errorText": "تعذّر الاتصال بالمبدّل المُدار",
+            "close": "إغلاق"
+          },
+          "incorrect_device_error": {
+            "title": "جهاز غير صحيح",
+            "errorText": "العنوان والحساب اللذان أدخلتهما يخصان مبدّلًا مُدارًا آخر.",
+            "close": "إغلاق"
+          }
+        }
+      }
+    }
+  }
+}

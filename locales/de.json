@@ -1,0 +1,74 @@
+{
+  "settings": {
+    "app": {
+      "license": {
+        "title": "Lizenz",
+        "content": "Copyright (c) 2024 Jamison Bennett<br/><br/>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br/><br/>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      },
+      "disclaimer": {
+        "title": "Haftungsausschluss",
+        "content": "Diese App ist eine unabhängige Anwendung eines Drittanbieters und steht in keiner Verbindung zu TP-Link Technologies Co., Ltd., wird von ihr nicht unterstützt oder gesponsert. TP-Link ist eine eingetragene Marke von TP-Link Technologies Co., Ltd. Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Inhaber. Die Verwendung dieser Namen, Logos und Marken impliziert keine Zugehörigkeit oder Billigung durch diese."
+      }
+    },
+    "drivers": {
+      "tp-link-managed-switch": {
+        "portName": "Port __number__",
+        "ledsTitle": "LEDs",
+        "flowLedsNotSupported": "Dieser Switch stellt keine LED-Einstellungen in der Weboberfläche bereit.",
+        "portDisconnected": "Port __number__ getrennt",
+        "flowSwitchDeviceNotAvailable": "Switch-Gerät nicht verfügbar",
+        "flowPortNumberUnknown": "Portnummer unbekannt",
+        "flowPortAlarmCapabilityMissing": "Dieser Port ist auf diesem Switch noch nicht verfügbar.",
+        "invalidSwitchAddress": "Geben Sie eine gültige IPv4-Adresse, einen Hostnamen oder IPv6 in eckigen Klammern ein. Sie können einen Port angeben (z. B. 192.168.0.1:8080 oder [fe80::1]:443). Kein http://, keine Pfade und kein Benutzername in diesem Feld.",
+        "invalidSwitchUsername": "Geben Sie einen gültigen Benutzernamen ein (1–128 Zeichen; führende und nachfolgende Leerzeichen werden entfernt). Steuerzeichen sind nicht erlaubt.",
+        "invalidSwitchPassword": "Passwort zu lang (max. 256 Zeichen für diese App) oder enthält Steuerzeichen. Führende und nachfolgende Leerzeichen bleiben erhalten—entfernen Sie sie nur, wenn Sie das beabsichtigen.",
+        "invalidConnectionPayload": "Das Verbindungsformular hat ungültige Daten gesendet. Schließen Sie die Kopplung und öffnen Sie sie erneut, oder aktualisieren Sie die App, wenn das Problem weiterhin besteht.",
+        "pair": {
+          "connection_input": {
+            "title": "Mit Ihrem Managed Switch verbinden",
+            "addressLabel": "IP-Adresse oder Hostname",
+            "addressPlaceholder": "192.168.0.1 oder managed-switch.local",
+            "usernameLabel": "Benutzername",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Passwort",
+            "passwordPlaceholder": "Passwort",
+            "connect": "Verbinden"
+          },
+          "connection_error": {
+            "title": "Verbindungsfehler",
+            "errorText": "Verbindung zum Managed Switch nicht möglich. Prüfen Sie, ob Hardware- und Firmwareversion unterstützt werden.",
+            "supportedHardware": "Unterstützte Hardware",
+            "hardwareVersion": "Hardwareversion",
+            "firmwareVersion": "Firmwareversion",
+            "close": "Schließen"
+          }
+        },
+        "repair": {
+          "connection_input": {
+            "title": "Verbindung zum Managed Switch reparieren",
+            "macLabel": "MAC-Adresse",
+            "macPlaceholder": "Wird geladen...",
+            "addressLabel": "IP-Adresse oder Hostname",
+            "addressPlaceholder": "192.168.0.1 oder managed-switch.local",
+            "usernameLabel": "Benutzername",
+            "usernamePlaceholder": "admin",
+            "passwordLabel": "Passwort",
+            "passwordPlaceholder": "Passwort",
+            "connect": "Verbinden",
+            "errorRetrievingMacAddress": "Fehler beim Abrufen der MAC-Adresse"
+          },
+          "connection_error": {
+            "title": "Verbindungsfehler",
+            "errorText": "Verbindung zum Managed Switch nicht möglich",
+            "close": "Schließen"
+          },
+          "incorrect_device_error": {
+            "title": "Falsches Gerät",
+            "errorText": "Die eingegebene Adresse und das Konto gehören zu einem anderen Managed Switch.",
+            "close": "Schließen"
+          }
+        }
+      }
+    }
+  }
+}
