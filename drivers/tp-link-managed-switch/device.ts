@@ -7,6 +7,8 @@ import DeviceAPI from './deviceAPI';
 class Device extends Homey.Device {
 
   private linkStateChanged: Homey.FlowCardTriggerDevice | null = null;
+  private alarmPortDisconnectedTrue: Homey.FlowCardTriggerDevice | null = null;
+  private alarmPortDisconnectedFalse: Homey.FlowCardTriggerDevice | null = null;
   private suspendRefreshTime = 300000; // Suspend refreshing for 5 minutes to prepare for a repair
   private refreshPromise: Promise<void> | null = null;
   /** When set, a full refresh is in progress; concurrent callers await the same promise. */
@@ -67,6 +69,8 @@ class Device extends Homey.Device {
     this.registerCapabilityListener('onoff.leds', this.onCapabilityOnoffLeds.bind(this));
 
     this.linkStateChanged = this.homey.flow.getDeviceTriggerCard('link_state_changed');
+    this.alarmPortDisconnectedTrue = this.homey.flow.getDeviceTriggerCard('alarm_port_disconnected_true');
+    this.alarmPortDisconnectedFalse = this.homey.flow.getDeviceTriggerCard('alarm_port_disconnected_false');
 
     return this.fullRefresh().catch(async (error) => {
       const errMessage = error instanceof Error ? error.message : String(error);
@@ -294,7 +298,13 @@ class Device extends Homey.Device {
     if (allLinksStatus && this.lastAllLinksStatus && allLinksStatus.length === this.lastAllLinksStatus.length) {
       for (let port = 0; port < allLinksStatus.length; port++) {
         if (allLinksStatus[port] !== this.lastAllLinksStatus[port]) {
-          await this.linkStateChanged?.trigger(this, { port: port + 1, linkUp: allLinksStatus[port] }, {});
+          const portNumber = port + 1;
+          await this.linkStateChanged?.trigger(this, { port: portNumber, linkUp: allLinksStatus[port] }, {});
+          if (!allLinksStatus[port]) {
+            await this.alarmPortDisconnectedTrue?.trigger(this, { port: portNumber }, { port: portNumber });
+          } else {
+            await this.alarmPortDisconnectedFalse?.trigger(this, { port: portNumber }, { port: portNumber });
+          }
         }
       }
     }
@@ -551,6 +561,32 @@ class Device extends Homey.Device {
 
   public getPassword() {
     return this.getStoreValue('password');
+  }
+
+  /**
+   * Resolves the number of switch ports from the live session, persisted settings, or existing `onoff.N` capabilities.
+   * Used by Flow autocomplete before `deviceAPI` exists or after restart.
+   */
+  public getSwitchPortCount(): number {
+    if (this.deviceAPI != null) {
+      return this.deviceAPI.getNumPorts();
+    }
+    const raw = this.getSetting('switchPortCount');
+    if (typeof raw === 'string' && raw !== '' && raw !== '-') {
+      const n = parseInt(raw, 10);
+      if (Number.isFinite(n) && n > 0 && n <= MAX_SWITCH_PORT_COUNT) {
+        return n;
+      }
+    }
+    let maxPort = 0;
+    for (const cap of this.getCapabilities()) {
+      const m = /^onoff\.(\d+)$/.exec(cap);
+      if (m) {
+        const p = parseInt(m[1], 10);
+        if (p > maxPort) maxPort = p;
+      }
+    }
+    return maxPort;
   }
 
   public async suspendRefresh() {

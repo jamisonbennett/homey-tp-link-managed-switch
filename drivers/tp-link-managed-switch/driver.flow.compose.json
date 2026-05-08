@@ -2,6 +2,7 @@
   "triggers": [
     {
       "id": "link_state_changed",
+      "deprecated": true,
       "title": {
         "en": "Switch port link state changed"
       },
@@ -21,11 +22,88 @@
           "title": { "en": "Link is up (true) or down (false)" }
         }
       ]
+    },
+    {
+      "id": "alarm_port_disconnected_true",
+      "title": {
+        "en": "Became disconnected"
+      },
+      "titleFormatted": {
+        "en": "[[port]] became disconnected"
+      },
+      "hint": {
+        "en": "When the physical link on the selected port goes down."
+      },
+      "tokens": [
+        {
+          "name": "port",
+          "type": "number",
+          "title": { "en": "port" },
+          "example": 1
+        }
+      ],
+      "args": [
+        {
+          "type": "autocomplete",
+          "name": "port",
+          "title": { "en": "Port" },
+          "placeholder": { "en": "Search or pick…" }
+        }
+      ]
+    },
+    {
+      "id": "alarm_port_disconnected_false",
+      "title": {
+        "en": "Became connected"
+      },
+      "titleFormatted": {
+        "en": "[[port]] became connected"
+      },
+      "hint": {
+        "en": "When the physical link on the selected port comes up."
+      },
+      "tokens": [
+        {
+          "name": "port",
+          "type": "number",
+          "title": { "en": "port" },
+          "example": 1
+        }
+      ],
+      "args": [
+        {
+          "type": "autocomplete",
+          "name": "port",
+          "title": { "en": "Port" },
+          "placeholder": { "en": "Search or pick…" }
+        }
+      ]
     }
   ],
   "conditions": [
     {
+      "id": "alarm_port_disconnected_status",
+      "title": {
+        "en": "[[port]] !{{is disconnected|is connected}}"
+      },
+      "titleFormatted": {
+        "en": "[[port]] !{{is disconnected|is connected}}"
+      },
+      "hint": {
+        "en": "Checks the physical link state of the selected port."
+      },
+      "args": [
+        {
+          "type": "autocomplete",
+          "name": "port",
+          "title": { "en": "Port" },
+          "placeholder": { "en": "Search or pick…" }
+        }
+      ]
+    },
+    {
       "id": "link_up",
+      "deprecated": true,
       "title": {
         "en": "Switch port link is !{{up|down}}"
       },
@@ -47,7 +125,48 @@
   ],
   "actions": [
     {
+      "id": "turnOn_port",
+      "title": {
+        "en": "Enable [[port]]"
+      },
+      "titleFormatted": {
+        "en": "Enable [[port]]"
+      },
+      "hint": {
+        "en": "Same as enabling that port in the device capabilities."
+      },
+      "args": [
+        {
+          "type": "autocomplete",
+          "name": "port",
+          "title": { "en": "Number" },
+          "placeholder": { "en": "Search or pick…" }
+        }
+      ]
+    },
+    {
+      "id": "turnOff_port",
+      "title": {
+        "en": "Disable [[port]]"
+      },
+      "titleFormatted": {
+        "en": "Disable [[port]]"
+      },
+      "hint": {
+        "en": "Same as disabling that port in the device capabilities."
+      },
+      "args": [
+        {
+          "type": "autocomplete",
+          "name": "port",
+          "title": { "en": "Number" },
+          "placeholder": { "en": "Search or pick…" }
+        }
+      ]
+    },
+    {
       "id": "enable_port",
+      "deprecated": true,
       "title": {
         "en": "Enable switch port"
       },
@@ -68,6 +187,7 @@
     },
     {
       "id": "disable_port",
+      "deprecated": true,
       "title": {
         "en": "Disable switch port"
       },
