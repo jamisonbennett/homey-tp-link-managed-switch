@@ -24,7 +24,21 @@ jest.mock('homey', () => {
       log = jest.fn();
       getStoreValue = jest.fn().mockReturnValue('mockValue');
       registerCapabilityListener = jest.fn();
-      getCapabilities = jest.fn().mockReturnValue(['onoff.favorite', 'onoff.leds', 'onoff.1', 'onoff.2', 'onoff.3', 'onoff.4', 'onoff.5']);
+      getCapabilities = jest.fn().mockReturnValue([
+        'onoff.favorite',
+        'onoff.leds',
+        'onoff.1',
+        'onoff.2',
+        'onoff.3',
+        'onoff.4',
+        'onoff.5',
+        'alarm_port_disconnected.1',
+        'alarm_port_disconnected.2',
+        'alarm_port_disconnected.3',
+        'alarm_port_disconnected.4',
+        'alarm_port_disconnected.5',
+      ]);
+
       getCapabilityOptions = jest.fn().mockReturnValue('mockValue');
       getSetting = jest.fn().mockReturnValue('');
       getCapabilityValue = jest.fn();
@@ -86,6 +100,11 @@ describe('Device Class Tests', () => {
       expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('onoff.3', { title: 'mockValue', uiQuickAction: false });
       expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('onoff.4', { title: 'mockValue', uiQuickAction: false });
       expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('onoff.5', { title: 'mockValue', uiQuickAction: false });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.1', { title: 'mockValue' });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.2', { title: 'mockValue' });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.3', { title: 'mockValue' });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.4', { title: 'mockValue' });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.5', { title: 'mockValue' });
     });
 
     it('should set available', async () => {
@@ -132,6 +151,7 @@ describe('Device Class Tests', () => {
     it('should refresh state and set capabilities correctly', async () => {
       jest.spyOn(DeviceAPI.prototype, 'getLedsEnabled').mockResolvedValue(true);
       jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([true, false, true, true, true]);
+      jest.spyOn(DeviceAPI.prototype, 'getAllLinksUp').mockResolvedValue([true, false, true, true, true]);
       jest.spyOn(device, 'getCapabilityValue').mockImplementation((capabilityId: unknown) => {
         if (capabilityId === 'onoff.3') {
           return true;
@@ -149,6 +169,7 @@ describe('Device Class Tests', () => {
       expect(setCapabilityValueSpy).not.toHaveBeenCalledWith('onoff.3', true);
       expect(setCapabilityValueSpy).toHaveBeenCalledWith('onoff.4', true);
       expect(setCapabilityValueSpy).toHaveBeenCalledWith('onoff.5', true);
+      expect(setCapabilityValueSpy).toHaveBeenCalledWith('alarm_port_disconnected.2', true);
     });
 
     it('should set unavailable when initial connect fails', async () => {
