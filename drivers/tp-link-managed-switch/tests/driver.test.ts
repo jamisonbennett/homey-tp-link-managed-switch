@@ -199,6 +199,7 @@ describe('Driver', () => {
         connect: jest.fn().mockResolvedValue(true),
         getName: jest.fn().mockReturnValue('My Switch'),
         getMacAddress: jest.fn().mockReturnValue('00:11:22:33:44:55'),
+        getNumPorts: jest.fn().mockReturnValue(8),
       }));
 
       await driver.onPair(mockSession);
@@ -224,8 +225,79 @@ describe('Driver', () => {
           name: 'My Switch',
           data: { id: '00:11:22:33:44:55' },
           store: { address: '192.168.1.20', username: 'admin', password: 'secret' },
+          icon: '/icons/8-port.svg',
         },
       ]);
+    });
+
+    it.each([
+      [5, '/icons/5-port.svg'],
+      [8, '/icons/8-port.svg'],
+      [16, '/icons/16-port.svg'],
+      [24, '/icons/16-port.svg'],
+      [28, '/icons/16-port.svg'],
+    ])('list_devices assigns the correct icon for %i ports', async (numPorts, expectedIcon) => {
+      const mockSession = {
+        setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
+      };
+      driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+
+      (DeviceAPI as jest.Mock).mockImplementation(() => ({
+        connect: jest.fn().mockResolvedValue(true),
+        getName: jest.fn().mockReturnValue('My Switch'),
+        getMacAddress: jest.fn().mockReturnValue('00:11:22:33:44:55'),
+        getNumPorts: jest.fn().mockReturnValue(numPorts),
+      }));
+
+      await driver.onPair(mockSession);
+
+      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
+      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+        address: '192.168.1.20',
+        username: 'admin',
+        password: 'secret',
+      });
+
+      const showViewEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView');
+      await (showViewEntry![1] as (v: string) => Promise<void>)('loading');
+
+      const listDevices = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'list_devices')![
+        1
+      ] as () => Promise<Array<{ icon?: string }>>;
+      const [device] = await listDevices();
+      expect(device.icon).toBe(expectedIcon);
+    });
+
+    it('list_devices omits the icon when port count is unknown', async () => {
+      const mockSession = {
+        setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
+      };
+      driver.homey = { __: jest.fn((k: string) => k), flow: { getConditionCard: jest.fn(), getActionCard: jest.fn() } };
+
+      (DeviceAPI as jest.Mock).mockImplementation(() => ({
+        connect: jest.fn().mockResolvedValue(true),
+        getName: jest.fn().mockReturnValue('My Switch'),
+        getMacAddress: jest.fn().mockReturnValue('00:11:22:33:44:55'),
+        getNumPorts: jest.fn().mockReturnValue(0),
+      }));
+
+      await driver.onPair(mockSession);
+
+      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
+      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+        address: '192.168.1.20',
+        username: 'admin',
+        password: 'secret',
+      });
+
+      const showViewEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView');
+      await (showViewEntry![1] as (v: string) => Promise<void>)('loading');
+
+      const listDevices = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'list_devices')![
+        1
+      ] as () => Promise<Array<{ icon?: string }>>;
+      const [device] = await listDevices();
+      expect(device.icon).toBeUndefined();
     });
 
     it('showView loading shows connection_error when connect fails', async () => {

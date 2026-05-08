@@ -1,5 +1,7 @@
 'use strict';
 
+import fs from 'fs';
+import path from 'path';
 import Homey from 'homey';
 import assertValidSwitchHostAddress from '../../lib/switchHostAddress';
 import { assertValidSwitchPassword, assertValidSwitchUsername } from '../../lib/switchCredentials';
@@ -7,6 +9,16 @@ import { assertPairConnectionFields } from '../../lib/pairConnectionPayload';
 import { assertValidPairedDeviceMacId, MAX_SWITCH_PORT_COUNT } from '../../lib/switchDeviceWebData';
 import DeviceAPI from './deviceAPI';
 import ManagedSwitchDevice = require('./device');
+
+/**
+ * Per-port-count device icons that ship with the driver. Only the breakpoints below have art;
+ * larger switches (24, 28, ...) reuse the 16-port icon as a generic "many-port" silhouette.
+ */
+const PORT_ICON_BREAKPOINTS: ReadonlyArray<{ maxPorts: number; filename: string }> = [
+  { maxPorts: 5, filename: '5-port.svg' },
+  { maxPorts: 8, filename: '8-port.svg' },
+  { maxPorts: Infinity, filename: '16-port.svg' },
+];
 
 type ManagedSwitchDeviceInstance = InstanceType<typeof ManagedSwitchDevice>;
 
@@ -95,7 +107,12 @@ class Driver extends Homey.Driver {
       if (deviceAPI == null) {
         return [];
       }
-      const deviceData = {
+      const deviceData: {
+        name: string;
+        data: { id: string };
+        store: { address: string; username: string; password: string };
+        icon?: string;
+      } = {
         name: deviceAPI.getName(),
         data: {
           id: deviceAPI.getMacAddress(),
@@ -106,6 +123,10 @@ class Driver extends Homey.Driver {
           password,
         },
       };
+      const icon = await this.resolveDeviceIcon(deviceAPI.getNumPorts());
+      if (icon != null) {
+        deviceData.icon = icon;
+      }
       return [deviceData];
     });
 
@@ -241,6 +262,28 @@ class Driver extends Homey.Driver {
         'settings.drivers.tp-link-managed-switch.flowPortNumberUnknown',
       )));
     }
+  }
+
+  /**
+   * Picks the bundled per-port-count SVG so paired devices show artwork that matches their hardware.
+   * Returns a path relative to the driver's `assets/` folder (Homey's pair `icon` convention) or `null`
+   * when no suitable icon exists on disk so the driver falls back to the default device image.
+   */
+  private async resolveDeviceIcon(portCount: number): Promise<string | null> {
+    if (!Number.isFinite(portCount) || portCount <= 0) {
+      return null;
+    }
+    const match = PORT_ICON_BREAKPOINTS.find((entry) => portCount <= entry.maxPorts);
+    if (!match) {
+      return null;
+    }
+    const iconPath = path.join(__dirname, 'assets', 'icons', match.filename);
+    try {
+      await fs.promises.access(iconPath);
+    } catch {
+      return null;
+    }
+    return `/icons/${match.filename}`;
   }
 
   private isSameDevice(existingDevice: InstanceType<typeof ManagedSwitchDevice>, newDeviceAPI: DeviceAPI) {
