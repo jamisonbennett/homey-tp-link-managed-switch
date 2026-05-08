@@ -131,6 +131,7 @@ class Device extends Homey.Device {
     }
 
     promises.push(this.setEnergy(this.energyUsage()));
+    promises.push(this.updateDeviceSettings());
 
     this.handleConfigurablePortsChange(this.getSetting('configurable_ports'));
 
@@ -187,6 +188,24 @@ class Device extends Homey.Device {
       });
     }
     return Promise.resolve();
+  }
+
+  /**
+   * Mirrors static switch metadata into read-only Homey settings so users can inspect it after pairing.
+   */
+  private async updateDeviceSettings(): Promise<void> {
+    if (!this.deviceAPI) {
+      return;
+    }
+
+    await this.setSettings({
+      switchAddress: this.address,
+      switchName: this.deviceAPI.getName(),
+      switchMacAddress: this.deviceAPI.getMacAddress(),
+      switchFirmwareVersion: this.deviceAPI.getFirmwareVersion(),
+      switchHardwareVersion: this.deviceAPI.getHardwareVersion(),
+      switchPortCount: String(this.deviceAPI.getNumPorts()),
+    });
   }
 
   private waitForInitialCapabilityRegistrationToFinish(retries: number = 100, retryDelay: number = 100): Promise<void> {

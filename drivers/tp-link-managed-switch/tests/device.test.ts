@@ -31,6 +31,7 @@ jest.mock('homey', () => {
       setCapabilityValue = jest.fn();
       setCapabilityOptions = jest.fn();
       setStoreValue = jest.fn();
+      setSettings = jest.fn();
       setEnergy = jest.fn();
       setAvailable = jest.fn();
       setUnavailable = jest.fn();
@@ -101,6 +102,31 @@ describe('Device Class Tests', () => {
       await device.onInit();
 
       expect(setEnergySpy).toHaveBeenCalledWith({ approximation: { usageConstant: 2.955 } });
+    });
+
+    it('should update device information settings', async () => {
+      jest.spyOn(device, 'getStoreValue').mockImplementation((key: unknown) => {
+        if (key === 'address') {
+          return '192.168.1.20';
+        }
+        return 'mockValue';
+      });
+      jest.spyOn(DeviceAPI.prototype, 'getName').mockReturnValue('TL-SG108E');
+      jest.spyOn(DeviceAPI.prototype, 'getMacAddress').mockReturnValue('00:11:22:33:44:55');
+      jest.spyOn(DeviceAPI.prototype, 'getFirmwareVersion').mockReturnValue('1.0.0 Build 20230218 Rel.50633');
+      jest.spyOn(DeviceAPI.prototype, 'getHardwareVersion').mockReturnValue('TL-SG108E 6.0');
+      const setSettingsSpy = jest.spyOn(device, 'setSettings').mockResolvedValue(undefined);
+
+      await device.onInit();
+
+      expect(setSettingsSpy).toHaveBeenCalledWith({
+        switchAddress: '192.168.1.20',
+        switchName: 'TL-SG108E',
+        switchMacAddress: '00:11:22:33:44:55',
+        switchFirmwareVersion: '1.0.0 Build 20230218 Rel.50633',
+        switchHardwareVersion: 'TL-SG108E 6.0',
+        switchPortCount: '5',
+      });
     });
 
     it('should refresh state and set capabilities correctly', async () => {
