@@ -203,10 +203,35 @@ describe('DeviceAPI', () => {
     it('should return false if login fails with 401', async () => {
       jest.spyOn(axios, 'post').mockResolvedValueOnce({
         status: 401,
+        headers: {},
+        data: mockLoginInfoUnsuccessful,
       });
 
       const result = await deviceAPI.connect();
       expect(result).toBe(false);
+    });
+
+    it('should support legacy login flow with 401 and no set-cookie', async () => {
+      jest.spyOn(axios, 'post').mockResolvedValueOnce({
+        status: 401,
+        headers: {},
+        data: mockLoginInfo,
+      });
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 200,
+        data: mockSystemInfoData,
+      });
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 200,
+        data: mockSystemInfoData,
+      });
+      jest.spyOn(axios, 'get').mockResolvedValueOnce({
+        status: 200,
+        data: mockPortSettingsData,
+      });
+
+      const result = await deviceAPI.connect();
+      expect(result).toBe(true);
     });
 
     it('should return false when system info MAC in the page is not valid hex', async () => {

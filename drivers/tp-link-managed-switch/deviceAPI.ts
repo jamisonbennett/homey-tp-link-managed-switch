@@ -1,6 +1,6 @@
 'use strict';
 
-import axios, { isAxiosError, type RawAxiosResponseHeaders } from 'axios';
+import axios, { isAxiosError, type GenericAbortSignal, type RawAxiosResponseHeaders } from 'axios';
 import Logger, { type ILogger } from '../../lib/Logger';
 import assertValidSwitchHostAddress from '../../lib/switchHostAddress';
 import { assertValidSwitchPassword, assertValidSwitchUsername } from '../../lib/switchCredentials';
@@ -58,9 +58,10 @@ class DeviceAPI extends Logger {
   private numPorts: number = 0;
 
   private cookie: string = '';
-  private readonly abortSignal?: AbortSignal;
+  private cookielessModeEnabled: boolean = false;
+  private readonly abortSignal?: GenericAbortSignal;
 
-  constructor(logger: ILogger, ipAddress: string, username: string, password: string, abortSignal?: AbortSignal) {
+  constructor(logger: ILogger, ipAddress: string, username: string, password: string, abortSignal?: GenericAbortSignal) {
     super(logger);
     this.ipAddress = assertValidSwitchHostAddress(ipAddress);
     this.username = assertValidSwitchUsername(username);
@@ -68,12 +69,28 @@ class DeviceAPI extends Logger {
     this.abortSignal = abortSignal;
   }
 
-  private axiosAbortConfig(): { signal: AbortSignal } | Record<string, never> {
+  private axiosAbortConfig(): { signal: GenericAbortSignal } | Record<string, never> {
     return this.abortSignal ? { signal: this.abortSignal } : {};
   }
 
   private isAbortedRequest(error: unknown): boolean {
     return isAxiosError(error) && error.code === 'ERR_CANCELED';
+  }
+
+  /**
+   * Older Easy Smart firmware revisions can expose data pages without issuing H_P_SSID.
+   * Keep this as an explicit compatibility mode that is only enabled after successful login parsing.
+   */
+  private canUseCookielessMode(): boolean {
+    return this.cookielessModeEnabled;
+  }
+
+  private authHeaders(): { Cookie: string } | Record<string, never> {
+    const cookie = this.getCookie();
+    if (cookie === '') {
+      return {};
+    }
+    return { Cookie: cookie };
   }
 
   /**
@@ -119,7 +136,7 @@ class DeviceAPI extends Logger {
 
   public async isLoggedIn(): Promise<boolean> {
     const cookie = this.getCookie();
-    if (!cookie || cookie === '') {
+    if ((cookie == null || cookie === '') && !this.canUseCookielessMode()) {
       return false;
     }
 
@@ -128,9 +145,7 @@ class DeviceAPI extends Logger {
         ...axiosSwitchLimits,
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
-        headers: {
-          Cookie: cookie,
-        },
+        headers: this.authHeaders(),
       });
 
       if (response.status !== 200) {
@@ -195,6 +210,7 @@ class DeviceAPI extends Logger {
         ...axiosSwitchLimits,
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
+        validateStatus: (status) => status >= 200 && status < 500,
         params: {
           username: this.username,
           password: this.password,
@@ -203,7 +219,7 @@ class DeviceAPI extends Logger {
         },
       });
 
-      if (response.status !== 200) {
+      if (response.status !== 200 && response.status !== 401) {
         throw new Error(`HTTP status ${response.status}`);
       }
 
@@ -217,14 +233,19 @@ class DeviceAPI extends Logger {
       }
 
       const setCookieHeader = response.headers['set-cookie'];
-      if (!setCookieHeader) {
-        throw new Error('set-cookie header not found.');
+      if (setCookieHeader) {
+        const setCookieHeaders = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
+        this.saveSessionCookie(setCookieHeaders);
+        this.cookielessModeEnabled = false;
+        return this.isLoggedIn();
       }
 
-      const setCookieHeaders = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
-      this.saveSessionCookie(setCookieHeaders);
-
-      return this.isLoggedIn();
+      this.cookielessModeEnabled = true;
+      if (await this.isLoggedIn()) {
+        return true;
+      }
+      this.cookielessModeEnabled = false;
+      throw new Error('Session cookie missing and cookieless mode probe failed.');
     } catch (error) {
       if (this.isAbortedRequest(error)) {
         return false;
@@ -277,16 +298,12 @@ class DeviceAPI extends Logger {
   private async getSystemInfo(): Promise<SystemInfo | null> {
     // Gets the information from the device's system info page.
     // This requires an active login session.
-    const cookie = this.getCookie();
-
     try {
       const response = await axios.get(`http://${this.ipAddress}/SystemInfoRpm.htm`, {
         ...axiosSwitchLimits,
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
-        headers: {
-          Cookie: cookie,
-        },
+        headers: this.authHeaders(),
       });
 
       if (response.status !== 200) {
@@ -337,16 +354,12 @@ class DeviceAPI extends Logger {
 
   private async getPortSettings(): Promise<PortSettings | null> {
     // Gets the device's port settings
-    const cookie = this.getCookie();
-
     try {
       const response = await axios.get(`http://${this.ipAddress}/PortSettingRpm.htm`, {
         ...axiosSwitchLimits,
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
-        headers: {
-          Cookie: cookie,
-        },
+        headers: this.authHeaders(),
       });
 
       if (response.status !== 200) {
@@ -462,14 +475,11 @@ class DeviceAPI extends Logger {
       }
 
       // NOTE: The device uses HTTP GET for changing the configuration.
-      const cookie = this.getCookie();
       const response = await axios.get(`http://${this.ipAddress}/port_setting.cgi`, {
         ...axiosSwitchLimits,
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
-        headers: {
-          Cookie: cookie,
-        },
+        headers: this.authHeaders(),
         params: {
           portid: port,
           state,
@@ -512,16 +522,12 @@ class DeviceAPI extends Logger {
 
   private async getLedSettings(): Promise<boolean | null> {
     // Gets the device's LED settings from the admin page.
-    const cookie = this.getCookie();
-
     try {
       const response = await axios.get(`http://${this.ipAddress}/TurnOnLEDRpm.htm`, {
         ...axiosSwitchLimits,
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
-        headers: {
-          Cookie: cookie,
-        },
+        headers: this.authHeaders(),
       });
 
       if (response.status !== 200) {
@@ -562,14 +568,11 @@ class DeviceAPI extends Logger {
 
     try {
       // NOTE: The device uses HTTP GET for changing the configuration.
-      const cookie = this.getCookie();
       const response = await axios.get(`http://${this.ipAddress}/led_on_set.cgi`, {
         ...axiosSwitchLimits,
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
-        headers: {
-          Cookie: cookie,
-        },
+        headers: this.authHeaders(),
         params: {
           rd_led: state,
           led_cfg: 'Apply',
@@ -601,14 +604,11 @@ class DeviceAPI extends Logger {
     }
 
     try {
-      const cookie = this.getCookie();
       const response = await axios.post(`http://${this.ipAddress}/reboot.cgi`, null, {
         ...axiosSwitchLimits,
         ...this.axiosAbortConfig(),
         timeout: HTTP_TIMEOUT_MS,
-        headers: {
-          Cookie: cookie,
-        },
+        headers: this.authHeaders(),
       });
 
       if (response.status !== 200) {
