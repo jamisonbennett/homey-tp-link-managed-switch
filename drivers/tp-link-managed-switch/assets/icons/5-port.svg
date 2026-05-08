@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="960px" height="960px" viewBox="0 0 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>5-port</title>
+    <defs>
+        <path d="M114,437.036992 L360.281322,420 L845.455517,437.794515 L845.455518,532.912415 L360.281321,549 L114,528.193328 Z" id="path-1"></path>
+    </defs>
+    <g id="5-port" stroke="none" fill="none" xlink:href="#path-1">
+        <path d="M361.01436,400.013439 L846.188556,417.807953 L865.455518,418.514599 L865.455518,552.260239 L846.118321,552.901429 L360.944124,568.989014 L359.769124,569.027975 L358.597652,568.929005 L112.316331,548.122334 L94,546.574909 L94,418.372734 L112.619759,417.084676 L358.901081,400.047684 L359.956814,399.974651 Z" id="Combined-Shape" stroke="#000000" stroke-width="40" stroke-linejoin="round"></path>
+        <line x1="170" y1="461.934459" x2="170" y2="508.908805" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="198.455753" y1="460.428046" x2="198.455753" y2="509.451868" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="226.911505" y1="459.921632" x2="226.911505" y2="510.994931" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="255.367258" y1="458.415218" x2="255.367258" y2="511.537994" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="406" y1="566" x2="405.5" y2="394.441101" id="Path-12" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <polygon id="Rectangle" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" points="440 453 518 454.868725 518 500.913574 440 501"></polygon>
+        <g id="Group" stroke-width="1" fill-rule="evenodd" transform="translate(552, 446)">
+            <rect id="Rectangle" fill="#000000" x="19.0260804" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="42.4106958" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="19.0260804" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
+            <line x1="61.4902476" y1="13.3798104" x2="61.5697993" y2="64.4925842" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
+            <line x1="112.156914" y1="13.3798104" x2="112.236466" y2="64.4925842" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
+            <line x1="162.823581" y1="13.3798104" x2="162.903133" y2="64.4925842" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
+            <line x1="213.395603" y1="14.5239356" x2="213.475155" y2="65.6367094" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
+            <path d="M264.253164,15.2790006 L264.253164,64.2794803 L9.74683568,67.1428877 L9.74683568,9.95294167 Z" id="Path-33" stroke="#000000" stroke-width="19.4936709"></path>
+            <rect id="Rectangle" fill="#000000" x="172.000439" y="22.2493711" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="195.385055" y="22.2493711" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="42.4106958" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="70.6671061" y="20.300004" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="94.0517214" y="21.2746875" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="121.333773" y="21.2746875" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="143.744029" y="21.2746875" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="221.692747" y="23.2240546" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="245.077362" y="23.2240546" width="9.74358974" height="9.74683544"></rect>
+        </g>
+    </g>
+</svg>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="960px" height="960px" viewBox="0 0 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>icon</title>
+    <title>8-port</title>
     <defs>
         <path d="M919,439.989763 L919,529.010237 L336,549 L41,528.193328 L41,437.036992 L336,420 Z" id="path-1"></path>
     </defs>
-    <g id="icon" stroke="none" fill="none" xlink:href="#path-1">
+    <g id="8-port" stroke="none" fill="none" xlink:href="#path-1">
         <path d="M336.685352,400.011746 L919.685352,420.001509 L939,420.663765 L939,548.336235 L919.685352,548.998491 L336.685352,568.988254 L335.638123,569.024161 L334.592874,568.950438 L39.5928738,548.143767 L21,546.832391 L21,418.158717 L39.8468711,417.070263 L334.846871,400.03327 L335.765617,399.98021 Z" id="Combined-Shape" stroke="#000000" stroke-width="40" stroke-linejoin="round"></path>
         <line x1="97" y1="461.934459" x2="97" y2="508.908805" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
         <line x1="125.455753" y1="460.428046" x2="125.455753" y2="509.451868" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
