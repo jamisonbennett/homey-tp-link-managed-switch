@@ -106,7 +106,7 @@ describe('Device Class Tests', () => {
     it('should refresh state and set capabilities correctly', async () => {
       jest.spyOn(DeviceAPI.prototype, 'getLedsEnabled').mockResolvedValue(true);
       jest.spyOn(DeviceAPI.prototype, 'getAllPortsEnabled').mockResolvedValue([true, false, true, true, true]);
-      jest.spyOn(device, 'getCapabilityValue').mockImplementation((capabilityId: string) => {
+      jest.spyOn(device, 'getCapabilityValue').mockImplementation((capabilityId: unknown) => {
         if (capabilityId === 'onoff.3') {
           return true;
         }
@@ -291,7 +291,7 @@ describe('Device Class Tests', () => {
     jest.spyOn(DeviceAPI.prototype, 'getLedsEnabled').mockResolvedValue(true);
     jest.spyOn(device, 'getCapabilityValue').mockReturnValue(false);
     jest.spyOn(device, 'setCapabilityValue').mockResolvedValue(undefined);
-    jest.spyOn(device, 'getSetting').mockImplementation((name: string) => {
+    jest.spyOn(device, 'getSetting').mockImplementation((name: unknown) => {
       if (name === 'favorite_port_number') return 0;
       return '';
     });
