@@ -27,14 +27,11 @@
   },
   "pair": [
     {
-      "id": "connection_input"
-    },
-    {
-      "id": "loading",
-      "template": "loading"
-    },
-    {
-      "id": "connection_error"
+      "id": "connection_input",
+      "$template": "connection_input",
+      "options": {
+        "logo": "logo.png"
+      }
     },
     {
       "id": "list_devices",
@@ -52,17 +49,11 @@
   ],
   "repair": [
     {
-      "id": "connection_input"
-    },
-    {
-      "id": "loading",
-      "template": "loading"
-    },
-    {
-      "id": "connection_error"
-    },
-    {
-      "id": "incorrect_device_error"
+      "id": "connection_input",
+      "$template": "connection_input",
+      "options": {
+        "logo": "logo.png"
+      }
     },
     {
       "id": "done",

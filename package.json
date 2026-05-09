@@ -14,7 +14,8 @@
   "main": "app.ts",
   "description": "A Homey app for managing TP-Link managed switches",
   "scripts": {
-    "build": "npm run lint && tsc",
+    "compose": "node -e \"require('./node_modules/homey/lib/HomeyCompose.js').build({ appPath: process.cwd(), usesModules: false })\"",
+    "build": "npm run compose && npm run lint && tsc",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
     "test": "jest"

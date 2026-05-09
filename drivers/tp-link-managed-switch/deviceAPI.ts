@@ -49,6 +49,9 @@ export interface PortSettings {
   linkUp: boolean[];
 }
 
+/** Outcome of `tryConnect` so pair/repair UIs can show the same message that is logged. */
+export type ConnectResult = { ok: true } | { ok: false; message: string };
+
 class DeviceAPI extends Logger {
 
   private ipAddress: string;
@@ -186,26 +189,47 @@ class DeviceAPI extends Logger {
   }
 
   public async connect(): Promise<boolean> {
-    // Login and load the device information
-    const isLoggedIn = await this.login();
-    if (!isLoggedIn) {
-      return false;
+    const outcome = await this.tryConnect();
+    return outcome.ok;
+  }
+
+  /**
+   * Logs in and loads device identity and port layout. Returns structured failure so pairing/repair UIs
+   * can surface the same diagnostic text that is written to the driver log.
+   */
+  public async tryConnect(): Promise<ConnectResult> {
+    const loginOutcome = await this.tryLogin();
+    if (!loginOutcome.ok) {
+      return loginOutcome;
     }
-    const systemInfo = await this.getSystemInfo();
-    const portSettings = await this.getPortSettings();
-    if (systemInfo == null || portSettings == null) {
-      return false;
+    try {
+      const systemInfo = await this.readSystemInfo();
+      const portSettings = await this.readPortSettings();
+      this.systemInfo = systemInfo;
+      this.numPorts = portSettings.numPorts;
+      return { ok: true };
+    } catch (error) {
+      if (this.isAbortedRequest(error)) {
+        return { ok: false, message: this.formatErrorForUser(error) };
+      }
+      const message = this.formatErrorForUser(error);
+      this.log(`Error loading device after login: ${message}`);
+      return { ok: false, message };
     }
-    this.systemInfo = systemInfo;
-    this.numPorts = portSettings.numPorts;
-    return true;
   }
 
   private async login(): Promise<boolean> {
+    const outcome = await this.tryLogin();
+    return outcome.ok;
+  }
+
+  /**
+   * Performs HTTP login and session verification; returns a stable failure message for UI and logs.
+   */
+  private async tryLogin(): Promise<ConnectResult> {
     // The login process is destructive and if there is an existing session it is invalidated.
     this.log(`logging in to ${this.ipAddress}`);
     try {
-      // Post to the login page and get the cookie
       const response = await axios.post(`http://${this.ipAddress}/logon.cgi`, null, {
         ...axiosSwitchLimits,
         ...this.axiosAbortConfig(),
@@ -237,22 +261,48 @@ class DeviceAPI extends Logger {
         const setCookieHeaders = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
         this.saveSessionCookie(setCookieHeaders);
         this.cookielessModeEnabled = false;
-        return this.isLoggedIn();
+        const sessionOk = await this.isLoggedIn();
+        if (!sessionOk) {
+          throw new Error(
+            'Login succeeded but the session could not be verified. Check the IP or hostname and that this is a compatible TP-Link Easy Smart switch.',
+          );
+        }
+        return { ok: true };
       }
 
       this.cookielessModeEnabled = true;
       if (await this.isLoggedIn()) {
-        return true;
+        return { ok: true };
       }
       this.cookielessModeEnabled = false;
       throw new Error('Session cookie missing and cookieless mode probe failed.');
     } catch (error) {
-      if (this.isAbortedRequest(error)) {
-        return false;
-      }
-      this.log(`Error connecting to the device: ${error instanceof Error ? error.message : 'an unknown error occurred.'}`);
-      return false;
+      const message = this.formatErrorForUser(error);
+      this.log(`Error connecting to the device: ${message}`);
+      return { ok: false, message };
     }
+  }
+
+  /**
+   * Normalizes axios and generic errors into a single human-readable line for logs and pair/repair UI.
+   */
+  private formatErrorForUser(error: unknown): string {
+    if (this.isAbortedRequest(error)) {
+      return 'Request was cancelled.';
+    }
+    if (isAxiosError(error)) {
+      const code = error.code ? String(error.code) : '';
+      const status = error.response?.status;
+      const hint = [code && code !== 'ERR_BAD_RESPONSE' ? code : '', status ? `HTTP ${status}` : '']
+        .filter(Boolean)
+        .join(' · ');
+      const detail = error.message || 'Network request failed';
+      return hint ? `${hint} — ${detail}` : detail;
+    }
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return 'An unknown error occurred.';
   }
 
   private processLoginResponse(data: string): number {
@@ -295,54 +345,59 @@ class DeviceAPI extends Logger {
     }
   }
 
+  /**
+   * Loads system info HTML and parses fields; throws so `tryConnect` can forward the message.
+   */
+  private async readSystemInfo(): Promise<SystemInfo> {
+    const response = await axios.get(`http://${this.ipAddress}/SystemInfoRpm.htm`, {
+      ...axiosSwitchLimits,
+      ...this.axiosAbortConfig(),
+      timeout: HTTP_TIMEOUT_MS,
+      headers: this.authHeaders(),
+    });
+
+    if (response.status !== 200) {
+      throw new Error(`HTTP status ${response.status}`);
+    }
+
+    this.assertReasonableSwitchContentType(response.headers);
+
+    const data = await response.data;
+
+    const macAddressMatch = data.match(/macStr:\s?\[\n?\s*"([^"]+)"\n?\s*\]/);
+    const firmwareMatch = data.match(/firmwareStr:\s?\[\n?\s*"([^"]+)"\n?\s*\]/);
+    const hardwareMatch = data.match(/hardwareStr:\s?\[\n?\s*"([^"]+)"\n?\s*\]/);
+    const descriptionMatch = data.match(/descriStr:\s?\[\n?\s*"([^"]+)"\n?\s*\]/);
+
+    if (!macAddressMatch || !macAddressMatch[1]) {
+      throw new Error('MAC address not found in the response.');
+    }
+
+    if (!firmwareMatch || !firmwareMatch[1]) {
+      throw new Error('Firmware version not found in the response.');
+    }
+
+    if (!hardwareMatch || !hardwareMatch[1]) {
+      throw new Error('Hardware version not found in the response.');
+    }
+
+    if (!descriptionMatch || !descriptionMatch[1]) {
+      throw new Error('Description not found in the response.');
+    }
+
+    return {
+      macAddress: normalizeMacFromDeviceHtml(macAddressMatch[1]),
+      firmwareVersion: assertValidFirmwareVersionString(firmwareMatch[1]),
+      hardwareVersion: assertValidHardwareVersionString(hardwareMatch[1]),
+      description: assertValidDescriptionString(descriptionMatch[1]),
+    };
+  }
+
   private async getSystemInfo(): Promise<SystemInfo | null> {
     // Gets the information from the device's system info page.
     // This requires an active login session.
     try {
-      const response = await axios.get(`http://${this.ipAddress}/SystemInfoRpm.htm`, {
-        ...axiosSwitchLimits,
-        ...this.axiosAbortConfig(),
-        timeout: HTTP_TIMEOUT_MS,
-        headers: this.authHeaders(),
-      });
-
-      if (response.status !== 200) {
-        throw new Error(`HTTP status ${response.status}`);
-      }
-
-      this.assertReasonableSwitchContentType(response.headers);
-
-      const data = await response.data;
-
-      // Extract the device info from the response
-      const macAddressMatch = data.match(/macStr:\s?\[\n?\s*"([^"]+)"\n?\s*\]/);
-      const firmwareMatch = data.match(/firmwareStr:\s?\[\n?\s*"([^"]+)"\n?\s*\]/);
-      const hardwareMatch = data.match(/hardwareStr:\s?\[\n?\s*"([^"]+)"\n?\s*\]/);
-      const descriptionMatch = data.match(/descriStr:\s?\[\n?\s*"([^"]+)"\n?\s*\]/);
-
-      if (!macAddressMatch || !macAddressMatch[1]) {
-        throw new Error('MAC address not found in the response.');
-      }
-
-      if (!firmwareMatch || !firmwareMatch[1]) {
-        throw new Error('Firmware version not found in the response.');
-      }
-
-      if (!hardwareMatch || !hardwareMatch[1]) {
-        throw new Error('Hardware version not found in the response.');
-      }
-
-      if (!descriptionMatch || !descriptionMatch[1]) {
-        throw new Error('Description not found in the response.');
-      }
-
-      const systemInfo: SystemInfo = {
-        macAddress: normalizeMacFromDeviceHtml(macAddressMatch[1]),
-        firmwareVersion: assertValidFirmwareVersionString(firmwareMatch[1]),
-        hardwareVersion: assertValidHardwareVersionString(hardwareMatch[1]),
-        description: assertValidDescriptionString(descriptionMatch[1]),
-      };
-      return systemInfo;
+      return await this.readSystemInfo();
     } catch (error) {
       if (this.isAbortedRequest(error)) {
         return null;
@@ -352,65 +407,70 @@ class DeviceAPI extends Logger {
     }
   }
 
+  /**
+   * Loads port settings HTML and parses tables; throws so `tryConnect` can forward the message.
+   */
+  private async readPortSettings(): Promise<PortSettings> {
+    const response = await axios.get(`http://${this.ipAddress}/PortSettingRpm.htm`, {
+      ...axiosSwitchLimits,
+      ...this.axiosAbortConfig(),
+      timeout: HTTP_TIMEOUT_MS,
+      headers: this.authHeaders(),
+    });
+
+    if (response.status !== 200) {
+      throw new Error(`HTTP status ${response.status}`);
+    }
+
+    this.assertReasonableSwitchContentType(response.headers);
+
+    const data = await response.data;
+
+    const maxPortMatch = data.match(/var\s+max_port_num\s*=\s*(\d+);/);
+    const stateMatch = data.match(/state:\s*\[([^\]]+)\]/);
+    const flowControlMatch = data.match(/fc_cfg:\s*\[([^\]]+)\]/);
+    const speedMatch = data.match(/spd_cfg:\s*\[([^\]]+)\]/);
+    const linkUpMatch = data.match(/spd_act:\s*\[([^\]]+)\]/);
+
+    if (!maxPortMatch || !maxPortMatch[1]) {
+      throw new Error('Max port number not found in the response.');
+    }
+
+    if (!stateMatch || !stateMatch[1]) {
+      throw new Error('Port state not found in the response.');
+    }
+
+    if (!flowControlMatch || !flowControlMatch[1]) {
+      throw new Error('Port flow control not found in the response.');
+    }
+
+    if (!speedMatch || !speedMatch[1]) {
+      throw new Error('Port speed not found in the response.');
+    }
+
+    if (!linkUpMatch || !linkUpMatch[1]) {
+      throw new Error('Actual port speed not found in the response.');
+    }
+
+    const numPorts = assertPortCountFromDevice(parseInt(maxPortMatch[1], 10));
+    const stateNums = parsePortTableIntegers(stateMatch[1], numPorts, 'port state');
+    const flowNums = parsePortTableIntegers(flowControlMatch[1], numPorts, 'flow control');
+    const speedNums = parsePortTableIntegers(speedMatch[1], numPorts, 'port speed config');
+    const actNums = parsePortTableIntegers(linkUpMatch[1], numPorts, 'port link speed');
+
+    return {
+      numPorts,
+      portEnabled: mapZeroOneToBooleans(stateNums, 'port state'),
+      flowControl: mapZeroOneToBooleans(flowNums, 'flow control'),
+      speed: speedNums,
+      linkUp: mapSpeedActToLinkUp(actNums),
+    };
+  }
+
   private async getPortSettings(): Promise<PortSettings | null> {
     // Gets the device's port settings
     try {
-      const response = await axios.get(`http://${this.ipAddress}/PortSettingRpm.htm`, {
-        ...axiosSwitchLimits,
-        ...this.axiosAbortConfig(),
-        timeout: HTTP_TIMEOUT_MS,
-        headers: this.authHeaders(),
-      });
-
-      if (response.status !== 200) {
-        throw new Error(`HTTP status ${response.status}`);
-      }
-
-      this.assertReasonableSwitchContentType(response.headers);
-
-      const data = await response.data;
-
-      // Extract the port setting from the response
-      const maxPortMatch = data.match(/var\s+max_port_num\s*=\s*(\d+);/);
-      const stateMatch = data.match(/state:\s*\[([^\]]+)\]/);
-      const flowControlMatch = data.match(/fc_cfg:\s*\[([^\]]+)\]/);
-      const speedMatch = data.match(/spd_cfg:\s*\[([^\]]+)\]/);
-      const linkUpMatch = data.match(/spd_act:\s*\[([^\]]+)\]/);
-
-      if (!maxPortMatch || !maxPortMatch[1]) {
-        throw new Error('Max port number not found in the response.');
-      }
-
-      if (!stateMatch || !stateMatch[1]) {
-        throw new Error('Port state not found in the response.');
-      }
-
-      if (!flowControlMatch || !flowControlMatch[1]) {
-        throw new Error('Port flow control not found in the response.');
-      }
-
-      if (!speedMatch || !speedMatch[1]) {
-        throw new Error('Port speed not found in the response.');
-      }
-
-      if (!linkUpMatch || !linkUpMatch[1]) {
-        throw new Error('Actual port speed not found in the response.');
-      }
-
-      const numPorts = assertPortCountFromDevice(parseInt(maxPortMatch[1], 10));
-      const stateNums = parsePortTableIntegers(stateMatch[1], numPorts, 'port state');
-      const flowNums = parsePortTableIntegers(flowControlMatch[1], numPorts, 'flow control');
-      const speedNums = parsePortTableIntegers(speedMatch[1], numPorts, 'port speed config');
-      const actNums = parsePortTableIntegers(linkUpMatch[1], numPorts, 'port link speed');
-
-      const portSettings: PortSettings = {
-        numPorts,
-        portEnabled: mapZeroOneToBooleans(stateNums, 'port state'),
-        flowControl: mapZeroOneToBooleans(flowNums, 'flow control'),
-        speed: speedNums,
-        linkUp: mapSpeedActToLinkUp(actNums),
-      };
-      return portSettings;
+      return await this.readPortSettings();
     } catch (error) {
       if (this.isAbortedRequest(error)) {
         return null;
