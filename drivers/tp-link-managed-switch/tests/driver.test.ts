@@ -252,7 +252,7 @@ describe('Driver', () => {
   });
 
   describe('onPair', () => {
-    it('should handle device pairing correctly', async () => {
+    it('should register pair_try_connect and list_devices handlers', async () => {
       const mockSession = {
         setHandler: jest.fn(),
         nextView: jest.fn(),
@@ -262,13 +262,11 @@ describe('Driver', () => {
 
       await driver.onPair(mockSession);
 
-      expect(mockSession.setHandler).toHaveBeenCalledWith('set_connection_info', expect.any(Function));
-      expect(mockSession.setHandler).toHaveBeenCalledWith('showView', expect.any(Function));
+      expect(mockSession.setHandler).toHaveBeenCalledWith('pair_try_connect', expect.any(Function));
       expect(mockSession.setHandler).toHaveBeenCalledWith('list_devices', expect.any(Function));
-      expect(mockSession.setHandler).toHaveBeenCalledWith('close_connection', expect.any(Function));
     });
 
-    it('set_connection_info rejects invalid payload before field validation', async () => {
+    it('pair_try_connect rejects invalid payload before field validation', async () => {
       const mockSession = {
         setHandler: jest.fn(),
         nextView: jest.fn(),
@@ -293,15 +291,19 @@ describe('Driver', () => {
 
       await driver.onPair(mockSession);
 
-      const handlerEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
+      const handlerEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'pair_try_connect');
       expect(handlerEntry).toBeDefined();
       const handler = handlerEntry![1] as (data: unknown) => Promise<unknown>;
 
-      await expect(handler(null)).rejects.toThrow('t:settings.drivers.tp-link-managed-switch.invalidConnectionPayload');
+      const result = await handler(null);
+      expect(result).toEqual({
+        success: false,
+        message: 't:settings.drivers.tp-link-managed-switch.invalidConnectionPayload',
+      });
       expect(__).toHaveBeenCalledWith('settings.drivers.tp-link-managed-switch.invalidConnectionPayload');
     });
 
-    it('list_devices returns an empty list before loading has created a DeviceAPI', async () => {
+    it('list_devices returns an empty list before pair_try_connect has created a DeviceAPI', async () => {
       const mockSession = {
         setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
       };
@@ -328,7 +330,7 @@ describe('Driver', () => {
       await expect(listDevices()).resolves.toEqual([]);
     });
 
-    it('showView loading shows list_devices when connect succeeds', async () => {
+    it('pair_try_connect shows list_devices when connect succeeds', async () => {
       const mockSession = {
         setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
       };
@@ -348,7 +350,7 @@ describe('Driver', () => {
       };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
-        connect: jest.fn().mockResolvedValue(true),
+        tryConnect: jest.fn().mockResolvedValue({ ok: true }),
         getName: jest.fn().mockReturnValue('My Switch'),
         getMacAddress: jest.fn().mockReturnValue('00:11:22:33:44:55'),
         getNumPorts: jest.fn().mockReturnValue(8),
@@ -356,15 +358,12 @@ describe('Driver', () => {
 
       await driver.onPair(mockSession);
 
-      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
-      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+      const pairTry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'pair_try_connect');
+      await (pairTry![1] as (d: unknown) => Promise<unknown>)({
         address: '192.168.1.20',
         username: 'admin',
         password: 'secret',
       });
-
-      const showViewEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView');
-      await (showViewEntry![1] as (v: string) => Promise<void>)('loading');
 
       expect(mockSession.showView).toHaveBeenCalledWith('list_devices');
 
@@ -408,7 +407,7 @@ describe('Driver', () => {
       };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
-        connect: jest.fn().mockResolvedValue(true),
+        tryConnect: jest.fn().mockResolvedValue({ ok: true }),
         getName: jest.fn().mockReturnValue('My Switch'),
         getMacAddress: jest.fn().mockReturnValue('00:11:22:33:44:55'),
         getNumPorts: jest.fn().mockReturnValue(numPorts),
@@ -416,15 +415,12 @@ describe('Driver', () => {
 
       await driver.onPair(mockSession);
 
-      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
-      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+      const pairTry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'pair_try_connect');
+      await (pairTry![1] as (d: unknown) => Promise<unknown>)({
         address: '192.168.1.20',
         username: 'admin',
         password: 'secret',
       });
-
-      const showViewEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView');
-      await (showViewEntry![1] as (v: string) => Promise<void>)('loading');
 
       const listDevices = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'list_devices')![
         1
@@ -453,7 +449,7 @@ describe('Driver', () => {
       };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
-        connect: jest.fn().mockResolvedValue(true),
+        tryConnect: jest.fn().mockResolvedValue({ ok: true }),
         getName: jest.fn().mockReturnValue('My Switch'),
         getMacAddress: jest.fn().mockReturnValue('00:11:22:33:44:55'),
         getNumPorts: jest.fn().mockReturnValue(0),
@@ -461,15 +457,12 @@ describe('Driver', () => {
 
       await driver.onPair(mockSession);
 
-      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
-      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+      const pairTry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'pair_try_connect');
+      await (pairTry![1] as (d: unknown) => Promise<unknown>)({
         address: '192.168.1.20',
         username: 'admin',
         password: 'secret',
       });
-
-      const showViewEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView');
-      await (showViewEntry![1] as (v: string) => Promise<void>)('loading');
 
       const listDevices = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'list_devices')![
         1
@@ -478,7 +471,7 @@ describe('Driver', () => {
       expect(device.icon).toBeUndefined();
     });
 
-    it('showView loading shows connection_error when connect fails', async () => {
+    it('pair_try_connect returns failure when connect fails', async () => {
       const mockSession = {
         setHandler: jest.fn(), nextView: jest.fn(), showView: jest.fn(), done: jest.fn(),
       };
@@ -498,27 +491,31 @@ describe('Driver', () => {
       };
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
-        connect: jest.fn().mockResolvedValue(false),
+        tryConnect: jest.fn().mockResolvedValue({
+          ok: false,
+          message: 'Unexpected content type from device',
+        }),
       }));
 
       await driver.onPair(mockSession);
 
-      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
-      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+      const pairTry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'pair_try_connect');
+      const result = await (pairTry![1] as (d: unknown) => Promise<unknown>)({
         address: '192.168.1.20',
         username: 'admin',
         password: 'secret',
       });
 
-      const showViewEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView');
-      await (showViewEntry![1] as (v: string) => Promise<void>)('loading');
-
-      expect(mockSession.showView).toHaveBeenCalledWith('connection_error');
+      expect(result).toEqual({
+        success: false,
+        message: 'Unexpected content type from device',
+      });
+      expect(mockSession.showView).not.toHaveBeenCalled();
     });
   });
 
   describe('onRepair', () => {
-    it('should handle device repair correctly', async () => {
+    it('should register repair handlers', async () => {
       const mockSession = {
         setHandler: jest.fn(),
         nextView: jest.fn(),
@@ -535,9 +532,8 @@ describe('Driver', () => {
       await driver.onRepair(mockSession, mockDevice);
 
       expect(mockSession.setHandler).toHaveBeenCalledWith('getDeviceMacAddress', expect.any(Function));
-      expect(mockSession.setHandler).toHaveBeenCalledWith('set_connection_info', expect.any(Function));
-      expect(mockSession.setHandler).toHaveBeenCalledWith('showView', expect.any(Function));
-      expect(mockSession.setHandler).toHaveBeenCalledWith('close_connection', expect.any(Function));
+      expect(mockSession.setHandler).toHaveBeenCalledWith('getConnectionInfo', expect.any(Function));
+      expect(mockSession.setHandler).toHaveBeenCalledWith('repair_try_connect', expect.any(Function));
     });
 
     it('should throw an error if the device is unsupported', async () => {
@@ -553,7 +549,7 @@ describe('Driver', () => {
       ).rejects.toThrow('Unsupported device');
     });
 
-    it('repair set_connection_info reuses stored password when the password field is empty', async () => {
+    it('repair_try_connect reuses stored password when the password field is empty', async () => {
       const mockSession = {
         setHandler: jest.fn(),
         nextView: jest.fn().mockResolvedValue(undefined),
@@ -573,9 +569,9 @@ describe('Driver', () => {
       mockDevice.resumeRefresh = jest.fn().mockResolvedValue(undefined);
       mockDevice.repair = jest.fn().mockResolvedValue(undefined);
 
-      const connect = jest.fn().mockResolvedValue(true);
+      const tryConnect = jest.fn().mockResolvedValue({ ok: true });
       const getMacAddress = jest.fn().mockReturnValue('00:11:22:33:44:55');
-      (DeviceAPI as jest.Mock).mockImplementationOnce(() => ({ connect, getMacAddress }));
+      (DeviceAPI as jest.Mock).mockImplementationOnce(() => ({ tryConnect, getMacAddress }));
 
       driver.homey = {
         __: jest.fn((key: string) => key),
@@ -594,20 +590,13 @@ describe('Driver', () => {
 
       await driver.onRepair(mockSession, mockDevice);
 
-      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
-      expect(setConn).toBeDefined();
-      const setConnectionHandler = setConn![1] as (data: unknown) => Promise<unknown>;
+      const repairTry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'repair_try_connect');
+      expect(repairTry).toBeDefined();
+      const repairTryHandler = repairTry![1] as (data: unknown) => Promise<unknown>;
 
-      await setConnectionHandler({ address: '192.168.1.10', username: 'admin', password: '' });
+      await repairTryHandler({ address: '192.168.1.10', username: 'admin', password: '' });
 
       expect(mockDevice.getPassword).toHaveBeenCalled();
-      expect(mockSession.nextView).toHaveBeenCalled();
-
-      const showViewEntry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView');
-      expect(showViewEntry).toBeDefined();
-      const showViewHandler = showViewEntry![1] as (view: string) => Promise<void>;
-      await showViewHandler('loading');
-
       expect(DeviceAPI).toHaveBeenCalledWith(driver, '192.168.1.10', 'admin', storedPassword);
       expect(mockDevice.repair).toHaveBeenCalledWith('192.168.1.10', 'admin', storedPassword);
     });
@@ -626,7 +615,7 @@ describe('Driver', () => {
       return mockDevice;
     }
 
-    it('repair showView loading shows done and repairs when MAC matches', async () => {
+    it('repair_try_connect shows done and repairs when MAC matches', async () => {
       const mockSession = {
         setHandler: jest.fn(),
         nextView: jest.fn().mockResolvedValue(undefined),
@@ -636,7 +625,7 @@ describe('Driver', () => {
       const mockDevice = makeRepairableDevice();
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
-        connect: jest.fn().mockResolvedValue(true),
+        tryConnect: jest.fn().mockResolvedValue({ ok: true }),
         getMacAddress: jest.fn().mockReturnValue('00:11:22:33:44:55'),
       }));
 
@@ -657,17 +646,12 @@ describe('Driver', () => {
 
       await driver.onRepair(mockSession, mockDevice);
 
-      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
-      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+      const repairTry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'repair_try_connect');
+      await (repairTry![1] as (d: unknown) => Promise<unknown>)({
         address: '192.168.1.30',
         username: 'admin',
         password: 'newsecret',
       });
-
-      const showViewHandler = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView')![
-        1
-      ] as (view: string) => Promise<void>;
-      await showViewHandler('loading');
 
       expect(mockDevice.suspendRefresh).toHaveBeenCalled();
       expect(mockDevice.repair).toHaveBeenCalledWith('192.168.1.30', 'admin', 'newsecret');
@@ -675,7 +659,7 @@ describe('Driver', () => {
       expect(mockDevice.resumeRefresh).toHaveBeenCalled();
     });
 
-    it('repair showView loading shows incorrect_device_error when MAC differs', async () => {
+    it('repair_try_connect returns wrong_device when MAC differs', async () => {
       const mockSession = {
         setHandler: jest.fn(),
         nextView: jest.fn().mockResolvedValue(undefined),
@@ -685,7 +669,7 @@ describe('Driver', () => {
       const mockDevice = makeRepairableDevice();
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
-        connect: jest.fn().mockResolvedValue(true),
+        tryConnect: jest.fn().mockResolvedValue({ ok: true }),
         getMacAddress: jest.fn().mockReturnValue('aa:bb:cc:dd:ee:ff'),
       }));
 
@@ -706,24 +690,24 @@ describe('Driver', () => {
 
       await driver.onRepair(mockSession, mockDevice);
 
-      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
-      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+      const repairTry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'repair_try_connect');
+      const result = await (repairTry![1] as (d: unknown) => Promise<unknown>)({
         address: '192.168.1.30',
         username: 'admin',
         password: 'newsecret',
       });
 
-      const showViewHandler = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView')![
-        1
-      ] as (view: string) => Promise<void>;
-      await showViewHandler('loading');
-
-      expect(mockSession.showView).toHaveBeenCalledWith('incorrect_device_error');
+      expect(result).toEqual({
+        success: false,
+        reason: 'wrong_device',
+        message: 'settings.drivers.tp-link-managed-switch.repair.incorrect_device_error.errorText',
+      });
+      expect(mockSession.showView).not.toHaveBeenCalled();
       expect(mockDevice.repair).not.toHaveBeenCalled();
       expect(mockDevice.resumeRefresh).toHaveBeenCalled();
     });
 
-    it('repair showView loading shows connection_error when connect fails', async () => {
+    it('repair_try_connect returns connection failure when connect fails', async () => {
       const mockSession = {
         setHandler: jest.fn(),
         nextView: jest.fn().mockResolvedValue(undefined),
@@ -733,7 +717,10 @@ describe('Driver', () => {
       const mockDevice = makeRepairableDevice();
 
       (DeviceAPI as jest.Mock).mockImplementation(() => ({
-        connect: jest.fn().mockResolvedValue(false),
+        tryConnect: jest.fn().mockResolvedValue({
+          ok: false,
+          message: 'ECONNREFUSED — connection refused',
+        }),
       }));
 
       driver.homey = {
@@ -753,24 +740,23 @@ describe('Driver', () => {
 
       await driver.onRepair(mockSession, mockDevice);
 
-      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
-      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+      const repairTry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'repair_try_connect');
+      const result = await (repairTry![1] as (d: unknown) => Promise<unknown>)({
         address: '192.168.1.30',
         username: 'admin',
         password: 'newsecret',
       });
 
-      const showViewHandler = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView')![
-        1
-      ] as (view: string) => Promise<void>;
-      await showViewHandler('loading');
-
-      expect(mockSession.showView).toHaveBeenCalledWith('connection_error');
+      expect(result).toEqual({
+        success: false,
+        reason: 'connection',
+        message: 'ECONNREFUSED — connection refused',
+      });
       expect(mockDevice.repair).not.toHaveBeenCalled();
       expect(mockDevice.resumeRefresh).toHaveBeenCalled();
     });
 
-    it('repair showView loading shows connection_error on exception and still resumes refresh', async () => {
+    it('repair_try_connect returns connection failure on exception and still resumes refresh', async () => {
       const mockSession = {
         setHandler: jest.fn(),
         nextView: jest.fn().mockResolvedValue(undefined),
@@ -798,19 +784,18 @@ describe('Driver', () => {
 
       await driver.onRepair(mockSession, mockDevice);
 
-      const setConn = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'set_connection_info');
-      await (setConn![1] as (d: unknown) => Promise<unknown>)({
+      const repairTry = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'repair_try_connect');
+      const result = await (repairTry![1] as (d: unknown) => Promise<unknown>)({
         address: '192.168.1.30',
         username: 'admin',
         password: 'newsecret',
       });
 
-      const showViewHandler = mockSession.setHandler.mock.calls.find((c: unknown[]) => c[0] === 'showView')![
-        1
-      ] as (view: string) => Promise<void>;
-      await showViewHandler('loading');
-
-      expect(mockSession.showView).toHaveBeenCalledWith('connection_error');
+      expect(result).toEqual({
+        success: false,
+        reason: 'connection',
+        message: 'suspend failed',
+      });
       expect(mockDevice.resumeRefresh).toHaveBeenCalled();
     });
   });

@@ -46,6 +46,16 @@ interface FlowCardInvertedState {
 /** State object for flow run listeners (unused for these cards; typed for API consistency). */
 type FlowCardRunState = Record<string, unknown>;
 
+/** Result returned to `pair_try_connect` front-end for inline errors vs navigation to `list_devices`. */
+type PairTryConnectResult =
+  | { success: true }
+  | { success: false; message: string };
+
+/** Result returned to `repair_try_connect` for inline errors vs navigation to `done`. */
+type RepairTryConnectResult =
+  | { success: true }
+  | { success: false; reason: 'connection' | 'wrong_device'; message: string };
+
 class Driver extends Homey.Driver {
 
   async onInit() {
@@ -116,24 +126,25 @@ class Driver extends Homey.Driver {
     let password = '';
     let deviceAPI: DeviceAPI | null = null;
 
-    session.setHandler('set_connection_info', async (data) => {
-      const creds = this.parseValidatedConnectionFields(data);
-      address = creds.address;
-      username = creds.username;
-      password = creds.password;
-      await session.nextView();
-      return true;
-    });
-
-    session.setHandler('showView', async (view) => {
-      if (view === 'loading') {
+    session.setHandler('pair_try_connect', async (data): Promise<PairTryConnectResult> => {
+      try {
+        const creds = this.parseValidatedConnectionFields(data);
+        address = creds.address;
+        username = creds.username;
+        password = creds.password;
         deviceAPI = new DeviceAPI(this, address, username, password);
-        const result = await deviceAPI.connect();
-        if (result) {
-          await session.showView('list_devices');
-        } else {
-          await session.showView('connection_error');
+        const outcome = await deviceAPI.tryConnect();
+        if (!outcome.ok) {
+          return {
+            success: false,
+            message: outcome.message,
+          };
         }
+        await session.showView('list_devices');
+        return { success: true };
+      } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        return { success: false, message };
       }
     });
 
@@ -163,11 +174,6 @@ class Driver extends Homey.Driver {
       }
       return [deviceData];
     });
-
-    session.setHandler('close_connection', async () => {
-      await session.done();
-      return true;
-    });
   }
 
   async onRepair(session: Homey.Driver.PairSession, device: Homey.Device) {
@@ -194,48 +200,54 @@ class Driver extends Homey.Driver {
       };
     });
 
-    session.setHandler('set_connection_info', async (data) => {
-      const creds = this.parseValidatedConnectionFields(data, {
-        keepPasswordOnEmpty: () => deviceToRepair.getPassword(),
-      });
-      address = creds.address;
-      username = creds.username;
-      password = creds.password;
-      await session.nextView();
-      return true;
-    });
-
-    session.setHandler('showView', async (view) => {
-      if (view === 'loading') {
-        try {
-          await deviceToRepair.suspendRefresh();
-          deviceAPI = new DeviceAPI(this, address, username, password);
-          const result = await deviceAPI.connect();
-          if (result && this.isSameDevice(deviceToRepair, deviceAPI)) {
-            await deviceToRepair.repair(address, username, password);
-            await session.showView('done');
-          } else if (result) {
-            await session.showView('incorrect_device_error');
-          } else {
-            await session.showView('connection_error');
-          }
-        } catch (e) {
-          this.log('repair error', e);
-          await session.showView('connection_error');
-        } finally {
-          await deviceToRepair.resumeRefresh();
-        }
+    session.setHandler('repair_try_connect', async (data): Promise<RepairTryConnectResult> => {
+      try {
+        const creds = this.parseValidatedConnectionFields(data, {
+          keepPasswordOnEmpty: () => deviceToRepair.getPassword(),
+        });
+        address = creds.address;
+        username = creds.username;
+        password = creds.password;
+      } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        return { success: false, reason: 'connection', message };
       }
-    });
 
-    session.setHandler('close_connection', async () => {
-      await session.done();
-      return true;
+      try {
+        await deviceToRepair.suspendRefresh();
+        deviceAPI = new DeviceAPI(this, address, username, password);
+        const outcome = await deviceAPI.tryConnect();
+        if (!outcome.ok) {
+          return {
+            success: false,
+            reason: 'connection',
+            message: outcome.message,
+          };
+        }
+        if (!this.isSameDevice(deviceToRepair, deviceAPI)) {
+          return {
+            success: false,
+            reason: 'wrong_device',
+            message: String(this.homey.__(
+              'settings.drivers.tp-link-managed-switch.repair.incorrect_device_error.errorText',
+            )),
+          };
+        }
+        await deviceToRepair.repair(address, username, password);
+        await session.showView('done');
+        return { success: true };
+      } catch (e) {
+        this.log('repair error', e);
+        const message = e instanceof Error ? e.message : String(e);
+        return { success: false, reason: 'connection', message };
+      } finally {
+        await deviceToRepair.resumeRefresh();
+      }
     });
   }
 
   /**
-   * Parses pair/repair `set_connection_info` payloads into validated credentials.
+   * Parses pair/repair credential payloads into validated fields for `pair_try_connect` / `repair_try_connect`.
    * When `keepPasswordOnEmpty` is set, an empty password field reuses the existing stored password (repair flow).
    */
   private parseValidatedConnectionFields(
