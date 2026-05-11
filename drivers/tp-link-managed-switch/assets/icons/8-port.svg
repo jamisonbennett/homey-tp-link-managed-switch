@@ -15,7 +15,7 @@
         <g id="Group" stroke-width="1" fill-rule="evenodd" transform="translate(473, 445)">
             <rect id="Rectangle" fill="#000000" x="19.0260804" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
             <rect id="Rectangle" fill="#000000" x="42.4106958" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="19.0260804" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="19.0260804" y="17.3253204" width="9.74358974" height="9.74683544"></rect>
             <line x1="262.774928" y1="13.0139963" x2="262.854479" y2="64.1267701" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
             <line x1="361.185184" y1="12.0291145" x2="361.264736" y2="63.1418883" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
             <rect id="Rectangle" fill="#000000" x="369.795311" y="25.1734217" width="7.79487179" height="7.79746835"></rect>
@@ -25,19 +25,19 @@
             <line x1="112.156914" y1="13.3798104" x2="112.236466" y2="64.4925842" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
             <line x1="162.823581" y1="13.3798104" x2="162.903133" y2="64.4925842" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
             <line x1="213.395603" y1="14.5239356" x2="213.475155" y2="65.6367094" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
-            <path d="M408.253164,16.8875512 L408.253164,62.3185209 L9.74683556,67.1346578 L9.74683556,9.91877136 Z" id="Path-33" stroke="#000000" stroke-width="19.4936709"></path>
-            <rect id="Rectangle" fill="#000000" x="172.000439" y="22.2493711" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="195.385055" y="22.2493711" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="42.4106958" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="70.6671061" y="20.300004" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="94.0517214" y="21.2746875" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="121.333773" y="21.2746875" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="143.744029" y="21.2746875" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="221.692747" y="23.2240546" width="9.74358974" height="9.74683544"></rect>
+            <path d="M408.253164,17.5097811 L408.253164,62.1701393 L9.74683556,69.6257468 L9.74683556,7.69683096 Z" id="Path-33" stroke="#000000" stroke-width="19.4936709"></path>
+            <rect id="Rectangle" fill="#000000" x="172.000439" y="20.2493711" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="195.385055" y="20.2493711" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="42.4106958" y="17.3253204" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="70.6671061" y="18.300004" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="94.0517214" y="18.2746875" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="121.333773" y="19.2746875" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="143.744029" y="19.2746875" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="221.692747" y="21.2240546" width="9.74358974" height="9.74683544"></rect>
             <rect id="Rectangle" fill="#000000" x="245.077362" y="23.2240546" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="271.385055" y="24.1987381" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="271.385055" y="22.1987381" width="9.74358974" height="9.74683544"></rect>
             <rect id="Rectangle" fill="#000000" x="293.795311" y="24.1987381" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="321.077362" y="25.1734217" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="321.077362" y="24.1734217" width="9.74358974" height="9.74683544"></rect>
             <rect id="Rectangle" fill="#000000" x="343.487619" y="25.1734217" width="9.74358974" height="9.74683544"></rect>
         </g>
     </g>
