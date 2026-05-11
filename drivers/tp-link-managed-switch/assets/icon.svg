@@ -6,16 +6,16 @@
     </defs>
     <g id="icon" stroke="none" fill="none" xlink:href="#path-1">
         <path d="M336.685352,400.011746 L919.685352,420.001509 L939,420.663765 L939,548.336235 L919.685352,548.998491 L336.685352,568.988254 L335.638123,569.024161 L334.592874,568.950438 L39.5928738,548.143767 L21,546.832391 L21,418.158717 L39.8468711,417.070263 L334.846871,400.03327 L335.765617,399.98021 Z" id="Combined-Shape" stroke="#000000" stroke-width="40" stroke-linejoin="round"></path>
-        <line x1="97" y1="461.934459" x2="97" y2="508.908805" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
-        <line x1="125.455753" y1="460.428046" x2="125.455753" y2="509.451868" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
-        <line x1="153.911505" y1="459.921632" x2="153.911505" y2="510.994931" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
-        <line x1="182.367258" y1="458.415218" x2="182.367258" y2="511.537994" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
-        <line x1="333" y1="566" x2="332.5" y2="394.441101" id="Path-12" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="96.5367793" y1="461.934459" x2="96.5367793" y2="508.908805" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="124.992532" y1="460.428046" x2="124.992532" y2="509.451868" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="153.448284" y1="459.921632" x2="153.448284" y2="510.994931" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="181.904037" y1="458.415218" x2="181.904037" y2="511.537994" id="Path-11" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="332.5" y1="566" x2="332" y2="394.441101" id="Path-12" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></line>
         <polygon id="Rectangle" stroke="#000000" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" points="367 453 445 454.868725 445 500.913574 367 501"></polygon>
         <g id="Group" stroke-width="1" fill-rule="evenodd" transform="translate(473, 445)">
             <rect id="Rectangle" fill="#000000" x="19.0260804" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
             <rect id="Rectangle" fill="#000000" x="42.4106958" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="19.0260804" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="19.0260804" y="17.3253204" width="9.74358974" height="9.74683544"></rect>
             <line x1="262.774928" y1="13.0139963" x2="262.854479" y2="64.1267701" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
             <line x1="361.185184" y1="12.0291145" x2="361.264736" y2="63.1418883" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
             <rect id="Rectangle" fill="#000000" x="369.795311" y="25.1734217" width="7.79487179" height="7.79746835"></rect>
@@ -25,19 +25,19 @@
             <line x1="112.156914" y1="13.3798104" x2="112.236466" y2="64.4925842" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
             <line x1="162.823581" y1="13.3798104" x2="162.903133" y2="64.4925842" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
             <line x1="213.395603" y1="14.5239356" x2="213.475155" y2="65.6367094" id="Path-496" stroke="#000000" stroke-width="19.4936709"></line>
-            <path d="M408.253164,16.8875512 L408.253164,62.3185209 L9.74683556,67.1346578 L9.74683556,9.91877136 Z" id="Path-33" stroke="#000000" stroke-width="19.4936709"></path>
-            <rect id="Rectangle" fill="#000000" x="172.000439" y="22.2493711" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="195.385055" y="22.2493711" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="42.4106958" y="19.3253204" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="70.6671061" y="20.300004" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="94.0517214" y="21.2746875" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="121.333773" y="21.2746875" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="143.744029" y="21.2746875" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="221.692747" y="23.2240546" width="9.74358974" height="9.74683544"></rect>
+            <path d="M408.253164,17.5097811 L408.253164,62.1701393 L9.74683556,69.6257468 L9.74683556,7.69683096 Z" id="Path-33" stroke="#000000" stroke-width="19.4936709"></path>
+            <rect id="Rectangle" fill="#000000" x="172.000439" y="20.2493711" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="195.385055" y="20.2493711" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="42.4106958" y="17.3253204" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="70.6671061" y="18.300004" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="94.0517214" y="18.2746875" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="121.333773" y="19.2746875" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="143.744029" y="19.2746875" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="221.692747" y="21.2240546" width="9.74358974" height="9.74683544"></rect>
             <rect id="Rectangle" fill="#000000" x="245.077362" y="23.2240546" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="271.385055" y="24.1987381" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="271.385055" y="22.1987381" width="9.74358974" height="9.74683544"></rect>
             <rect id="Rectangle" fill="#000000" x="293.795311" y="24.1987381" width="9.74358974" height="9.74683544"></rect>
-            <rect id="Rectangle" fill="#000000" x="321.077362" y="25.1734217" width="9.74358974" height="9.74683544"></rect>
+            <rect id="Rectangle" fill="#000000" x="321.077362" y="24.1734217" width="9.74358974" height="9.74683544"></rect>
             <rect id="Rectangle" fill="#000000" x="343.487619" y="25.1734217" width="9.74358974" height="9.74683544"></rect>
         </g>
     </g>
