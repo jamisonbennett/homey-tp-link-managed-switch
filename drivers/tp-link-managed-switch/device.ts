@@ -253,10 +253,21 @@ class Device extends Homey.Device {
       : Promise.resolve();
 
     const alarmCap = `alarm_port_disconnected.${port}`;
-    const alarmTitle = this.homey.__('settings.drivers.tp-link-managed-switch.portDisconnected', { number: port });
-    let needToSetAlarmTitle = true;
+    const alarmTitle = this.homey.__('settings.drivers.tp-link-managed-switch.portName', { number: port });
+    const alarmTitleTrue = this.homey.__('settings.drivers.tp-link-managed-switch.linkDisconnected');
+    const alarmTitleFalse = this.homey.__('settings.drivers.tp-link-managed-switch.linkConnected');
+    let needAlarmCapabilityOptions = true;
     try {
-      needToSetAlarmTitle = alarmTitle !== this.getCapabilityOptions(alarmCap).title;
+      const alarmOpts = this.getCapabilityOptions(alarmCap) as {
+        title?: unknown;
+        titleTrue?: unknown;
+        titleFalse?: unknown;
+      };
+      needAlarmCapabilityOptions = (
+        alarmTitle !== alarmOpts.title
+        || alarmTitleTrue !== alarmOpts.titleTrue
+        || alarmTitleFalse !== alarmOpts.titleFalse
+      );
     } catch (error) {
       if (error instanceof Error && error.message.startsWith('Invalid Capability:')) {
         // ignore if the capability is not registered because this just means it needs to be registered
@@ -264,8 +275,12 @@ class Device extends Homey.Device {
         throw error;
       }
     }
-    const alarmOptionsPromise = needToSetAlarmTitle
-      ? this.setCapabilityOptions(alarmCap, { title: alarmTitle })
+    const alarmOptionsPromise = needAlarmCapabilityOptions
+      ? this.setCapabilityOptions(alarmCap, {
+        title: alarmTitle,
+        titleTrue: alarmTitleTrue,
+        titleFalse: alarmTitleFalse,
+      })
       : Promise.resolve();
 
     await Promise.all([onoffOptionsPromise, alarmOptionsPromise]);

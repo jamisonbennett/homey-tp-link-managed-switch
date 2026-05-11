@@ -111,11 +111,31 @@ describe('Device Class Tests', () => {
       expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('onoff.3', { title: 'mockValue', uiQuickAction: false });
       expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('onoff.4', { title: 'mockValue', uiQuickAction: false });
       expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('onoff.5', { title: 'mockValue', uiQuickAction: false });
-      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.1', { title: 'mockValue' });
-      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.2', { title: 'mockValue' });
-      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.3', { title: 'mockValue' });
-      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.4', { title: 'mockValue' });
-      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.5', { title: 'mockValue' });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.1', {
+        title: 'mockValue',
+        titleTrue: 'mockValue',
+        titleFalse: 'mockValue',
+      });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.2', {
+        title: 'mockValue',
+        titleTrue: 'mockValue',
+        titleFalse: 'mockValue',
+      });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.3', {
+        title: 'mockValue',
+        titleTrue: 'mockValue',
+        titleFalse: 'mockValue',
+      });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.4', {
+        title: 'mockValue',
+        titleTrue: 'mockValue',
+        titleFalse: 'mockValue',
+      });
+      expect(setCapabilityOptionsSpy).toHaveBeenCalledWith('alarm_port_disconnected.5', {
+        title: 'mockValue',
+        titleTrue: 'mockValue',
+        titleFalse: 'mockValue',
+      });
     });
 
     it('should set available', async () => {
