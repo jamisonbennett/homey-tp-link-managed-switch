@@ -7,10 +7,34 @@
     "local"
   ],
   "name": {
-    "en": "TP-Link Managed Switch"
+    "en": "TP-Link Managed Switch",
+    "nl": "TP-Link Managed Switch",
+    "da": "TP-Link Managed Switch",
+    "de": "TP-Link Managed Switch",
+    "es": "TP-Link Managed Switch",
+    "fr": "Commutateur Géré TP-Link",
+    "it": "TP-Link Managed Switch",
+    "no": "TP-Link Administrert Switch",
+    "sv": "TP-Link Managed Switch",
+    "pl": "TP-Link Zarządzany Przełącznik",
+    "ru": "TP-Link Управляемый Коммутатор",
+    "ko": "TP-Link 관리형 스위치",
+    "ar": "TP-Link Managed Switch (المحول المُدار من تي بي لينك)"
   },
   "description": {
-    "en": "Streamline your network with smart automation"
+    "en": "Streamline your network with smart automation",
+    "nl": "Optimaliseer je netwerk met slimme automatisering",
+    "da": "Strømlin dit netværk med smart automatisering",
+    "de": "Optimieren Sie Ihr Netzwerk mit intelligenter Automatisierung.",
+    "es": "Optimiza tu red con automatización inteligente.",
+    "fr": "Optimisez votre réseau avec une automatisation intelligente.",
+    "it": "Ottimizza la tua rete con l'automazione intelligente",
+    "no": "Strømlinjeform nettverket ditt med smart automatisering",
+    "sv": "Förenkla ditt nätverk med smart automation",
+    "pl": "Usprawnij swoją sieć dzięki inteligentnej automatyzacji",
+    "ru": "Оптимизируйте свою сеть с помощью умной автоматизации.",
+    "ko": "스마트 자동화로 네트워크를 간편하게 관리하세요.",
+    "ar": "قم بتبسيط شبكتك باستخدام الأتمتة الذكية"
   },
   "category": [
     "internet"

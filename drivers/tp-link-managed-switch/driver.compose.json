@@ -1,6 +1,18 @@
 {
   "name": {
-    "en": "TP-Link Managed Switch"
+    "en": "TP-Link Managed Switch",
+    "nl": "TP-Link Managed Switch",
+    "da": "TP-Link Managed Switch",
+    "de": "TP-Link Managed Switch",
+    "es": "TP-Link Managed Switch",
+    "fr": "Commutateur Géré TP-Link",
+    "it": "TP-Link Managed Switch",
+    "no": "TP-Link Managed Switch",
+    "sv": "TP-Link Managed Switch",
+    "pl": "TP-Link Zarządzany Przełącznik",
+    "ru": "TP-Link Управляемый Коммутатор",
+    "ko": "TP-Link 관리형 스위치",
+    "ar": "تي بي لينك Managed Switch"
   },
   "class": "networkrouter",
   "capabilities": [
@@ -9,7 +21,19 @@
   "capabilitiesOptions": {
     "onoff.favorite": {
       "title": {
-        "en": "Favorite Port"
+        "en": "Favorite Port",
+        "nl": "Favoriete Poort",
+        "da": "Foretrukken Port",
+        "de": "Bevorzugter Port",
+        "es": "Puerto Favorito",
+        "fr": "Port préféré",
+        "it": "Porta preferita",
+        "no": "Favorittport",
+        "sv": "Favoritport",
+        "pl": "Ulubiony port",
+        "ru": "Любимый порт",
+        "ko": "즐겨찾는 포트",
+        "ar": "المنفذ المفضل"
       },
       "uiQuickAction": false
     }
@@ -36,7 +60,9 @@
     {
       "id": "list_devices",
       "template": "list_devices",
-      "navigation": { "next": "add_devices" }
+      "navigation": {
+        "next": "add_devices"
+      }
     },
     {
       "id": "add_devices",

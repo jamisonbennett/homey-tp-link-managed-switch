@@ -3,97 +3,301 @@
     "id": "favorite_port_number",
     "type": "number",
     "label": {
-      "en": "Favorite port"
+      "en": "Favorite port",
+      "nl": "Favoriete poort",
+      "da": "Foretrukken port",
+      "de": "Lieblingsport",
+      "es": "Puerto favorito",
+      "fr": "Port préféré",
+      "it": "Porta preferita",
+      "no": "Favorittport",
+      "sv": "Favoritport",
+      "pl": "Ulubiony port",
+      "ru": "Любимый порт",
+      "ko": "즐겨찾는 포트",
+      "ar": "المنفذ المفضل"
     },
     "value": 0,
     "min": 0,
     "max": 48,
     "step": 1,
     "hint": {
-      "en": "Port 0 will disable the favorite port. The port must exist on the device."
+      "en": "Port 0 will disable the favorite port. The port must exist on the device.",
+      "nl": "Poort 0 zal de favoriete poort uitschakelen. De poort moet op het apparaat aanwezig zijn.",
+      "da": "Port 0 vil deaktivere favoritporten. Porten skal eksistere på enheden.",
+      "de": "Port 0 deaktiviert den Favoritenport. Der Port muss auf dem Gerät vorhanden sein.",
+      "es": "El puerto 0 desactivará el puerto favorito. El puerto debe existir en el dispositivo.",
+      "fr": "Le port 0 désactivera le port favori. Le port doit exister sur l'appareil.",
+      "it": "La porta 0 disabiliterà la porta preferita. La porta deve esistere sul dispositivo.",
+      "no": "Port 0 vil deaktivere favorittporten. Porten må eksistere på enheten.",
+      "sv": "Port 0 kommer att inaktivera favoritporten. Porten måste finnas på enheten.",
+      "pl": "Port 0 wyłączy ulubiony port. Port musi istnieć na urządzeniu.",
+      "ru": "Порт 0 отключит избранный порт. Порт должен существовать на устройстве.",
+      "ko": "포트 0은 즐겨찾기 포트를 비활성화합니다. 포트는 장치에 존재해야 합니다.",
+      "ar": "سيؤدي المنفذ 0 إلى تعطيل المنفذ المفضل. يجب أن يكون المنفذ موجودًا على الجهاز."
     }
   },
   {
     "id": "configurable_ports",
     "type": "text",
     "label": {
-      "en": "Configurable ports"
+      "en": "Configurable ports",
+      "nl": "Configureerbare poorten",
+      "da": "Konfigurerbare porte",
+      "de": "Konfigurierbare Anschlüsse",
+      "es": "Puertos configurables",
+      "fr": "Ports configurables",
+      "it": "Porte configurabili",
+      "no": "Konfigurerbare porter",
+      "sv": "Konfigurerbara portar",
+      "pl": "Konfigurowalne porty",
+      "ru": "Настраиваемые порты",
+      "ko": "구성 가능한 포트",
+      "ar": "المنافذ القابلة للتكوين"
     },
     "value": "",
     "hint": {
-      "en": "Ports that may be configured. Leave empty to allow all ports. Use a comma-separated list; hyphens denote ranges. Spaces are ignored (e.g. 1-3,5,6-10,14)."
+      "en": "Ports that may be configured. Leave empty to allow all ports. Use a comma-separated list; hyphens denote ranges. Spaces are ignored (e.g. 1-3,5,6-10,14).",
+      "nl": "Poorten die kunnen worden geconfigureerd. Laat leeg om alle poorten toe te staan. Gebruik een door komma's gescheiden lijst; streepjes geven reeksen aan. Spaties worden genegeerd (bijv. 1-3,5,6-10,14).",
+      "da": "Porte, der kan konfigureres. Lad være tom for at tillade alle porte. Brug en kommasepareret liste; bindestreger angiver intervaller. Mellemrum ignoreres (f.eks. 1-3,5,6-10,14).",
+      "de": "Ports, die konfiguriert werden können. Lassen Sie das Feld leer, um alle Ports zuzulassen. Verwenden Sie eine durch Kommas getrennte Liste; Bindestriche kennzeichnen Bereiche. Leerzeichen werden ignoriert (z.B. 1-3,5,6-10,14).",
+      "es": "Puertos que se pueden configurar. Déjalo vacío para permitir todos los puertos. Usa una lista separada por comas; los guiones indican rangos. Se ignoran los espacios (por ejemplo, 1-3,5,6-10,14).",
+      "fr": "Ports pouvant être configurés. Laissez vide pour autoriser tous les ports. Utilisez une liste séparée par des virgules ; les tirets indiquent des plages. Les espaces sont ignorés (par exemple, 1-3,5,6-10,14).",
+      "it": "Porte che possono essere configurate. Lascia vuoto per consentire tutte le porte. Usa un elenco separato da virgole; i trattini indicano gli intervalli. Gli spazi sono ignorati (es. 1-3,5,6-10,14).",
+      "no": "Porter som kan konfigureres. La stå tomt for å tillate alle porter. Bruk en kommaseparert liste; bindestreker angir områder. Mellomrom ignoreres (f.eks. 1-3,5,6-10,14).",
+      "sv": "Portar som kan konfigureras. Lämna tomt för att tillåta alla portar. Använd en kommaseparerad lista; bindestreck anger intervall. Mellanslag ignoreras (t.ex. 1-3,5,6-10,14).",
+      "pl": "Porty, które można skonfigurować. Pozostaw puste, aby zezwolić na wszystkie porty. Użyj listy oddzielonej przecinkami; myślniki oznaczają zakresy. Spacje są ignorowane (np. 1-3,5,6-10,14).",
+      "ru": "Порты, которые можно настроить. Оставьте пустым, чтобы разрешить все порты. Используйте список, разделенный запятыми; дефисы обозначают диапазоны. Пробелы игнорируются (например, 1-3,5,6-10,14).",
+      "ko": "구성할 수 있는 포트입니다. 모든 포트를 허용하려면 비워 두세요. 쉼표로 구분된 목록을 사용하세요. 하이픈은 범위를 나타냅니다. 공백은 무시됩니다 (예: 1-3,5,6-10,14).",
+      "ar": "المنافذ التي يمكن تكوينها. اتركها فارغة للسماح بجميع المنافذ. استخدم قائمة مفصولة بفواصل؛ تشير الشرطات إلى النطاقات. يتم تجاهل المسافات (مثل 1-3,5,6-10,14)."
     }
   },
   {
     "type": "group",
     "label": {
-      "en": "Device Information"
+      "en": "Device Information",
+      "nl": "Apparaatinformatie",
+      "da": "Enhedsoplysninger",
+      "de": "Geräteinformationen",
+      "es": "Información del dispositivo",
+      "fr": "Informations sur l'appareil",
+      "it": "Informazioni sul dispositivo",
+      "no": "Enhetsinformasjon",
+      "sv": "Enhetsinformation",
+      "pl": "Informacje o urządzeniu",
+      "ru": "Информация об устройстве",
+      "ko": "장치 정보",
+      "ar": "معلومات الجهاز"
     },
     "children": [
       {
         "id": "switchAddress",
         "type": "label",
         "label": {
-          "en": "Address"
+          "en": "Address",
+          "nl": "Adres",
+          "da": "Adresse",
+          "de": "Adresse",
+          "es": "Dirección",
+          "fr": "Adresse",
+          "it": "Indirizzo",
+          "no": "Adresse",
+          "sv": "Adress",
+          "pl": "Adres",
+          "ru": "Адрес",
+          "ko": "주소",
+          "ar": "عنوان"
         },
         "value": "-",
         "hint": {
-          "en": "The configured address used to connect to the switch."
+          "en": "The configured address used to connect to the switch.",
+          "nl": "Het geconfigureerde adres dat wordt gebruikt om verbinding te maken met de switch.",
+          "da": "Den konfigurerede adresse, der bruges til at forbinde til switchen.",
+          "de": "Die konfigurierte Adresse, die zur Verbindung mit dem Switch verwendet wird.",
+          "es": "La dirección configurada utilizada para conectarse al switch.",
+          "fr": "L'adresse configurée utilisée pour se connecter au switch.",
+          "it": "L'indirizzo configurato utilizzato per connettersi allo switch.",
+          "no": "Den konfigurerte adressen som brukes til å koble til switchen.",
+          "sv": "Den konfigurerade adressen som används för att ansluta till switchen.",
+          "pl": "Skonfigurowany adres używany do połączenia z przełącznikiem.",
+          "ru": "Настроенный адрес, используемый для подключения к коммутатору.",
+          "ko": "스위치에 연결하는 데 사용되는 구성된 주소입니다.",
+          "ar": "العنوان المُعدّ المستخدم للاتصال بالمحول."
         }
       },
       {
         "id": "switchName",
         "type": "label",
         "label": {
-          "en": "Device Name"
+          "en": "Device Name",
+          "nl": "Apparaatnaam",
+          "da": "Enhedsnavn",
+          "de": "Gerätename",
+          "es": "Nombre del dispositivo",
+          "fr": "Nom de l'appareil",
+          "it": "Nome del dispositivo",
+          "no": "Enhetsnavn",
+          "sv": "Enhetsnamn",
+          "pl": "Nazwa urządzenia",
+          "ru": "Имя устройства",
+          "ko": "장치 이름",
+          "ar": "اسم الجهاز"
         },
         "value": "-",
         "hint": {
-          "en": "The device description reported by the switch."
+          "en": "The device description reported by the switch.",
+          "nl": "De apparaatbeschrijving gerapporteerd door de switch.",
+          "da": "Enhedsbeskrivelsen rapporteret af switchen.",
+          "de": "Die vom Switch gemeldete Gerätebeschreibung.",
+          "es": "La descripción del dispositivo informada por el switch.",
+          "fr": "La description de l'appareil rapportée par le switch.",
+          "it": "La descrizione del dispositivo riportata dallo switch.",
+          "no": "Enhetsbeskrivelsen rapportert av svitsjen.",
+          "sv": "Enhetsbeskrivningen som rapporteras av switchen.",
+          "pl": "Opis urządzenia zgłoszony przez przełącznik.",
+          "ru": "Описание устройства, предоставленное коммутатором.",
+          "ko": "스위치에서 보고된 장치 설명입니다.",
+          "ar": "الوصف الذي يقدمه المفتاح للجهاز."
         }
       },
       {
         "id": "switchMacAddress",
         "type": "label",
         "label": {
-          "en": "MAC Address"
+          "en": "MAC Address",
+          "nl": "MAC-adres",
+          "da": "MAC-adresse",
+          "de": "MAC-Adresse",
+          "es": "Dirección MAC",
+          "fr": "Adresse MAC",
+          "it": "Indirizzo MAC",
+          "no": "MAC-adresse",
+          "sv": "MAC-adress",
+          "pl": "Adres MAC",
+          "ru": "MAC-адрес",
+          "ko": "MAC 주소",
+          "ar": "عنوان MAC"
         },
         "value": "-",
         "hint": {
-          "en": "The MAC address reported by the switch."
+          "en": "The MAC address reported by the switch.",
+          "nl": "Het MAC-adres dat door de switch wordt gerapporteerd.",
+          "da": "MAC-adressen rapporteret af switchen.",
+          "de": "Die vom Switch gemeldete MAC-Adresse.",
+          "es": "La dirección MAC reportada por el switch.",
+          "fr": "L'adresse MAC signalée par le switch.",
+          "it": "L'indirizzo MAC riportato dallo switch.",
+          "no": "MAC-adressen rapportert av switchen.",
+          "sv": "MAC-adressen som rapporteras av switchen.",
+          "pl": "Adres MAC zgłoszony przez switch.",
+          "ru": "MAC-адрес, сообщаемый коммутатором.",
+          "ko": "스위치에서 보고된 MAC 주소.",
+          "ar": "عنوان MAC الذي يبلغه المحول."
         }
       },
       {
         "id": "switchFirmwareVersion",
         "type": "label",
         "label": {
-          "en": "Firmware Version"
+          "en": "Firmware Version",
+          "nl": "Firmwareversie",
+          "da": "Firmwareversion",
+          "de": "Firmware-Version",
+          "es": "Versión de firmware",
+          "fr": "Version du firmware",
+          "it": "Versione Firmware",
+          "no": "Firmwareversjon",
+          "sv": "Firmwareversion",
+          "pl": "Wersja oprogramowania układowego",
+          "ru": "Версия прошивки",
+          "ko": "펌웨어 버전",
+          "ar": "إصدار البرنامج الثابت"
         },
         "value": "-",
         "hint": {
-          "en": "The firmware version reported by the switch."
+          "en": "The firmware version reported by the switch.",
+          "nl": "De firmwareversie die door de switch wordt gerapporteerd.",
+          "da": "Firmware-versionen rapporteret af switchen.",
+          "de": "Die vom Switch gemeldete Firmware-Version.",
+          "es": "La versión de firmware reportada por el switch.",
+          "fr": "La version du firmware signalée par le switch.",
+          "it": "La versione del firmware riportata dallo switch.",
+          "no": "Firmwareversjonen rapportert av switchen.",
+          "sv": "Firmwareversionen som rapporteras av switchen.",
+          "pl": "Wersja oprogramowania zgłaszana przez przełącznik.",
+          "ru": "Версия прошивки, о которой сообщает коммутатор.",
+          "ko": "스위치에서 보고된 펌웨어 버전.",
+          "ar": "إصدار البرنامج الثابت الذي يبلغه المحول."
         }
       },
       {
         "id": "switchHardwareVersion",
         "type": "label",
         "label": {
-          "en": "Hardware Version"
+          "en": "Hardware Version",
+          "nl": "Hardwareversie",
+          "da": "Hardwareversion",
+          "de": "Hardware-Version",
+          "es": "Versión de hardware",
+          "fr": "Version matérielle",
+          "it": "Versione hardware",
+          "no": "Maskinvareversjon",
+          "sv": "Hårdvaruversion",
+          "pl": "Wersja sprzętowa",
+          "ru": "Аппаратная версия",
+          "ko": "하드웨어 버전",
+          "ar": "إصدار الجهاز"
         },
         "value": "-",
         "hint": {
-          "en": "The hardware version reported by the switch."
+          "en": "The hardware version reported by the switch.",
+          "nl": "De hardwareversie die door de switch wordt gerapporteerd.",
+          "da": "Hardware-versionen rapporteret af switchen.",
+          "de": "Die vom Switch gemeldete Hardwareversion.",
+          "es": "La versión de hardware reportada por el switch.",
+          "fr": "La version matérielle signalée par le switch.",
+          "it": "La versione hardware riportata dallo switch.",
+          "no": "Maskinvaren versjon rapportert av svitsjen.",
+          "sv": "Hårdvaruversionen som rapporteras av switchen.",
+          "pl": "Wersja sprzętowa zgłaszana przez przełącznik.",
+          "ru": "Версия оборудования, о которой сообщает коммутатор.",
+          "ko": "스위치에서 보고된 하드웨어 버전입니다.",
+          "ar": "الإصدار المادي الذي يبلغه المحول."
         }
       },
       {
         "id": "switchPortCount",
         "type": "label",
         "label": {
-          "en": "Port Count"
+          "en": "Port Count",
+          "nl": "Poorttelling",
+          "da": "Portantal",
+          "de": "Anzahl der Ports",
+          "es": "Cantidad de Puertos",
+          "fr": "Nombre de ports",
+          "it": "Conteggio porte",
+          "no": "Portantall",
+          "sv": "Antal portar",
+          "pl": "Liczba portów",
+          "ru": "Количество портов",
+          "ko": "포트 수",
+          "ar": "عدد المنافذ"
         },
         "value": "-",
         "hint": {
-          "en": "The number of switch ports reported by the device."
+          "en": "The number of switch ports reported by the device.",
+          "nl": "Het aantal switchpoorten dat door het apparaat wordt gerapporteerd.",
+          "da": "Antallet af switch-porte rapporteret af enheden.",
+          "de": "Die Anzahl der vom Gerät gemeldeten Switch-Ports.",
+          "es": "El número de puertos del switch reportados por el dispositivo.",
+          "fr": "Le nombre de ports de commutation signalés par l'appareil.",
+          "it": "Il numero di porte dello switch segnalato dal dispositivo.",
+          "no": "Antall svitsjeporter rapportert av enheten.",
+          "sv": "Antalet switchportar som rapporteras av enheten.",
+          "pl": "Liczba portów przełącznika zgłaszana przez urządzenie.",
+          "ru": "Количество портов коммутатора, о которых сообщает устройство.",
+          "ko": "장치에서 보고된 스위치 포트의 수.",
+          "ar": "عدد منافذ التبديل التي يبلغ عنها الجهاز."
         }
       }
     ]

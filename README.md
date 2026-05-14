@@ -179,6 +179,50 @@ This app is written in TypeScript. Run lint with `npm run lint` and use `npm run
 
 Metadata and drivers are merged from **Homey Compose** sources under [`.homeycompose/`](./.homeycompose/) and [`drivers/tp-link-managed-switch/driver.*.compose.json`](./drivers/tp-link-managed-switch/). The root [`app.json`](./app.json) is **regenerated** when you use the CLI (for example `homey app run` or `homey app build`); edit the compose files, not `app.json`, by hand.
 
+### Translate
+
+#### Setup
+
+Set your OpenAI credentials:
+
+```bash
+export OPENAI_ORG_ID="YOUR_ORG_ID"
+export OPENAI_API_KEY="YOUR_API_KEY"
+```
+
+> Never commit real API keys to git.
+
+#### Regenerate Locale Files
+
+If `locales/en.json` changes, delete all non-English locale files.
+
+Homey only generates translations for locale files that do not already exist.
+
+```bash
+find locales -type f ! -name 'en.json' -delete
+```
+
+#### Regenerate README Translations
+
+If `README.txt` changes, delete the translated README files so they can be regenerated.
+
+```bash
+rm -f README.*.txt
+```
+
+#### Retranslate Existing Strings
+
+If existing English strings were modified, remove the corresponding translated values from the JSON files before running the translator.
+
+Homey only generates translations for JSON elements that do not already exist.
+
+#### Run Translation
+
+```bash
+npx homey app translate
+npx homey app translate --file .homeychangelog.json
+```
+
 ---
 
 ## License

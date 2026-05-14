@@ -1,7 +1,19 @@
 {
   "type": "boolean",
   "title": {
-    "en": "Port"
+    "en": "Port",
+    "nl": "Poort",
+    "da": "Port",
+    "de": "Port",
+    "es": "Puerto",
+    "fr": "Port",
+    "it": "Porta",
+    "no": "Port",
+    "sv": "Port",
+    "pl": "Port",
+    "ru": "Порт",
+    "ko": "포트",
+    "ar": "منفذ"
   },
   "getable": true,
   "setable": false,

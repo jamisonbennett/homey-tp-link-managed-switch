@@ -4,22 +4,74 @@
       "id": "link_state_changed",
       "deprecated": true,
       "title": {
-        "en": "Switch port link state changed"
+        "en": "Switch port link state changed",
+        "nl": "Schakelpoort verbindingsstatus gewijzigd",
+        "da": "Switch-portens forbindelsestilstand ændret",
+        "de": "Der Verbindungsstatus des Switch-Ports hat sich geändert.",
+        "es": "El estado del enlace del puerto del switch ha cambiado.",
+        "fr": "L'état du lien du port du switch a changé",
+        "it": "Lo stato del collegamento della porta dello switch è cambiato.",
+        "no": "Endring i koblingsstatus for svitsjport",
+        "sv": "Switchportens länktillstånd har ändrats",
+        "pl": "Stan połączenia portu przełącznika uległ zmianie",
+        "ru": "Состояние соединения порта коммутатора изменилось",
+        "ko": "스위치 포트 연결 상태가 변경되었습니다.",
+        "ar": "تم تغيير حالة ارتباط منفذ السويتش"
       },
       "titleFormatted": {
-        "en": "Switch port link state changed"
+        "en": "Switch port link state changed",
+        "nl": "Schakelpoort linkstatus gewijzigd",
+        "da": "Switch-portens forbindelsestilstand ændret",
+        "de": "Der Verbindungsstatus des Switch-Ports hat sich geändert.",
+        "es": "El estado del enlace del puerto del switch ha cambiado.",
+        "fr": "L'état du lien du port du switch a changé",
+        "it": "Lo stato del collegamento della porta dello switch è cambiato.",
+        "no": "Endret tilstand for koblingsporten på svitsjen",
+        "sv": "Switchportens länktillstånd har ändrats",
+        "pl": "Stan połączenia portu przełącznika uległ zmianie",
+        "ru": "Состояние подключения порта коммутатора изменилось",
+        "ko": "스위치 포트 연결 상태가 변경되었습니다.",
+        "ar": "تم تغيير حالة ارتباط منفذ السويتش"
       },
       "tokens": [
         {
           "name": "port",
           "type": "number",
-          "title": { "en": "port" },
+          "title": {
+            "en": "port",
+            "nl": "poort",
+            "da": "port",
+            "de": "Port",
+            "es": "puerto",
+            "fr": "port",
+            "it": "porta",
+            "no": "port",
+            "sv": "port",
+            "pl": "port",
+            "ru": "порт",
+            "ko": "포트",
+            "ar": "منفذ"
+          },
           "example": 5
         },
         {
           "name": "linkUp",
           "type": "boolean",
-          "title": { "en": "Link is up (true) or down (false)" }
+          "title": {
+            "en": "Link is up (true) or down (false)",
+            "nl": "Link is omhoog (true) of omlaag (false)",
+            "da": "Link er oppe (true) eller nede (false)",
+            "de": "Verbindung ist aktiv (wahr) oder unterbrochen (falsch)",
+            "es": "El enlace está activo (verdadero) o inactivo (falso)",
+            "fr": "Le lien est actif (vrai) ou inactif (faux)",
+            "it": "Il collegamento è attivo (vero) o inattivo (falso)",
+            "no": "Linken er oppe (sann) eller nede (usann)",
+            "sv": "Länken är uppe (sant) eller nere (falskt)",
+            "pl": "Połączenie jest aktywne (true) lub nieaktywne (false)",
+            "ru": "Соединение активно (true) или неактивно (false)",
+            "ko": "링크가 연결됨 (true) 또는 연결 끊김 (false)",
+            "ar": "الرابط متصل (صحيح) أو غير متصل (خطأ)"
+          }
         }
       ]
     },
@@ -325,17 +377,53 @@
       "id": "link_up",
       "deprecated": true,
       "title": {
-        "en": "Switch port link is !{{up|down}}"
+        "en": "Switch port link is !{{up|down}}",
+        "nl": "Switchpoortverbinding is !{{up|down}}",
+        "da": "Switch-portforbindelsen er !{{oppe|nede}}",
+        "de": "Der Switch-Port-Link ist !{{up|down}}",
+        "es": "¡El enlace del puerto del switch está !{{arriba|abajo}}",
+        "fr": "Le lien du port du switch est !{{up|down}}",
+        "it": "Il collegamento della porta dello switch è !{{up|down}}",
+        "no": "Svitsjportforbindelsen er !{{oppe|nede}}",
+        "sv": "Switchportlänken är !{{up|down}}",
+        "pl": "Połączenie portu przełącznika jest !{{up|down}}",
+        "ru": "Ссылка порта коммутатора !{{вверх|вниз}}",
+        "ko": "스위치 포트 링크가 !{{업|다운}}",
+        "ar": "رابط منفذ المحول هو !{{أعلى|أسفل}}"
       },
       "titleFormatted": {
-        "en": "Switch port [[port]] link is !{{up|down}}"
+        "en": "Switch port [[port]] link is !{{up|down}}",
+        "nl": "Switch-poort [[port]] verbinding is !{{omhoog|omlaag}}",
+        "da": "Switch-port [[port]] forbindelsen er !{{oppe|nede}}",
+        "de": "Switch-Port [[port]] Verbindung ist !{{oben|unten}}",
+        "es": "El enlace del puerto del switch [[port]] está !{{arriba|abajo}}",
+        "fr": "Le lien du port de commutateur [[port]] est !{{haut|bas}}",
+        "it": "Il collegamento della porta dello switch [[port]] è !{{su|giù}}",
+        "no": "Svitsjport [[port]]-forbindelse er !{{oppe|nede}}",
+        "sv": "Switchport [[port]] länken är !{{upp|ner}}",
+        "pl": "Połączenie portu przełącznika [[port]] jest !{{up|down}}",
+        "ru": "Ссылка на порт коммутатора [[port]] !{{вверх|вниз}}",
+        "ko": "스위치 포트 [[port]] 링크가 !{{업|다운}}",
+        "ar": "منفذ المحول [[port]] الرابط هو !{{أعلى|أسفل}}"
       },
       "args": [
         {
           "name": "port",
           "type": "number",
           "title": {
-            "en": "port number"
+            "en": "port number",
+            "nl": "poortnummer",
+            "da": "portnummer",
+            "de": "Portnummer",
+            "es": "número de puerto",
+            "fr": "numéro de port",
+            "it": "numero di porta",
+            "no": "portnummer",
+            "sv": "portnummer",
+            "pl": "numer portu",
+            "ru": "номер порта",
+            "ko": "포트 번호",
+            "ar": "رقم المنفذ"
           },
           "min": 1,
           "max": 48
@@ -516,17 +604,53 @@
       "id": "enable_port",
       "deprecated": true,
       "title": {
-        "en": "Enable switch port"
+        "en": "Enable switch port",
+        "nl": "Schakel switchpoort in",
+        "da": "Aktivér switch-port",
+        "de": "Switch-Port aktivieren",
+        "es": "Habilitar puerto del switch",
+        "fr": "Activer le port du commutateur",
+        "it": "Abilita porta dello switch",
+        "no": "Aktiver svitsjport",
+        "sv": "Aktivera switchport",
+        "pl": "Włącz port przełącznika",
+        "ru": "Включить порт коммутатора",
+        "ko": "스위치 포트 활성화",
+        "ar": "تمكين منفذ المحول"
       },
       "titleFormatted": {
-        "en": "Enable switch port [[port]]"
+        "en": "Enable switch port [[port]]",
+        "nl": "Schakel switchpoort [[port]] in",
+        "da": "Aktivér switch-port [[port]]",
+        "de": "Schalte Switch-Port [[port]] ein",
+        "es": "Habilitar puerto del switch [[port]]",
+        "fr": "Activer le port du commutateur [[port]]",
+        "it": "Abilita la porta dello switch [[port]]",
+        "no": "Aktiver svitsjeport [[port]]",
+        "sv": "Aktivera switchport [[port]]",
+        "pl": "Włącz port przełącznika [[port]]",
+        "ru": "Включить порт коммутатора [[port]]",
+        "ko": "스위치 포트 [[port]] 활성화",
+        "ar": "تفعيل منفذ التبديل [[port]]"
       },
       "args": [
         {
           "name": "port",
           "type": "number",
           "title": {
-            "en": "port number"
+            "en": "port number",
+            "nl": "poortnummer",
+            "da": "portnummer",
+            "de": "Portnummer",
+            "es": "número de puerto",
+            "fr": "numéro de port",
+            "it": "numero di porta",
+            "no": "portnummer",
+            "sv": "portnummer",
+            "pl": "numer portu",
+            "ru": "номер порта",
+            "ko": "포트 번호",
+            "ar": "رقم المنفذ"
           },
           "min": 1,
           "max": 48
@@ -537,17 +661,53 @@
       "id": "disable_port",
       "deprecated": true,
       "title": {
-        "en": "Disable switch port"
+        "en": "Disable switch port",
+        "nl": "Schakel switchpoort uit",
+        "da": "Deaktiver switch-port",
+        "de": "Schalte den Switch-Port aus",
+        "es": "Desactivar puerto del switch",
+        "fr": "Désactiver le port du commutateur",
+        "it": "Disabilita porta switch",
+        "no": "Deaktiver svitsjport",
+        "sv": "Inaktivera switchport",
+        "pl": "Wyłącz port przełącznika",
+        "ru": "Отключить порт коммутатора",
+        "ko": "스위치 포트 비활성화",
+        "ar": "تعطيل منفذ المحول"
       },
       "titleFormatted": {
-        "en": "Disable switch port [[port]]"
+        "en": "Disable switch port [[port]]",
+        "nl": "Schakel switchpoort [[port]] uit",
+        "da": "Deaktiver switch-port [[port]]",
+        "de": "Schalte den Switch-Port [[port]] aus",
+        "es": "Desactivar el puerto del switch [[port]]",
+        "fr": "Désactiver le port du commutateur [[port]]",
+        "it": "Disabilita la porta dello switch [[port]]",
+        "no": "Deaktiver svitsjport [[port]]",
+        "sv": "Inaktivera switchport [[port]]",
+        "pl": "Wyłącz port przełącznika [[port]]",
+        "ru": "Отключить порт коммутатора [[port]]",
+        "ko": "스위치 포트 [[port]] 비활성화",
+        "ar": "تعطيل منفذ المحول [[port]]"
       },
       "args": [
         {
           "name": "port",
           "type": "number",
           "title": {
-            "en": "port number"
+            "en": "port number",
+            "nl": "poortnummer",
+            "da": "portnummer",
+            "de": "Portnummer",
+            "es": "número de puerto",
+            "fr": "numéro de port",
+            "it": "numero di porta",
+            "no": "portnummer",
+            "sv": "portnummer",
+            "pl": "numer portu",
+            "ru": "номер порта",
+            "ko": "포트 번호",
+            "ar": "رقم المنفذ"
           },
           "min": 1,
           "max": 48
