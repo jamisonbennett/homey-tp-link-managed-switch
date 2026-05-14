@@ -26,12 +26,14 @@ Connect [TP-Link Easy Smart Switch](https://www.tp-link.com/) managed switches t
 The models below match hardware revisions and firmware builds that **TP-Link documentation** associates with Easy Smart Switch web management compatible with this app. Other **Easy Smart Switch** models may work if they expose the same web UI and a compatible firmware generation.
 
 * Additional TP-Link Easy Smart Switch hardware with firmware **v1.0.0 build 20230214** or later (where applicable)
+* Support for older models is less tested and may go back as far as 2016 firmware (or earlier) which is before the Easy Smart Switch line.
 
 **TL-SG105E**
 
 | Hardware version | Supported firmware |
 | ---------------- | ------------------- |
-| TL-SG105E v1–v4 | Not supported |
+| TL-SG105E v1 | Unknown Support |
+| TL-SG105E v2–v4 | Possibly Supported |
 | TL-SG105E v5 | 1.0.0 Build 20230214 |
 | TL-SG105E v5.6 | 1.0.0 Build 20230214 |
 
@@ -39,14 +41,16 @@ The models below match hardware revisions and firmware builds that **TP-Link doc
 
 | Hardware version | Supported firmware |
 | ---------------- | ------------------- |
-| TL-SG105E v1–v2.46 | Not supported |
+| TL-SG105E v1–v2 | Unknown Support |
+| TL-SG105E v2.4–v2.46 | Possibly Supported |
 | TL-SG105E v2.60 | 1.0.0 Build 20230218 |
 
 **TL-SG108E**
 
 | Hardware version | Supported firmware |
 | ---------------- | ------------------- |
-| TL-SG108E v1–v5 | Not supported |
+| TL-SG108E v1 | Unknown Support |
+| TL-SG108E v2–v5 | Possibly Supported |
 | TL-SG108E v6 | 1.0.0 Build 20230218 |
 | TL-SG108E v6.6 | 1.0.0 Build 20230218 |
 
@@ -54,19 +58,19 @@ The models below match hardware revisions and firmware builds that **TP-Link doc
 
 | Hardware version | Supported firmware |
 | ---------------- | ------------------- |
-| TL-SG108PE v1–v3.80 | Not supported |
+| TL-SG108PE v1–v3.80 | Possibly Supported |
 | TL-SG108PE v4 | 1.0.0 Build 20230218 |
 | TL-SG108PE v4.20 | 1.0.0 Build 20230711 |
 | TL-SG108PE v4.60 | 1.0.0 Build 20230218 |
 | TL-SG108PE v5 | 1.0.0 Build 20230218 |
-| TL-SG108PE v5.46 | Unknown |
+| TL-SG108PE v5.46 | Possibly Supported |
 | TL-SG108PE v5.60 | 1.0.0 Build 20230218 |
 
 **TL-SG116E**
 
 | Hardware version | Supported firmware |
 | ---------------- | ------------------- |
-| TL-SG116E v1, v1.20, v2, v2.60 | Not supported |
+| TL-SG116E v1, v1.20, v2, v2.60 | Possibly Supported |
 | TL-SG116E v2.20 | 1.0.0 Build 20230220 |
 | TL-SG116E v2.26 | 1.0.0 Build 20230220 |
 
@@ -74,18 +78,19 @@ The models below match hardware revisions and firmware builds that **TP-Link doc
 
 | Hardware version | Supported firmware |
 | ---------------- | ------------------- |
-| TL-SG1016PE v1, v2, v3, v3.20, v3.26, v3.60 | Not supported |
+| TL-SG1016PE v1, v2, v3, v3.20, v3.26, v3.60 | Possibly Supported |
 | TL-SG1016PE v5 | 1.0.0 Build 20230219 |
 | TL-SG1016PE v5.20 | 1.0.0 Build 20230712 |
 | TL-SG1016PE v5.26 | 1.0.0 Build 20230220 |
 | TL-SG1016PE v5.60 | 1.0.0 Build 20230219 |
-| TL-SG1016PE v6, v6.6 | Unknown |
+| TL-SG1016PE v6, v6.6 | Possibly Suport |
 
 **TL-SG1024DE**
 
 | Hardware version | Supported firmware |
 | ---------------- | ------------------- |
-| TL-SG1024DE v1–v4 | Not supported |
+| TL-SG1024DE v1–v2 | Unknown |
+| TL-SG1024DE v3–v4 | Possibly Supported |
 | TL-SG1024DE v4.20 | 1.0.0 Build 20230219 |
 | TL-SG1024DE v4.26 | Not supported |
 | TL-SG1024DE v6 | 1.0.0 Build 20230220 |
@@ -97,7 +102,7 @@ The models below match hardware revisions and firmware builds that **TP-Link doc
 
 | Hardware version | Supported firmware |
 | ---------------- | ------------------- |
-| TL-SG1428PE v1, v1.20, v1.26 | Not supported |
+| TL-SG1428PE v1, v1.20, v1.26 | Possibly Supported |
 | TL-SG1428PE v2 | 1.0.0 Build 20230219 |
 | TL-SG1428PE v2.20 | 1.0.0 Build 20230219 |
 | TL-SG1428PE v2.60 | 1.0.0 Build 20230219 |
