@@ -103,5 +103,20 @@
     "ru": "Добавьте поддержку семейства TP-Link Easy Smart Switch PoE, включая TL-SG105PE, TL-SG108PE, TL-SG1016PE, TL-SG1428PE, при использовании прошивки версии v1.0.0 сборка 20230214 или более поздней.",
     "ko": "펌웨어 v1.0.0 빌드 20230214 또는 이후 버전을 사용할 때, TL-SG105PE, TL-SG108PE, TL-SG1016PE, TL-SG1428PE를 포함한 TP-Link Easy Smart Switch PoE 제품군에 대한 지원을 추가하세요.",
     "ar": "إضافة دعم لعائلة TP-Link Easy Smart Switch PoE بما في ذلك TL-SG105PE، TL-SG108PE، TL-SG1016PE، TL-SG1428PE عند استخدام الإصدار الثابت v1.0.0 بناء 20230214 أو الأحدث."
+  },
+  "0.1.7": {
+    "en": "Add support for older firmware and hardware versions of TP-Link and add translations for internationalization.",
+    "nl": "Ondersteuning toevoegen voor oudere firmware- en hardwareversies van TP-Link en vertalingen toevoegen voor internationalisering.",
+    "da": "Tilføj support til ældre firmware- og hardwareversioner af TP-Link og tilføj oversættelser til internationalisering.",
+    "de": "Unterstützung für ältere Firmware- und Hardware-Versionen von TP-Link hinzufügen und Übersetzungen für die Internationalisierung hinzufügen.",
+    "es": "Agregar soporte para versiones de firmware y hardware más antiguas de TP-Link y añadir traducciones para la internacionalización.",
+    "fr": "Ajoutez la prise en charge des anciennes versions de firmware et de matériel de TP-Link et ajoutez des traductions pour l'internationalisation.",
+    "it": "Aggiungi supporto per versioni firmware e hardware più vecchie di TP-Link e aggiungi traduzioni per l'internazionalizzazione.",
+    "no": "Legg til støtte for eldre firmware- og maskinvareversjoner av TP-Link og legg til oversettelser for internasjonalisering.",
+    "sv": "Lägg till stöd för äldre firmware- och hårdvaruversioner av TP-Link och lägg till översättningar för internationalisering.",
+    "pl": "Dodaj wsparcie dla starszych wersji oprogramowania i sprzętu TP-Link oraz dodaj tłumaczenia dla internacjonalizacji.",
+    "ru": "Добавьте поддержку более старых версий прошивки и оборудования TP-Link, а также переводы для интернационализации.",
+    "ko": "TP-Link의 이전 펌웨어 및 하드웨어 버전에 대한 지원을 추가하고 국제화를 위한 번역을 추가하세요.",
+    "ar": "إضافة دعم للإصدارات الأقدم من البرامج الثابتة والأجهزة لـ TP-Link وإضافة ترجمات للتدويل."
   }
 }

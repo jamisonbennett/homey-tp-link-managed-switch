@@ -1,6 +1,6 @@
 {
   "id": "us.jamisonbennett.apps.tp-link.managed-switch",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "compatibility": ">=12.0.0",
   "sdk": 3,
   "platforms": [
