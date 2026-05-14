@@ -1,0 +1,1404 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "us.jamisonbennett.apps.tp-link.managed-switch",
+  "version": "0.1.6",
+  "compatibility": ">=12.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "TP-Link Managed Switch",
+    "nl": "TP-Link Managed Switch",
+    "da": "TP-Link Managed Switch",
+    "de": "TP-Link Managed Switch",
+    "es": "TP-Link Managed Switch",
+    "fr": "Commutateur Géré TP-Link",
+    "it": "TP-Link Managed Switch",
+    "no": "TP-Link Administrert Switch",
+    "sv": "TP-Link Managed Switch",
+    "pl": "TP-Link Zarządzany Przełącznik",
+    "ru": "TP-Link Управляемый Коммутатор",
+    "ko": "TP-Link 관리형 스위치",
+    "ar": "TP-Link Managed Switch (المحول المُدار من تي بي لينك)"
+  },
+  "description": {
+    "en": "Streamline your network with smart automation",
+    "nl": "Optimaliseer je netwerk met slimme automatisering",
+    "da": "Strømlin dit netværk med smart automatisering",
+    "de": "Optimieren Sie Ihr Netzwerk mit intelligenter Automatisierung.",
+    "es": "Optimiza tu red con automatización inteligente.",
+    "fr": "Optimisez votre réseau avec une automatisation intelligente.",
+    "it": "Ottimizza la tua rete con l'automazione intelligente",
+    "no": "Strømlinjeform nettverket ditt med smart automatisering",
+    "sv": "Förenkla ditt nätverk med smart automation",
+    "pl": "Usprawnij swoją sieć dzięki inteligentnej automatyzacji",
+    "ru": "Оптимизируйте свою сеть с помощью умной автоматизации.",
+    "ko": "스마트 자동화로 네트워크를 간편하게 관리하세요.",
+    "ar": "قم بتبسيط شبكتك باستخدام الأتمتة الذكية"
+  },
+  "category": [
+    "internet"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Jamison Bennett",
+    "email": ""
+  },
+  "brandColor": "#4ACBD6",
+  "support": "https://github.com/jamisonbennett/homey-tp-link-managed-switch",
+  "flow": {
+    "triggers": [
+      {
+        "id": "link_state_changed",
+        "deprecated": true,
+        "title": {
+          "en": "Switch port link state changed",
+          "nl": "Schakelpoort verbindingsstatus gewijzigd",
+          "da": "Switch-portens forbindelsestilstand ændret",
+          "de": "Der Verbindungsstatus des Switch-Ports hat sich geändert.",
+          "es": "El estado del enlace del puerto del switch ha cambiado.",
+          "fr": "L'état du lien du port du switch a changé",
+          "it": "Lo stato del collegamento della porta dello switch è cambiato.",
+          "no": "Endring i koblingsstatus for svitsjport",
+          "sv": "Switchportens länktillstånd har ändrats",
+          "pl": "Stan połączenia portu przełącznika uległ zmianie",
+          "ru": "Состояние соединения порта коммутатора изменилось",
+          "ko": "스위치 포트 연결 상태가 변경되었습니다.",
+          "ar": "تم تغيير حالة ارتباط منفذ السويتش"
+        },
+        "titleFormatted": {
+          "en": "Switch port link state changed",
+          "nl": "Schakelpoort linkstatus gewijzigd",
+          "da": "Switch-portens forbindelsestilstand ændret",
+          "de": "Der Verbindungsstatus des Switch-Ports hat sich geändert.",
+          "es": "El estado del enlace del puerto del switch ha cambiado.",
+          "fr": "L'état du lien du port du switch a changé",
+          "it": "Lo stato del collegamento della porta dello switch è cambiato.",
+          "no": "Endret tilstand for koblingsporten på svitsjen",
+          "sv": "Switchportens länktillstånd har ändrats",
+          "pl": "Stan połączenia portu przełącznika uległ zmianie",
+          "ru": "Состояние подключения порта коммутатора изменилось",
+          "ko": "스위치 포트 연결 상태가 변경되었습니다.",
+          "ar": "تم تغيير حالة ارتباط منفذ السويتش"
+        },
+        "tokens": [
+          {
+            "name": "port",
+            "type": "number",
+            "title": {
+              "en": "port",
+              "nl": "poort",
+              "da": "port",
+              "de": "Port",
+              "es": "puerto",
+              "fr": "port",
+              "it": "porta",
+              "no": "port",
+              "sv": "port",
+              "pl": "port",
+              "ru": "порт",
+              "ko": "포트",
+              "ar": "منفذ"
+            },
+            "example": 5
+          },
+          {
+            "name": "linkUp",
+            "type": "boolean",
+            "title": {
+              "en": "Link is up (true) or down (false)",
+              "nl": "Link is omhoog (true) of omlaag (false)",
+              "da": "Link er oppe (true) eller nede (false)",
+              "de": "Verbindung ist aktiv (wahr) oder unterbrochen (falsch)",
+              "es": "El enlace está activo (verdadero) o inactivo (falso)",
+              "fr": "Le lien est actif (vrai) ou inactif (faux)",
+              "it": "Il collegamento è attivo (vero) o inattivo (falso)",
+              "no": "Linken er oppe (sann) eller nede (usann)",
+              "sv": "Länken är uppe (sant) eller nere (falskt)",
+              "pl": "Połączenie jest aktywne (true) lub nieaktywne (false)",
+              "ru": "Соединение активно (true) или неактивно (false)",
+              "ko": "링크가 연결됨 (true) 또는 연결 끊김 (false)",
+              "ar": "الرابط متصل (صحيح) أو غير متصل (خطأ)"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          }
+        ]
+      },
+      {
+        "id": "alarm_port_disconnected_true",
+        "title": {
+          "en": "Became disconnected",
+          "nl": "Niet meer verbonden",
+          "de": "Verbindung getrennt",
+          "fr": "Déconnecté",
+          "it": "Disconnesso",
+          "sv": "Frånkopplad",
+          "no": "Frakoblet",
+          "es": "Desconectado",
+          "da": "Afkoblet",
+          "ru": "Отключено",
+          "pl": "Rozłączono",
+          "ko": "연결 끊김",
+          "ar": "انقطع الاتصال"
+        },
+        "titleFormatted": {
+          "en": "[[port]] became disconnected",
+          "nl": "[[port]] niet meer verbonden is",
+          "de": "[[port]] wurde getrennt",
+          "fr": "[[port]] s'est déconnecté",
+          "it": "[[port]] si è disconnesso",
+          "sv": "[[port]] kopplades från",
+          "no": "[[port]] ble frakoblet",
+          "es": "[[port]] se desconectó",
+          "da": "[[port]] blev afkoblet",
+          "ru": "порт [[port]] отключился",
+          "pl": "[[port]] został rozłączony",
+          "ko": "[[port]]번 포트 연결이 끊어짐",
+          "ar": "انقطع اتصال المنفذ [[port]]"
+        },
+        "hint": {
+          "en": "When the physical link on the selected port goes down.",
+          "nl": "Wanneer de fysieke verbinding op de geselecteerde poort wegvalt.",
+          "de": "Wenn die physische Verbindung am gewählten Port ausfällt.",
+          "fr": "Lorsque la liaison physique du port sélectionné tombe.",
+          "it": "Quando il collegamento fisico sulla porta selezionata cade.",
+          "sv": "När den fysiska länken på den valda porten bryts.",
+          "no": "Når den fysiske koblingen på den valgte porten faller.",
+          "es": "Cuando el enlace físico del puerto seleccionado cae.",
+          "da": "Når den fysiske forbindelse på den valgte port går ned.",
+          "ru": "Когда физическое соединение на выбранном порту пропадает.",
+          "pl": "Gdy fizyczne połączenie na wybranym porcie zanika.",
+          "ko": "선택한 포트의 물리적 링크가 끊어질 때.",
+          "ar": "عندما ينقطع الارتباط الفيزيائي على المنفذ المحدد."
+        },
+        "tokens": [
+          {
+            "name": "port",
+            "type": "number",
+            "title": {
+              "en": "port",
+              "nl": "poort",
+              "de": "Port",
+              "fr": "port",
+              "it": "porta",
+              "sv": "port",
+              "no": "port",
+              "es": "puerto",
+              "da": "port",
+              "ru": "порт",
+              "pl": "port",
+              "ko": "포트",
+              "ar": "منفذ"
+            },
+            "example": 1
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          },
+          {
+            "type": "autocomplete",
+            "name": "port",
+            "title": {
+              "en": "Port",
+              "nl": "Poort",
+              "de": "Port",
+              "fr": "Port",
+              "it": "Porta",
+              "sv": "Port",
+              "no": "Port",
+              "es": "Puerto",
+              "da": "Port",
+              "ru": "Порт",
+              "pl": "Port",
+              "ko": "포트",
+              "ar": "منفذ"
+            },
+            "placeholder": {
+              "en": "Search or pick…",
+              "nl": "Zoek of kies…",
+              "de": "Suchen oder wählen…",
+              "fr": "Rechercher ou choisir…",
+              "it": "Cerca o scegli…",
+              "sv": "Sök eller välj…",
+              "no": "Søk eller velg…",
+              "es": "Buscar o elegir…",
+              "da": "Søg eller vælg…",
+              "ru": "Найти или выбрать…",
+              "pl": "Szukaj lub wybierz…",
+              "ko": "검색 또는 선택…",
+              "ar": "ابحث أو اختر…"
+            }
+          }
+        ]
+      },
+      {
+        "id": "alarm_port_disconnected_false",
+        "title": {
+          "en": "Became connected",
+          "nl": "Weer verbonden",
+          "de": "Wieder verbunden",
+          "fr": "Reconnecté",
+          "it": "Riconnesso",
+          "sv": "Åter ansluten",
+          "no": "Tilkoblet igjen",
+          "es": "Conectado",
+          "da": "Tilsluttet igen",
+          "ru": "Подключено",
+          "pl": "Podłączono ponownie",
+          "ko": "연결됨",
+          "ar": "تم الاتصال"
+        },
+        "titleFormatted": {
+          "en": "[[port]] became connected",
+          "nl": "[[port]] weer verbonden is",
+          "de": "[[port]] ist wieder verbunden",
+          "fr": "[[port]] s'est reconnecté",
+          "it": "[[port]] si è riconnesso",
+          "sv": "[[port]] kopplades an",
+          "no": "[[port]] ble tilkoblet",
+          "es": "[[port]] se conectó",
+          "da": "[[port]] blev tilsluttet",
+          "ru": "порт [[port]] подключился",
+          "pl": "[[port]] został ponownie podłączony",
+          "ko": "[[port]]번 포트 연결됨",
+          "ar": "اتصل المنفذ [[port]]"
+        },
+        "hint": {
+          "en": "When the physical link on the selected port comes up.",
+          "nl": "Wanneer de fysieke verbinding op de geselecteerde poort herstelt.",
+          "de": "Wenn die physische Verbindung am gewählten Port wiederhergestellt ist.",
+          "fr": "Lorsque la liaison physique du port sélectionné revient.",
+          "it": "Quando il collegamento fisico sulla porta selezionata torna su.",
+          "sv": "När den fysiska länken på den valda porten återkommer.",
+          "no": "Når den fysiske koblingen på den valgte porten kommer opp igjen.",
+          "es": "Cuando el enlace físico del puerto seleccionado vuelve.",
+          "da": "Når den fysiske forbindelse på den valgte port kommer op igen.",
+          "ru": "Когда физическое соединение на выбранном порту восстанавливается.",
+          "pl": "Gdy fizyczne połączenie na wybranym porcie wraca.",
+          "ko": "선택한 포트의 물리적 링크가 복구될 때.",
+          "ar": "عندما يعود الارتباط الفيزيائي على المنفذ المحدد."
+        },
+        "tokens": [
+          {
+            "name": "port",
+            "type": "number",
+            "title": {
+              "en": "port",
+              "nl": "poort",
+              "de": "Port",
+              "fr": "port",
+              "it": "porta",
+              "sv": "port",
+              "no": "port",
+              "es": "puerto",
+              "da": "port",
+              "ru": "порт",
+              "pl": "port",
+              "ko": "포트",
+              "ar": "منفذ"
+            },
+            "example": 1
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          },
+          {
+            "type": "autocomplete",
+            "name": "port",
+            "title": {
+              "en": "Port",
+              "nl": "Poort",
+              "de": "Port",
+              "fr": "Port",
+              "it": "Porta",
+              "sv": "Port",
+              "no": "Port",
+              "es": "Puerto",
+              "da": "Port",
+              "ru": "Порт",
+              "pl": "Port",
+              "ko": "포트",
+              "ar": "منفذ"
+            },
+            "placeholder": {
+              "en": "Search or pick…",
+              "nl": "Zoek of kies…",
+              "de": "Suchen oder wählen…",
+              "fr": "Rechercher ou choisir…",
+              "it": "Cerca o scegli…",
+              "sv": "Sök eller välj…",
+              "no": "Søk eller velg…",
+              "es": "Buscar o elegir…",
+              "da": "Søg eller vælg…",
+              "ru": "Найти или выбрать…",
+              "pl": "Szukaj lub wybierz…",
+              "ko": "검색 또는 선택…",
+              "ar": "ابحث أو اختر…"
+            }
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "alarm_port_disconnected_status",
+        "title": {
+          "en": "[[port]] !{{is disconnected|is connected}}",
+          "nl": "[[port]] !{{niet verbonden is|verbonden is}}",
+          "de": "[[port]] !{{ist getrennt|ist verbunden}}",
+          "fr": "[[port]] !{{est déconnecté|est connecté}}",
+          "it": "[[port]] !{{è disconnesso|è connesso}}",
+          "sv": "[[port]] !{{är frånkopplad|är ansluten}}",
+          "no": "[[port]] !{{er frakoblet|er tilkoblet}}",
+          "es": "[[port]] !{{está desconectado|está conectado}}",
+          "da": "[[port]] !{{er afkoblet|er tilsluttet}}",
+          "ru": "порт [[port]] !{{отключён|подключён}}",
+          "pl": "[[port]] !{{jest rozłączony|jest podłączony}}",
+          "ko": "[[port]]번 포트가 !{{연결 끊김|연결됨}}",
+          "ar": "[[port]] !{{غير متصل|متصل}}"
+        },
+        "titleFormatted": {
+          "en": "[[port]] !{{is disconnected|is connected}}",
+          "nl": "[[port]] !{{niet verbonden is|verbonden is}}",
+          "de": "[[port]] !{{ist getrennt|ist verbunden}}",
+          "fr": "[[port]] !{{est déconnecté|est connecté}}",
+          "it": "[[port]] !{{è disconnesso|è connesso}}",
+          "sv": "[[port]] !{{är frånkopplad|är ansluten}}",
+          "no": "[[port]] !{{er frakoblet|er tilkoblet}}",
+          "es": "[[port]] !{{está desconectado|está conectado}}",
+          "da": "[[port]] !{{er afkoblet|er tilsluttet}}",
+          "ru": "порт [[port]] !{{отключён|подключён}}",
+          "pl": "[[port]] !{{jest rozłączony|jest podłączony}}",
+          "ko": "[[port]]번 포트가 !{{연결 끊김|연결됨}}",
+          "ar": "[[port]] !{{غير متصل|متصل}}"
+        },
+        "hint": {
+          "en": "Checks the physical link state of the selected port.",
+          "nl": "Controleert de fysieke verbindingsstatus van de geselecteerde poort.",
+          "de": "Prüft den physischen Verbindungsstatus des gewählten Ports.",
+          "fr": "Vérifie l'état de la liaison physique du port sélectionné.",
+          "it": "Controlla lo stato del collegamento fisico sulla porta selezionata.",
+          "sv": "Kontrollerar den fysiska länkstatusen för den valda porten.",
+          "no": "Sjekker den fysiske koblingsstatusen til den valgte porten.",
+          "es": "Comprueba el estado del enlace físico del puerto seleccionado.",
+          "da": "Tjekker den fysiske forbindelsesstatus for den valgte port.",
+          "ru": "Проверяет состояние физического соединения выбранного порта.",
+          "pl": "Sprawdza stan fizycznego połączenia wybranego portu.",
+          "ko": "선택한 포트의 물리적 링크 상태를 확인합니다.",
+          "ar": "يتحقق من حالة الارتباط الفيزيائي للمنفذ المحدد."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          },
+          {
+            "type": "autocomplete",
+            "name": "port",
+            "title": {
+              "en": "Port",
+              "nl": "Poort",
+              "de": "Port",
+              "fr": "Port",
+              "it": "Porta",
+              "sv": "Port",
+              "no": "Port",
+              "es": "Puerto",
+              "da": "Port",
+              "ru": "Порт",
+              "pl": "Port",
+              "ko": "포트",
+              "ar": "منفذ"
+            },
+            "placeholder": {
+              "en": "Search or pick…",
+              "nl": "Zoek of kies…",
+              "de": "Suchen oder wählen…",
+              "fr": "Rechercher ou choisir…",
+              "it": "Cerca o scegli…",
+              "sv": "Sök eller välj…",
+              "no": "Søk eller velg…",
+              "es": "Buscar o elegir…",
+              "da": "Søg eller vælg…",
+              "ru": "Найти или выбрать…",
+              "pl": "Szukaj lub wybierz…",
+              "ko": "검색 또는 선택…",
+              "ar": "ابحث أو اختر…"
+            }
+          }
+        ]
+      },
+      {
+        "id": "link_up",
+        "deprecated": true,
+        "title": {
+          "en": "Switch port link is !{{up|down}}",
+          "nl": "Switchpoortverbinding is !{{up|down}}",
+          "da": "Switch-portforbindelsen er !{{oppe|nede}}",
+          "de": "Der Switch-Port-Link ist !{{up|down}}",
+          "es": "¡El enlace del puerto del switch está !{{arriba|abajo}}",
+          "fr": "Le lien du port du switch est !{{up|down}}",
+          "it": "Il collegamento della porta dello switch è !{{up|down}}",
+          "no": "Svitsjportforbindelsen er !{{oppe|nede}}",
+          "sv": "Switchportlänken är !{{up|down}}",
+          "pl": "Połączenie portu przełącznika jest !{{up|down}}",
+          "ru": "Ссылка порта коммутатора !{{вверх|вниз}}",
+          "ko": "스위치 포트 링크가 !{{업|다운}}",
+          "ar": "رابط منفذ المحول هو !{{أعلى|أسفل}}"
+        },
+        "titleFormatted": {
+          "en": "Switch port [[port]] link is !{{up|down}}",
+          "nl": "Switch-poort [[port]] verbinding is !{{omhoog|omlaag}}",
+          "da": "Switch-port [[port]] forbindelsen er !{{oppe|nede}}",
+          "de": "Switch-Port [[port]] Verbindung ist !{{oben|unten}}",
+          "es": "El enlace del puerto del switch [[port]] está !{{arriba|abajo}}",
+          "fr": "Le lien du port de commutateur [[port]] est !{{haut|bas}}",
+          "it": "Il collegamento della porta dello switch [[port]] è !{{su|giù}}",
+          "no": "Svitsjport [[port]]-forbindelse er !{{oppe|nede}}",
+          "sv": "Switchport [[port]] länken är !{{upp|ner}}",
+          "pl": "Połączenie portu przełącznika [[port]] jest !{{up|down}}",
+          "ru": "Ссылка на порт коммутатора [[port]] !{{вверх|вниз}}",
+          "ko": "스위치 포트 [[port]] 링크가 !{{업|다운}}",
+          "ar": "منفذ المحول [[port]] الرابط هو !{{أعلى|أسفل}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          },
+          {
+            "name": "port",
+            "type": "number",
+            "title": {
+              "en": "port number",
+              "nl": "poortnummer",
+              "da": "portnummer",
+              "de": "Portnummer",
+              "es": "número de puerto",
+              "fr": "numéro de port",
+              "it": "numero di porta",
+              "no": "portnummer",
+              "sv": "portnummer",
+              "pl": "numer portu",
+              "ru": "номер порта",
+              "ko": "포트 번호",
+              "ar": "رقم المنفذ"
+            },
+            "min": 1,
+            "max": 48
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "turnOn_port",
+        "title": {
+          "en": "Enable [[port]]",
+          "nl": "[[port]] inschakelen",
+          "de": "[[port]] aktivieren",
+          "fr": "Activer [[port]]",
+          "it": "Abilita [[port]]",
+          "sv": "Aktivera [[port]]",
+          "no": "Aktiver [[port]]",
+          "es": "Habilitar [[port]]",
+          "da": "Aktivér [[port]]",
+          "ru": "Включить [[port]]",
+          "pl": "Włącz [[port]]",
+          "ko": "[[port]] 활성화",
+          "ar": "تفعيل [[port]]"
+        },
+        "titleFormatted": {
+          "en": "Enable [[port]]",
+          "nl": "Schakel [[port]] in",
+          "de": "[[port]] aktivieren",
+          "fr": "Activer [[port]]",
+          "it": "Abilita [[port]]",
+          "sv": "Aktivera [[port]]",
+          "no": "Aktiver [[port]]",
+          "es": "Habilitar [[port]]",
+          "da": "Aktivér [[port]]",
+          "ru": "включить [[port]]",
+          "pl": "Włącz [[port]]",
+          "ko": "[[port]] 활성화",
+          "ar": "تفعيل [[port]]"
+        },
+        "hint": {
+          "en": "Enables the selected port on the switch.",
+          "nl": "Schakelt de geselecteerde poort op de switch in.",
+          "de": "Aktiviert den gewählten Port am Switch.",
+          "fr": "Active le port sélectionné sur le commutateur.",
+          "it": "Abilita la porta selezionata sullo switch.",
+          "sv": "Aktiverar den valda porten på switchen.",
+          "no": "Aktiverer den valgte porten på switchen.",
+          "es": "Habilita el puerto seleccionado en el switch.",
+          "da": "Aktiverer den valgte port på switchen.",
+          "ru": "Включает выбранный порт на коммутаторе.",
+          "pl": "Włącza wybrany port na przełączniku.",
+          "ko": "스위치에서 선택한 포트를 활성화합니다.",
+          "ar": "يفعّل المنفذ المحدد على المبدّل."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          },
+          {
+            "type": "autocomplete",
+            "name": "port",
+            "title": {
+              "en": "Number",
+              "nl": "Nummer",
+              "de": "Nummer",
+              "fr": "Numéro",
+              "it": "Numero",
+              "sv": "Nummer",
+              "no": "Nummer",
+              "es": "Número",
+              "da": "Nummer",
+              "ru": "Номер",
+              "pl": "Numer",
+              "ko": "번호",
+              "ar": "الرقم"
+            },
+            "placeholder": {
+              "en": "Search or pick…",
+              "nl": "Zoek of kies…",
+              "de": "Suchen oder wählen…",
+              "fr": "Rechercher ou choisir…",
+              "it": "Cerca o scegli…",
+              "sv": "Sök eller välj…",
+              "no": "Søk eller velg…",
+              "es": "Buscar o elegir…",
+              "da": "Søg eller vælg…",
+              "ru": "Найти или выбрать…",
+              "pl": "Szukaj lub wybierz…",
+              "ko": "검색 또는 선택…",
+              "ar": "ابحث أو اختر…"
+            }
+          }
+        ]
+      },
+      {
+        "id": "turnOff_port",
+        "title": {
+          "en": "Disable [[port]]",
+          "nl": "[[port]] uitschakelen",
+          "de": "[[port]] deaktivieren",
+          "fr": "Désactiver [[port]]",
+          "it": "Disabilita [[port]]",
+          "sv": "Inaktivera [[port]]",
+          "no": "Deaktiver [[port]]",
+          "es": "Deshabilitar [[port]]",
+          "da": "Deaktivér [[port]]",
+          "ru": "Отключить [[port]]",
+          "pl": "Wyłącz [[port]]",
+          "ko": "[[port]] 비활성화",
+          "ar": "تعطيل [[port]]"
+        },
+        "titleFormatted": {
+          "en": "Disable [[port]]",
+          "nl": "Schakel [[port]] uit",
+          "de": "[[port]] deaktivieren",
+          "fr": "Désactiver [[port]]",
+          "it": "Disabilita [[port]]",
+          "sv": "Inaktivera [[port]]",
+          "no": "Deaktiver [[port]]",
+          "es": "Deshabilitar [[port]]",
+          "da": "Deaktivér [[port]]",
+          "ru": "отключить [[port]]",
+          "pl": "Wyłącz [[port]]",
+          "ko": "[[port]] 비활성화",
+          "ar": "تعطيل [[port]]"
+        },
+        "hint": {
+          "en": "Disables the selected port on the switch.",
+          "nl": "Schakelt de geselecteerde poort op de switch uit.",
+          "de": "Deaktiviert den gewählten Port am Switch.",
+          "fr": "Désactive le port sélectionné sur le commutateur.",
+          "it": "Disabilita la porta selezionata sullo switch.",
+          "sv": "Inaktiverar den valda porten på switchen.",
+          "no": "Deaktiverer den valgte porten på switchen.",
+          "es": "Deshabilita el puerto seleccionado en el switch.",
+          "da": "Deaktiverer den valgte port på switchen.",
+          "ru": "Отключает выбранный порт на коммутаторе.",
+          "pl": "Wyłącza wybrany port na przełączniku.",
+          "ko": "스위치에서 선택한 포트를 비활성화합니다.",
+          "ar": "يعطّل المنفذ المحدد على المبدّل."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          },
+          {
+            "type": "autocomplete",
+            "name": "port",
+            "title": {
+              "en": "Number",
+              "nl": "Nummer",
+              "de": "Nummer",
+              "fr": "Numéro",
+              "it": "Numero",
+              "sv": "Nummer",
+              "no": "Nummer",
+              "es": "Número",
+              "da": "Nummer",
+              "ru": "Номер",
+              "pl": "Numer",
+              "ko": "번호",
+              "ar": "الرقم"
+            },
+            "placeholder": {
+              "en": "Search or pick…",
+              "nl": "Zoek of kies…",
+              "de": "Suchen oder wählen…",
+              "fr": "Rechercher ou choisir…",
+              "it": "Cerca o scegli…",
+              "sv": "Sök eller välj…",
+              "no": "Søk eller velg…",
+              "es": "Buscar o elegir…",
+              "da": "Søg eller vælg…",
+              "ru": "Найти или выбрать…",
+              "pl": "Szukaj lub wybierz…",
+              "ko": "검색 또는 선택…",
+              "ar": "ابحث أو اختر…"
+            }
+          }
+        ]
+      },
+      {
+        "id": "enable_port",
+        "deprecated": true,
+        "title": {
+          "en": "Enable switch port",
+          "nl": "Schakel switchpoort in",
+          "da": "Aktivér switch-port",
+          "de": "Switch-Port aktivieren",
+          "es": "Habilitar puerto del switch",
+          "fr": "Activer le port du commutateur",
+          "it": "Abilita porta dello switch",
+          "no": "Aktiver svitsjport",
+          "sv": "Aktivera switchport",
+          "pl": "Włącz port przełącznika",
+          "ru": "Включить порт коммутатора",
+          "ko": "스위치 포트 활성화",
+          "ar": "تمكين منفذ المحول"
+        },
+        "titleFormatted": {
+          "en": "Enable switch port [[port]]",
+          "nl": "Schakel switchpoort [[port]] in",
+          "da": "Aktivér switch-port [[port]]",
+          "de": "Schalte Switch-Port [[port]] ein",
+          "es": "Habilitar puerto del switch [[port]]",
+          "fr": "Activer le port du commutateur [[port]]",
+          "it": "Abilita la porta dello switch [[port]]",
+          "no": "Aktiver svitsjeport [[port]]",
+          "sv": "Aktivera switchport [[port]]",
+          "pl": "Włącz port przełącznika [[port]]",
+          "ru": "Включить порт коммутатора [[port]]",
+          "ko": "스위치 포트 [[port]] 활성화",
+          "ar": "تفعيل منفذ التبديل [[port]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          },
+          {
+            "name": "port",
+            "type": "number",
+            "title": {
+              "en": "port number",
+              "nl": "poortnummer",
+              "da": "portnummer",
+              "de": "Portnummer",
+              "es": "número de puerto",
+              "fr": "numéro de port",
+              "it": "numero di porta",
+              "no": "portnummer",
+              "sv": "portnummer",
+              "pl": "numer portu",
+              "ru": "номер порта",
+              "ko": "포트 번호",
+              "ar": "رقم المنفذ"
+            },
+            "min": 1,
+            "max": 48
+          }
+        ]
+      },
+      {
+        "id": "disable_port",
+        "deprecated": true,
+        "title": {
+          "en": "Disable switch port",
+          "nl": "Schakel switchpoort uit",
+          "da": "Deaktiver switch-port",
+          "de": "Schalte den Switch-Port aus",
+          "es": "Desactivar puerto del switch",
+          "fr": "Désactiver le port du commutateur",
+          "it": "Disabilita porta switch",
+          "no": "Deaktiver svitsjport",
+          "sv": "Inaktivera switchport",
+          "pl": "Wyłącz port przełącznika",
+          "ru": "Отключить порт коммутатора",
+          "ko": "스위치 포트 비활성화",
+          "ar": "تعطيل منفذ المحول"
+        },
+        "titleFormatted": {
+          "en": "Disable switch port [[port]]",
+          "nl": "Schakel switchpoort [[port]] uit",
+          "da": "Deaktiver switch-port [[port]]",
+          "de": "Schalte den Switch-Port [[port]] aus",
+          "es": "Desactivar el puerto del switch [[port]]",
+          "fr": "Désactiver le port du commutateur [[port]]",
+          "it": "Disabilita la porta dello switch [[port]]",
+          "no": "Deaktiver svitsjport [[port]]",
+          "sv": "Inaktivera switchport [[port]]",
+          "pl": "Wyłącz port przełącznika [[port]]",
+          "ru": "Отключить порт коммутатора [[port]]",
+          "ko": "스위치 포트 [[port]] 비활성화",
+          "ar": "تعطيل منفذ المحول [[port]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          },
+          {
+            "name": "port",
+            "type": "number",
+            "title": {
+              "en": "port number",
+              "nl": "poortnummer",
+              "da": "portnummer",
+              "de": "Portnummer",
+              "es": "número de puerto",
+              "fr": "numéro de port",
+              "it": "numero di porta",
+              "no": "portnummer",
+              "sv": "portnummer",
+              "pl": "numer portu",
+              "ru": "номер порта",
+              "ko": "포트 번호",
+              "ar": "رقم المنفذ"
+            },
+            "min": 1,
+            "max": 48
+          }
+        ]
+      },
+      {
+        "id": "enable_leds",
+        "title": {
+          "en": "Enable LEDs",
+          "nl": "LEDs inschakelen",
+          "de": "LEDs aktivieren",
+          "fr": "Activer les voyants",
+          "it": "Abilita i LED",
+          "sv": "Aktivera lysdioder",
+          "no": "Aktiver LED-er",
+          "es": "Habilitar LEDs",
+          "da": "Aktivér LED'er",
+          "ru": "Включить индикаторы",
+          "pl": "Włącz diody LED",
+          "ko": "LED 켜기",
+          "ar": "تفعيل مصابيح LED"
+        },
+        "titleFormatted": {
+          "en": "Enable LEDs",
+          "nl": "Schakel LEDs in",
+          "de": "LEDs aktivieren",
+          "fr": "Activer les voyants",
+          "it": "Abilita i LED",
+          "sv": "Aktivera lysdioder",
+          "no": "Aktiver LED-er",
+          "es": "Habilitar LEDs",
+          "da": "Aktivér LED'er",
+          "ru": "включить индикаторы",
+          "pl": "Włącz diody LED",
+          "ko": "LED 켜기",
+          "ar": "تفعيل مصابيح LED"
+        },
+        "hint": {
+          "en": "Turns on the port and status LEDs on the switch.",
+          "nl": "Zet de poort- en status-LEDs van de switch aan.",
+          "de": "Schaltet die Port- und Status-LEDs der Switch ein.",
+          "fr": "Allume les voyants de ports et d'état du commutateur.",
+          "it": "Accende i LED delle porte e di stato sullo switch.",
+          "sv": "Sätter på port- och statuslysdioderna på switchen.",
+          "no": "Slår på port- og status-LED-ene på switchen.",
+          "es": "Enciende los LEDs de puertos y de estado del switch.",
+          "da": "Tænder port- og statuslysdioderne på switchen.",
+          "ru": "Включает индикаторы портов и состояния на коммутаторе.",
+          "pl": "Włącza diody LED portów i stanu na przełączniku.",
+          "ko": "스위치에서 포트 및 상태 표시 LED를 켭니다.",
+          "ar": "يشغّل مصابيح LED الخاصة بالمنافذ والحالة على المبدّل."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          }
+        ]
+      },
+      {
+        "id": "disable_leds",
+        "title": {
+          "en": "Disable LEDs",
+          "nl": "LEDs uitschakelen",
+          "de": "LEDs deaktivieren",
+          "fr": "Désactiver les voyants",
+          "it": "Disabilita i LED",
+          "sv": "Inaktivera lysdioder",
+          "no": "Deaktiver LED-er",
+          "es": "Deshabilitar LEDs",
+          "da": "Deaktivér LED'er",
+          "ru": "Выключить индикаторы",
+          "pl": "Wyłącz diody LED",
+          "ko": "LED 끄기",
+          "ar": "إطفاء مصابيح LED"
+        },
+        "titleFormatted": {
+          "en": "Disable LEDs",
+          "nl": "Schakel LEDs uit",
+          "de": "LEDs deaktivieren",
+          "fr": "Désactiver les voyants",
+          "it": "Disabilita i LED",
+          "sv": "Inaktivera lysdioder",
+          "no": "Deaktiver LED-er",
+          "es": "Deshabilitar LEDs",
+          "da": "Deaktivér LED'er",
+          "ru": "выключить индикаторы",
+          "pl": "Wyłącz diody LED",
+          "ko": "LED 끄기",
+          "ar": "إطفاء مصابيح LED"
+        },
+        "hint": {
+          "en": "Turns off the port and status LEDs on the switch.",
+          "nl": "Zet de poort- en status-LEDs van de switch uit.",
+          "de": "Schaltet die Port- und Status-LEDs der Switch aus.",
+          "fr": "Éteint les voyants de ports et d'état du commutateur.",
+          "it": "Spegne i LED delle porte e di stato sullo switch.",
+          "sv": "Slår av port- och statuslysdioderna på switchen.",
+          "no": "Slår av port- og status-LED-ene på switchen.",
+          "es": "Apaga los LEDs de puertos y de estado del switch.",
+          "da": "Slukker port- og statuslysdioderne på switchen.",
+          "ru": "Выключает индикаторы портов и состояния на коммутаторе.",
+          "pl": "Wyłącza diody LED portów i stanu na przełączniku.",
+          "ko": "스위치의 포트 및 상태 표시 LED를 끕니다.",
+          "ar": "يطفئ مصابيح LED الخاصة بالمنافذ والحالة على المبدّل."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          }
+        ]
+      },
+      {
+        "id": "restart",
+        "title": {
+          "en": "Restart",
+          "nl": "Herstarten",
+          "de": "Neu starten",
+          "fr": "Redémarrer",
+          "it": "Riavvia",
+          "sv": "Starta om",
+          "no": "Omstart",
+          "es": "Reiniciar",
+          "da": "Genstart",
+          "ru": "Перезагрузка",
+          "pl": "Uruchom ponownie",
+          "ko": "재시작",
+          "ar": "إعادة التشغيل"
+        },
+        "titleFormatted": {
+          "en": "Restart the switch",
+          "nl": "Herstart de switch",
+          "de": "Switch neu starten",
+          "fr": "Redémarrer le commutateur",
+          "it": "Riavvia lo switch",
+          "sv": "Starta om switchen",
+          "no": "Start switchen på nytt",
+          "es": "Reiniciar el switch",
+          "da": "Genstart switchen",
+          "ru": "перезагрузить коммутатор",
+          "pl": "Uruchom przełącznik ponownie",
+          "ko": "스위치 재시작",
+          "ar": "إعادة تشغيل المبدّل"
+        },
+        "hint": {
+          "en": "Restarts the managed switch. The device may be unreachable for a short time.",
+          "nl": "Start de beheerde switch opnieuw. Het apparaat kan kort onbereikbaar zijn.",
+          "de": "Startet den verwalteten Switch neu. Das Gerät kann kurz nicht erreichbar sein.",
+          "fr": "Redémarre le commutateur géré. L'appareil peut être injoignable brièvement.",
+          "it": "Riavvia lo switch gestito. Il dispositivo può risultare irraggiungibile per un attimo.",
+          "sv": "Startar om den hanterade switchen. Enheten kan vara omöjlig att nå en kort stund.",
+          "no": "Starter den administrerte switchen på nytt. Enheten kan være utilgjengelig en kort stund.",
+          "es": "Reinicia el switch gestionado. El dispositivo puede quedar inalcanzable unos instantes.",
+          "da": "Genstarter den administrerede switch. Enheden kan være utilgængelig i kort tid.",
+          "ru": "Перезагружает управляемый коммутатор. Устройство может быть недоступно короткое время.",
+          "pl": "Ponownie uruchamia zarządzany przełącznik. Urządzenie może być chwilowo niedostępne.",
+          "ko": "관리형 스위치를 재시작합니다. 잠시 동안 연결되지 않을 수 있습니다.",
+          "ar": "يعيد تشغيل المبدّل المُدار. قد يصبح الجهاز غير متاحًا لوقت قصير."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tp-link-managed-switch"
+          }
+        ]
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "TP-Link Managed Switch",
+        "nl": "TP-Link Managed Switch",
+        "da": "TP-Link Managed Switch",
+        "de": "TP-Link Managed Switch",
+        "es": "TP-Link Managed Switch",
+        "fr": "Commutateur Géré TP-Link",
+        "it": "TP-Link Managed Switch",
+        "no": "TP-Link Managed Switch",
+        "sv": "TP-Link Managed Switch",
+        "pl": "TP-Link Zarządzany Przełącznik",
+        "ru": "TP-Link Управляемый Коммутатор",
+        "ko": "TP-Link 관리형 스위치",
+        "ar": "تي بي لينك Managed Switch"
+      },
+      "class": "networkrouter",
+      "capabilities": [
+        "onoff.favorite"
+      ],
+      "capabilitiesOptions": {
+        "onoff.favorite": {
+          "title": {
+            "en": "Favorite Port",
+            "nl": "Favoriete Poort",
+            "da": "Foretrukken Port",
+            "de": "Bevorzugter Port",
+            "es": "Puerto Favorito",
+            "fr": "Port préféré",
+            "it": "Porta preferita",
+            "no": "Favorittport",
+            "sv": "Favoritport",
+            "pl": "Ulubiony port",
+            "ru": "Любимый порт",
+            "ko": "즐겨찾는 포트",
+            "ar": "المنفذ المفضل"
+          },
+          "uiQuickAction": false
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/tp-link-managed-switch/assets/images/small.png",
+        "large": "/drivers/tp-link-managed-switch/assets/images/large.png",
+        "xlarge": "/drivers/tp-link-managed-switch/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "connection_input",
+          "options": {
+            "logo": "logo.png"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        },
+        {
+          "id": "done",
+          "template": "done"
+        }
+      ],
+      "repair": [
+        {
+          "id": "connection_input",
+          "options": {
+            "logo": "logo.png"
+          }
+        },
+        {
+          "id": "done",
+          "template": "done"
+        }
+      ],
+      "id": "tp-link-managed-switch",
+      "settings": [
+        {
+          "id": "favorite_port_number",
+          "type": "number",
+          "label": {
+            "en": "Favorite port",
+            "nl": "Favoriete poort",
+            "da": "Foretrukken port",
+            "de": "Lieblingsport",
+            "es": "Puerto favorito",
+            "fr": "Port préféré",
+            "it": "Porta preferita",
+            "no": "Favorittport",
+            "sv": "Favoritport",
+            "pl": "Ulubiony port",
+            "ru": "Любимый порт",
+            "ko": "즐겨찾는 포트",
+            "ar": "المنفذ المفضل"
+          },
+          "value": 0,
+          "min": 0,
+          "max": 48,
+          "step": 1,
+          "hint": {
+            "en": "Port 0 will disable the favorite port. The port must exist on the device.",
+            "nl": "Poort 0 zal de favoriete poort uitschakelen. De poort moet op het apparaat aanwezig zijn.",
+            "da": "Port 0 vil deaktivere favoritporten. Porten skal eksistere på enheden.",
+            "de": "Port 0 deaktiviert den Favoritenport. Der Port muss auf dem Gerät vorhanden sein.",
+            "es": "El puerto 0 desactivará el puerto favorito. El puerto debe existir en el dispositivo.",
+            "fr": "Le port 0 désactivera le port favori. Le port doit exister sur l'appareil.",
+            "it": "La porta 0 disabiliterà la porta preferita. La porta deve esistere sul dispositivo.",
+            "no": "Port 0 vil deaktivere favorittporten. Porten må eksistere på enheten.",
+            "sv": "Port 0 kommer att inaktivera favoritporten. Porten måste finnas på enheten.",
+            "pl": "Port 0 wyłączy ulubiony port. Port musi istnieć na urządzeniu.",
+            "ru": "Порт 0 отключит избранный порт. Порт должен существовать на устройстве.",
+            "ko": "포트 0은 즐겨찾기 포트를 비활성화합니다. 포트는 장치에 존재해야 합니다.",
+            "ar": "سيؤدي المنفذ 0 إلى تعطيل المنفذ المفضل. يجب أن يكون المنفذ موجودًا على الجهاز."
+          }
+        },
+        {
+          "id": "configurable_ports",
+          "type": "text",
+          "label": {
+            "en": "Configurable ports",
+            "nl": "Configureerbare poorten",
+            "da": "Konfigurerbare porte",
+            "de": "Konfigurierbare Anschlüsse",
+            "es": "Puertos configurables",
+            "fr": "Ports configurables",
+            "it": "Porte configurabili",
+            "no": "Konfigurerbare porter",
+            "sv": "Konfigurerbara portar",
+            "pl": "Konfigurowalne porty",
+            "ru": "Настраиваемые порты",
+            "ko": "구성 가능한 포트",
+            "ar": "المنافذ القابلة للتكوين"
+          },
+          "value": "",
+          "hint": {
+            "en": "Ports that may be configured. Leave empty to allow all ports. Use a comma-separated list; hyphens denote ranges. Spaces are ignored (e.g. 1-3,5,6-10,14).",
+            "nl": "Poorten die kunnen worden geconfigureerd. Laat leeg om alle poorten toe te staan. Gebruik een door komma's gescheiden lijst; streepjes geven reeksen aan. Spaties worden genegeerd (bijv. 1-3,5,6-10,14).",
+            "da": "Porte, der kan konfigureres. Lad være tom for at tillade alle porte. Brug en kommasepareret liste; bindestreger angiver intervaller. Mellemrum ignoreres (f.eks. 1-3,5,6-10,14).",
+            "de": "Ports, die konfiguriert werden können. Lassen Sie das Feld leer, um alle Ports zuzulassen. Verwenden Sie eine durch Kommas getrennte Liste; Bindestriche kennzeichnen Bereiche. Leerzeichen werden ignoriert (z.B. 1-3,5,6-10,14).",
+            "es": "Puertos que se pueden configurar. Déjalo vacío para permitir todos los puertos. Usa una lista separada por comas; los guiones indican rangos. Se ignoran los espacios (por ejemplo, 1-3,5,6-10,14).",
+            "fr": "Ports pouvant être configurés. Laissez vide pour autoriser tous les ports. Utilisez une liste séparée par des virgules ; les tirets indiquent des plages. Les espaces sont ignorés (par exemple, 1-3,5,6-10,14).",
+            "it": "Porte che possono essere configurate. Lascia vuoto per consentire tutte le porte. Usa un elenco separato da virgole; i trattini indicano gli intervalli. Gli spazi sono ignorati (es. 1-3,5,6-10,14).",
+            "no": "Porter som kan konfigureres. La stå tomt for å tillate alle porter. Bruk en kommaseparert liste; bindestreker angir områder. Mellomrom ignoreres (f.eks. 1-3,5,6-10,14).",
+            "sv": "Portar som kan konfigureras. Lämna tomt för att tillåta alla portar. Använd en kommaseparerad lista; bindestreck anger intervall. Mellanslag ignoreras (t.ex. 1-3,5,6-10,14).",
+            "pl": "Porty, które można skonfigurować. Pozostaw puste, aby zezwolić na wszystkie porty. Użyj listy oddzielonej przecinkami; myślniki oznaczają zakresy. Spacje są ignorowane (np. 1-3,5,6-10,14).",
+            "ru": "Порты, которые можно настроить. Оставьте пустым, чтобы разрешить все порты. Используйте список, разделенный запятыми; дефисы обозначают диапазоны. Пробелы игнорируются (например, 1-3,5,6-10,14).",
+            "ko": "구성할 수 있는 포트입니다. 모든 포트를 허용하려면 비워 두세요. 쉼표로 구분된 목록을 사용하세요. 하이픈은 범위를 나타냅니다. 공백은 무시됩니다 (예: 1-3,5,6-10,14).",
+            "ar": "المنافذ التي يمكن تكوينها. اتركها فارغة للسماح بجميع المنافذ. استخدم قائمة مفصولة بفواصل؛ تشير الشرطات إلى النطاقات. يتم تجاهل المسافات (مثل 1-3,5,6-10,14)."
+          }
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Device Information",
+            "nl": "Apparaatinformatie",
+            "da": "Enhedsoplysninger",
+            "de": "Geräteinformationen",
+            "es": "Información del dispositivo",
+            "fr": "Informations sur l'appareil",
+            "it": "Informazioni sul dispositivo",
+            "no": "Enhetsinformasjon",
+            "sv": "Enhetsinformation",
+            "pl": "Informacje o urządzeniu",
+            "ru": "Информация об устройстве",
+            "ko": "장치 정보",
+            "ar": "معلومات الجهاز"
+          },
+          "children": [
+            {
+              "id": "switchAddress",
+              "type": "label",
+              "label": {
+                "en": "Address",
+                "nl": "Adres",
+                "da": "Adresse",
+                "de": "Adresse",
+                "es": "Dirección",
+                "fr": "Adresse",
+                "it": "Indirizzo",
+                "no": "Adresse",
+                "sv": "Adress",
+                "pl": "Adres",
+                "ru": "Адрес",
+                "ko": "주소",
+                "ar": "عنوان"
+              },
+              "value": "-",
+              "hint": {
+                "en": "The configured address used to connect to the switch.",
+                "nl": "Het geconfigureerde adres dat wordt gebruikt om verbinding te maken met de switch.",
+                "da": "Den konfigurerede adresse, der bruges til at forbinde til switchen.",
+                "de": "Die konfigurierte Adresse, die zur Verbindung mit dem Switch verwendet wird.",
+                "es": "La dirección configurada utilizada para conectarse al switch.",
+                "fr": "L'adresse configurée utilisée pour se connecter au switch.",
+                "it": "L'indirizzo configurato utilizzato per connettersi allo switch.",
+                "no": "Den konfigurerte adressen som brukes til å koble til switchen.",
+                "sv": "Den konfigurerade adressen som används för att ansluta till switchen.",
+                "pl": "Skonfigurowany adres używany do połączenia z przełącznikiem.",
+                "ru": "Настроенный адрес, используемый для подключения к коммутатору.",
+                "ko": "스위치에 연결하는 데 사용되는 구성된 주소입니다.",
+                "ar": "العنوان المُعدّ المستخدم للاتصال بالمحول."
+              }
+            },
+            {
+              "id": "switchName",
+              "type": "label",
+              "label": {
+                "en": "Device Name",
+                "nl": "Apparaatnaam",
+                "da": "Enhedsnavn",
+                "de": "Gerätename",
+                "es": "Nombre del dispositivo",
+                "fr": "Nom de l'appareil",
+                "it": "Nome del dispositivo",
+                "no": "Enhetsnavn",
+                "sv": "Enhetsnamn",
+                "pl": "Nazwa urządzenia",
+                "ru": "Имя устройства",
+                "ko": "장치 이름",
+                "ar": "اسم الجهاز"
+              },
+              "value": "-",
+              "hint": {
+                "en": "The device description reported by the switch.",
+                "nl": "De apparaatbeschrijving gerapporteerd door de switch.",
+                "da": "Enhedsbeskrivelsen rapporteret af switchen.",
+                "de": "Die vom Switch gemeldete Gerätebeschreibung.",
+                "es": "La descripción del dispositivo informada por el switch.",
+                "fr": "La description de l'appareil rapportée par le switch.",
+                "it": "La descrizione del dispositivo riportata dallo switch.",
+                "no": "Enhetsbeskrivelsen rapportert av svitsjen.",
+                "sv": "Enhetsbeskrivningen som rapporteras av switchen.",
+                "pl": "Opis urządzenia zgłoszony przez przełącznik.",
+                "ru": "Описание устройства, предоставленное коммутатором.",
+                "ko": "스위치에서 보고된 장치 설명입니다.",
+                "ar": "الوصف الذي يقدمه المفتاح للجهاز."
+              }
+            },
+            {
+              "id": "switchMacAddress",
+              "type": "label",
+              "label": {
+                "en": "MAC Address",
+                "nl": "MAC-adres",
+                "da": "MAC-adresse",
+                "de": "MAC-Adresse",
+                "es": "Dirección MAC",
+                "fr": "Adresse MAC",
+                "it": "Indirizzo MAC",
+                "no": "MAC-adresse",
+                "sv": "MAC-adress",
+                "pl": "Adres MAC",
+                "ru": "MAC-адрес",
+                "ko": "MAC 주소",
+                "ar": "عنوان MAC"
+              },
+              "value": "-",
+              "hint": {
+                "en": "The MAC address reported by the switch.",
+                "nl": "Het MAC-adres dat door de switch wordt gerapporteerd.",
+                "da": "MAC-adressen rapporteret af switchen.",
+                "de": "Die vom Switch gemeldete MAC-Adresse.",
+                "es": "La dirección MAC reportada por el switch.",
+                "fr": "L'adresse MAC signalée par le switch.",
+                "it": "L'indirizzo MAC riportato dallo switch.",
+                "no": "MAC-adressen rapportert av switchen.",
+                "sv": "MAC-adressen som rapporteras av switchen.",
+                "pl": "Adres MAC zgłoszony przez switch.",
+                "ru": "MAC-адрес, сообщаемый коммутатором.",
+                "ko": "스위치에서 보고된 MAC 주소.",
+                "ar": "عنوان MAC الذي يبلغه المحول."
+              }
+            },
+            {
+              "id": "switchFirmwareVersion",
+              "type": "label",
+              "label": {
+                "en": "Firmware Version",
+                "nl": "Firmwareversie",
+                "da": "Firmwareversion",
+                "de": "Firmware-Version",
+                "es": "Versión de firmware",
+                "fr": "Version du firmware",
+                "it": "Versione Firmware",
+                "no": "Firmwareversjon",
+                "sv": "Firmwareversion",
+                "pl": "Wersja oprogramowania układowego",
+                "ru": "Версия прошивки",
+                "ko": "펌웨어 버전",
+                "ar": "إصدار البرنامج الثابت"
+              },
+              "value": "-",
+              "hint": {
+                "en": "The firmware version reported by the switch.",
+                "nl": "De firmwareversie die door de switch wordt gerapporteerd.",
+                "da": "Firmware-versionen rapporteret af switchen.",
+                "de": "Die vom Switch gemeldete Firmware-Version.",
+                "es": "La versión de firmware reportada por el switch.",
+                "fr": "La version du firmware signalée par le switch.",
+                "it": "La versione del firmware riportata dallo switch.",
+                "no": "Firmwareversjonen rapportert av switchen.",
+                "sv": "Firmwareversionen som rapporteras av switchen.",
+                "pl": "Wersja oprogramowania zgłaszana przez przełącznik.",
+                "ru": "Версия прошивки, о которой сообщает коммутатор.",
+                "ko": "스위치에서 보고된 펌웨어 버전.",
+                "ar": "إصدار البرنامج الثابت الذي يبلغه المحول."
+              }
+            },
+            {
+              "id": "switchHardwareVersion",
+              "type": "label",
+              "label": {
+                "en": "Hardware Version",
+                "nl": "Hardwareversie",
+                "da": "Hardwareversion",
+                "de": "Hardware-Version",
+                "es": "Versión de hardware",
+                "fr": "Version matérielle",
+                "it": "Versione hardware",
+                "no": "Maskinvareversjon",
+                "sv": "Hårdvaruversion",
+                "pl": "Wersja sprzętowa",
+                "ru": "Аппаратная версия",
+                "ko": "하드웨어 버전",
+                "ar": "إصدار الجهاز"
+              },
+              "value": "-",
+              "hint": {
+                "en": "The hardware version reported by the switch.",
+                "nl": "De hardwareversie die door de switch wordt gerapporteerd.",
+                "da": "Hardware-versionen rapporteret af switchen.",
+                "de": "Die vom Switch gemeldete Hardwareversion.",
+                "es": "La versión de hardware reportada por el switch.",
+                "fr": "La version matérielle signalée par le switch.",
+                "it": "La versione hardware riportata dallo switch.",
+                "no": "Maskinvaren versjon rapportert av svitsjen.",
+                "sv": "Hårdvaruversionen som rapporteras av switchen.",
+                "pl": "Wersja sprzętowa zgłaszana przez przełącznik.",
+                "ru": "Версия оборудования, о которой сообщает коммутатор.",
+                "ko": "스위치에서 보고된 하드웨어 버전입니다.",
+                "ar": "الإصدار المادي الذي يبلغه المحول."
+              }
+            },
+            {
+              "id": "switchPortCount",
+              "type": "label",
+              "label": {
+                "en": "Port Count",
+                "nl": "Poorttelling",
+                "da": "Portantal",
+                "de": "Anzahl der Ports",
+                "es": "Cantidad de Puertos",
+                "fr": "Nombre de ports",
+                "it": "Conteggio porte",
+                "no": "Portantall",
+                "sv": "Antal portar",
+                "pl": "Liczba portów",
+                "ru": "Количество портов",
+                "ko": "포트 수",
+                "ar": "عدد المنافذ"
+              },
+              "value": "-",
+              "hint": {
+                "en": "The number of switch ports reported by the device.",
+                "nl": "Het aantal switchpoorten dat door het apparaat wordt gerapporteerd.",
+                "da": "Antallet af switch-porte rapporteret af enheden.",
+                "de": "Die Anzahl der vom Gerät gemeldeten Switch-Ports.",
+                "es": "El número de puertos del switch reportados por el dispositivo.",
+                "fr": "Le nombre de ports de commutation signalés par l'appareil.",
+                "it": "Il numero di porte dello switch segnalato dal dispositivo.",
+                "no": "Antall svitsjeporter rapportert av enheten.",
+                "sv": "Antalet switchportar som rapporteras av enheten.",
+                "pl": "Liczba portów przełącznika zgłaszana przez urządzenie.",
+                "ru": "Количество портов коммутатора, о которых сообщает устройство.",
+                "ko": "장치에서 보고된 스위치 포트의 수.",
+                "ar": "عدد منافذ التبديل التي يبلغ عنها الجهاز."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "capabilities": {
+    "alarm_port_disconnected": {
+      "type": "boolean",
+      "title": {
+        "en": "Port",
+        "nl": "Poort",
+        "da": "Port",
+        "de": "Port",
+        "es": "Puerto",
+        "fr": "Port",
+        "it": "Porta",
+        "no": "Port",
+        "sv": "Port",
+        "pl": "Port",
+        "ru": "Порт",
+        "ko": "포트",
+        "ar": "منفذ"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/alarm_port_disconnected.svg"
+    }
+  }
+}
