@@ -20,6 +20,7 @@
         "flowSwitchDeviceNotAvailable": "L’appareil commutateur n’est pas disponible",
         "flowPortNumberUnknown": "Numéro de port inconnu",
         "flowPortAlarmCapabilityMissing": "Ce port n’est pas encore disponible sur ce commutateur.",
+        "flowPortLinkStatusUnread": "L’état du lien de ce port n’a pas encore été lu.",
         "invalidSwitchAddress": "Saisissez une adresse IPv4 valide, un nom d’hôte ou une IPv6 entre crochets. Vous pouvez ajouter un port (p. ex. 192.168.0.1:8080 ou [fe80::1]:443). N’incluez pas http://, de chemins ni de nom d’utilisateur dans ce champ.",
         "invalidSwitchUsername": "Saisissez un nom d’utilisateur valide (1 à 128 caractères ; espaces en début et fin supprimés). Les caractères de contrôle ne sont pas autorisés.",
         "invalidSwitchPassword": "Mot de passe trop long (256 caractères max. pour cette application) ou contient des caractères de contrôle. Les espaces en début et fin sont conservés—supprimez-les uniquement si vous le souhaitez.",

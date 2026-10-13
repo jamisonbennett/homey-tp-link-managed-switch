@@ -20,6 +20,7 @@
         "flowSwitchDeviceNotAvailable": "Switch-enheten är inte tillgänglig",
         "flowPortNumberUnknown": "Portnummer okänt",
         "flowPortAlarmCapabilityMissing": "Den porten är inte tillgänglig på denna switch ännu.",
+        "flowPortLinkStatusUnread": "Den portens länkstatus har inte lästs ännu.",
         "invalidSwitchAddress": "Ange en giltig IPv4-adress, värdnamn eller IPv6 inom hakparenteser. Du kan lägga till en port (t.ex. 192.168.0.1:8080 eller [fe80::1]:443). Inkludera inte http://, sökvägar eller användarnamn i detta fält.",
         "invalidSwitchUsername": "Ange ett giltigt användarnamn (1–128 tecken; inledande och avslutande mellanslag trimmas). Kontrolltecken är inte tillåtna.",
         "invalidSwitchPassword": "Lösenordet är för långt (max 256 tecken för denna app) eller innehåller kontrolltecken. Inledande och avslutande mellanslag behålls—ta bara bort dem om du menar det.",

@@ -189,12 +189,12 @@ class Device extends Homey.Device {
         const opts = this.getCapabilityOptions(ledsCap) as { title?: unknown; uiQuickAction?: boolean };
         needLedOptions = title !== opts.title || opts.uiQuickAction !== false;
       } catch (error) {
-        if (!(error instanceof Error && error.message.startsWith('Invalid Capability:'))) {
+        if (!this.isInvalidCapabilityError(error)) {
           throw error;
         }
       }
       if (needLedOptions) {
-        await this.setCapabilityOptions(ledsCap, {
+        await this.setCapabilityOptionsIgnoringMissing(ledsCap, {
           title,
           uiQuickAction: false,
         });
@@ -239,14 +239,12 @@ class Device extends Homey.Device {
       needToSetOnoffTitle = onoffTitle !== this.getCapabilityOptions(onoffCap).title;
       needToSetUiQuickAction = !this.getCapabilityOptions(onoffCap).uiQuickAction;
     } catch (error) {
-      if (error instanceof Error && error.message.startsWith('Invalid Capability:')) {
-        // ignore if the capability is not registered because this just means it needs to be registered
-      } else {
+      if (!this.isInvalidCapabilityError(error)) {
         throw error;
       }
     }
     const onoffOptionsPromise = (needToSetOnoffTitle || needToSetUiQuickAction)
-      ? this.setCapabilityOptions(onoffCap, {
+      ? this.setCapabilityOptionsIgnoringMissing(onoffCap, {
         title: onoffTitle,
         uiQuickAction: false,
       })
@@ -269,14 +267,12 @@ class Device extends Homey.Device {
         || alarmTitleFalse !== alarmOpts.titleFalse
       );
     } catch (error) {
-      if (error instanceof Error && error.message.startsWith('Invalid Capability:')) {
-        // ignore if the capability is not registered because this just means it needs to be registered
-      } else {
+      if (!this.isInvalidCapabilityError(error)) {
         throw error;
       }
     }
     const alarmOptionsPromise = needAlarmCapabilityOptions
-      ? this.setCapabilityOptions(alarmCap, {
+      ? this.setCapabilityOptionsIgnoringMissing(alarmCap, {
         title: alarmTitle,
         titleTrue: alarmTitleTrue,
         titleFalse: alarmTitleFalse,
@@ -375,33 +371,77 @@ class Device extends Homey.Device {
       }
     }
 
-    // Handle link up/down triggers
-    if (allLinksStatus && this.lastAllLinksStatus && allLinksStatus.length === this.lastAllLinksStatus.length) {
-      for (let port = 0; port < allLinksStatus.length; port++) {
-        if (allLinksStatus[port] !== this.lastAllLinksStatus[port]) {
+    // Handle link up/down triggers. The first sample, or a change in port count, only
+    // establishes a baseline. A later change is remembered until the alarm capability
+    // exists so the Flow can still run after registration catches up.
+    if (allLinksStatus) {
+      if (!this.lastAllLinksStatus || this.lastAllLinksStatus.length !== allLinksStatus.length) {
+        this.lastAllLinksStatus = allLinksStatus.slice();
+      } else {
+        for (let port = 0; port < allLinksStatus.length; port++) {
+          if (allLinksStatus[port] === this.lastAllLinksStatus[port]) {
+            continue;
+          }
           const portNumber = port + 1;
+          if (!this.getCapabilities().includes(`alarm_port_disconnected.${portNumber}`)) {
+            continue;
+          }
           await this.linkStateChanged?.trigger(this, { port: portNumber, linkUp: allLinksStatus[port] }, {});
           if (!allLinksStatus[port]) {
             await this.alarmPortDisconnectedTrue?.trigger(this, { port: portNumber }, { port: portNumber });
           } else {
             await this.alarmPortDisconnectedFalse?.trigger(this, { port: portNumber }, { port: portNumber });
           }
+          this.lastAllLinksStatus[port] = allLinksStatus[port];
         }
       }
-    }
-    if (allLinksStatus) {
-      this.lastAllLinksStatus = allLinksStatus;
     }
 
     return Promise.all(promises).then(() => undefined);
   }
 
-  private async setCapabilityIfNeeded(capabilityId: string, newValue: boolean) {
-    const currentValue = this.getCapabilityValue(capabilityId);
-    if (currentValue !== newValue) {
-      return this.setCapabilityValue(capabilityId, newValue);
+  private isInvalidCapabilityError(error: unknown): boolean {
+    return error instanceof Error && error.message.startsWith('Invalid Capability:');
+  }
+
+  /**
+   * Writes capability options, and logs `Invalid Capability` so a registration race does not
+   * take the device offline. Other errors still fail the refresh.
+   */
+  private async setCapabilityOptionsIgnoringMissing(
+    capabilityId: string,
+    options: {
+      title?: string;
+      titleTrue?: string;
+      titleFalse?: string;
+      uiQuickAction?: boolean;
+    },
+  ): Promise<void> {
+    try {
+      await this.setCapabilityOptions(capabilityId, options);
+    } catch (error) {
+      if (!this.isInvalidCapabilityError(error)) {
+        throw error;
+      }
+      this.log(`Error setting capability options ${capabilityId}:`, error);
     }
-    return Promise.resolve();
+  }
+
+  private async setCapabilityIfNeeded(capabilityId: string, newValue: boolean) {
+    if (!this.getCapabilities().includes(capabilityId)) {
+      return;
+    }
+    try {
+      const currentValue = this.getCapabilityValue(capabilityId);
+      if (currentValue !== newValue) {
+        await this.setCapabilityValue(capabilityId, newValue);
+      }
+    } catch (error) {
+      if (!this.isInvalidCapabilityError(error)) {
+        throw error;
+      }
+      this.log(`Error setting capability ${capabilityId}:`, error);
+    }
   }
 
   async onCapabilityOnoff(port: number, value: boolean) {

@@ -20,6 +20,7 @@
         "flowSwitchDeviceNotAvailable": "Switch-enheden er ikke tilgængelig",
         "flowPortNumberUnknown": "Portnummer ukendt",
         "flowPortAlarmCapabilityMissing": "Den port er endnu ikke tilgængelig på denne switch.",
+        "flowPortLinkStatusUnread": "Linkstatus for den port er endnu ikke læst.",
         "invalidSwitchAddress": "Angiv en gyldig IPv4-adresse, værtsnavn eller IPv6 i klammer. Du kan tilføje en port (f.eks. 192.168.0.1:8080 eller [fe80::1]:443). Inkluder ikke http://, stier eller brugernavn i dette felt.",
         "invalidSwitchUsername": "Angiv et gyldigt brugernavn (1-128 tegn; ledende og efterfølgende mellemrum trimmes). Kontroltegn er ikke tilladt.",
         "invalidSwitchPassword": "Adgangskoden er for lang (maks. 256 tegn for denne app) eller indeholder kontroltegn. Ledende og efterfølgende mellemrum bevares—fjern dem kun hvis du vil.",

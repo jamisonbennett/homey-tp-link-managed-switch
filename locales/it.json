@@ -20,6 +20,7 @@
         "flowSwitchDeviceNotAvailable": "Dispositivo switch non disponibile",
         "flowPortNumberUnknown": "Numero di porta sconosciuto",
         "flowPortAlarmCapabilityMissing": "Quella porta non è ancora disponibile su questo switch.",
+        "flowPortLinkStatusUnread": "Lo stato del collegamento di quella porta non è stato ancora letto.",
         "invalidSwitchAddress": "Inserisci un indirizzo IPv4 valido, un nome host o IPv6 tra parentesi quadre. Puoi aggiungere una porta (es. 192.168.0.1:8080 o [fe80::1]:443). Non includere http://, percorsi o nome utente in questo campo.",
         "invalidSwitchUsername": "Inserisci un nome utente valido (1-128 caratteri; spazi iniziali e finali vengono rimossi). I caratteri di controllo non sono consentiti.",
         "invalidSwitchPassword": "Password troppo lunga (max 256 caratteri per questa app) o contiene caratteri di controllo. Gli spazi iniziali e finali vengono mantenuti—rimuovili solo se intendi farlo.",

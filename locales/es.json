@@ -20,6 +20,7 @@
         "flowSwitchDeviceNotAvailable": "El dispositivo conmutador no está disponible",
         "flowPortNumberUnknown": "Número de puerto desconocido",
         "flowPortAlarmCapabilityMissing": "Ese puerto aún no está disponible en este conmutador.",
+        "flowPortLinkStatusUnread": "El estado del enlace de ese puerto aún no se ha leído.",
         "invalidSwitchAddress": "Introduce una dirección IPv4 válida, un nombre de host o IPv6 entre corchetes. Puedes añadir un puerto (p. ej. 192.168.0.1:8080 o [fe80::1]:443). No incluyas http://, rutas ni nombre de usuario en este campo.",
         "invalidSwitchUsername": "Introduce un nombre de usuario válido (1-128 caracteres; se recortan espacios al inicio y al final). No se permiten caracteres de control.",
         "invalidSwitchPassword": "La contraseña es demasiado larga (máx. 256 caracteres para esta app) o contiene caracteres de control. Los espacios al inicio y al final se conservan; elimínalos solo si lo deseas.",

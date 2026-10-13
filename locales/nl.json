@@ -20,6 +20,7 @@
         "flowSwitchDeviceNotAvailable": "Switch-apparaat is niet beschikbaar",
         "flowPortNumberUnknown": "Poortnummer is onbekend",
         "flowPortAlarmCapabilityMissing": "Die poort is op deze switch nog niet beschikbaar.",
+        "flowPortLinkStatusUnread": "De linkstatus van die poort is nog niet gelezen.",
         "invalidSwitchAddress": "Voer een geldig IPv4-adres, hostnaam of IPv6 tussen vierkante haken in. Je kunt een poort toevoegen (bijv. 192.168.0.1:8080 of [fe80::1]:443). Voeg geen http://, paden of gebruikersnaam toe in dit veld.",
         "invalidSwitchUsername": "Voer een geldige gebruikersnaam in (1-128 tekens; spaties aan begin en einde worden getrimd). Besturings tekens zijn niet toegestaan.",
         "invalidSwitchPassword": "Wachtwoord is te lang (max. 256 tekens voor deze app) of bevat besturingstekens. Spaties aan begin en einde blijven behouden—verwijder ze alleen als je dat wilt.",

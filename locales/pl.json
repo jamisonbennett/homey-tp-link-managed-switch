@@ -20,6 +20,7 @@
         "flowSwitchDeviceNotAvailable": "Urządzenie przełącznika jest niedostępne",
         "flowPortNumberUnknown": "Numer portu nieznany",
         "flowPortAlarmCapabilityMissing": "Ten port nie jest jeszcze dostępny na tym przełączniku.",
+        "flowPortLinkStatusUnread": "Status połączenia tego portu nie został jeszcze odczytany.",
         "invalidSwitchAddress": "Podaj prawidłowy adres IPv4, nazwę hosta lub IPv6 w nawiasach kwadratowych. Możesz dodać port (np. 192.168.0.1:8080 lub [fe80::1]:443). Nie wpisuj http://, ścieżek ani nazwy użytkownika w tym polu.",
         "invalidSwitchUsername": "Podaj prawidłową nazwę użytkownika (1–128 znaków; spacje na początku i końcu są obcinane). Znaki sterujące są niedozwolone.",
         "invalidSwitchPassword": "Hasło jest za długie (maks. 256 znaków w tej aplikacji) lub zawiera znaki sterujące. Spacje na początku i końcu są zachowywane — usuń je tylko, jeśli tego chcesz.",

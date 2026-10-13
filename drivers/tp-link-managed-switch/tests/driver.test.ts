@@ -126,7 +126,10 @@ describe('Driver', () => {
     });
 
     it('enable_port and disable_port delegate to onCapabilityOnoff', async () => {
-      const device = { onCapabilityOnoff: jest.fn().mockResolvedValue(undefined) };
+      const device = {
+        getCapabilities: jest.fn().mockReturnValue(['onoff.1', 'onoff.3']),
+        onCapabilityOnoff: jest.fn().mockResolvedValue(undefined),
+      };
       await actionRunListeners['enable_port']({ device, port: 1 }, {});
       await actionRunListeners['disable_port']({ device, port: 3 }, {});
       expect(device.onCapabilityOnoff).toHaveBeenCalledWith(1, true);
@@ -134,7 +137,10 @@ describe('Driver', () => {
     });
 
     it('turnOn_port and turnOff_port delegate to onCapabilityOnoff with autocomplete port', async () => {
-      const device = { onCapabilityOnoff: jest.fn().mockResolvedValue(undefined) };
+      const device = {
+        getCapabilities: jest.fn().mockReturnValue(['onoff.2', 'onoff.4']),
+        onCapabilityOnoff: jest.fn().mockResolvedValue(undefined),
+      };
       await actionRunListeners['turnOn_port']({ device, port: { name: 'Port 2', port: 2 } }, {});
       await actionRunListeners['turnOff_port']({ device, port: { name: 'Port 4', port: 4 } }, {});
       expect(device.onCapabilityOnoff).toHaveBeenCalledWith(2, true);
@@ -226,8 +232,42 @@ describe('Driver', () => {
       expect(inverted).toBe(false);
     });
 
+    it('port power actions run when that port capability is missing', async () => {
+      const device = {
+        getCapabilities: jest.fn().mockReturnValue(['onoff.1']),
+        onCapabilityOnoff: jest.fn().mockResolvedValue(undefined),
+      };
+      await actionRunListeners['enable_port']({ device, port: 6 }, {});
+      await actionRunListeners['turnOn_port']({ device, port: { port: 8 } }, {});
+      expect(device.onCapabilityOnoff).toHaveBeenCalledWith(6, true);
+      expect(device.onCapabilityOnoff).toHaveBeenCalledWith(8, true);
+    });
+
+    it('alarm_port_disconnected_status throws when the link status has not been read', async () => {
+      const device = {
+        getCapabilities: jest.fn().mockReturnValue(['alarm_port_disconnected.2']),
+        getCapabilityValue: jest.fn()
+          .mockResolvedValueOnce(null)
+          .mockResolvedValueOnce(undefined),
+      };
+      await expect(conditionRunListeners['alarm_port_disconnected_status'](
+        { device, port: { port: 2 } },
+        { inverted: false },
+      )).rejects.toThrow('t:settings.drivers.tp-link-managed-switch.flowPortLinkStatusUnread');
+      await expect(conditionRunListeners['alarm_port_disconnected_status'](
+        { device, port: { port: 2 } },
+        { inverted: false },
+      )).rejects.toThrow('t:settings.drivers.tp-link-managed-switch.flowPortLinkStatusUnread');
+    });
+
     it('port autocomplete lists ports from the selected device', async () => {
-      const device = { getSwitchPortCount: jest.fn().mockReturnValue(3) };
+      const device = {
+        getSwitchPortCount: jest.fn().mockReturnValue(3),
+        getCapabilities: jest.fn().mockReturnValue([
+          'onoff.1', 'onoff.2', 'onoff.3',
+          'alarm_port_disconnected.1', 'alarm_port_disconnected.2', 'alarm_port_disconnected.3',
+        ]),
+      };
       const fn = autocompleteListeners.condition.alarm_port_disconnected_status.port;
       const rows = await fn('', { device });
       expect(rows).toEqual([
@@ -235,6 +275,29 @@ describe('Driver', () => {
         { name: 't:settings.drivers.tp-link-managed-switch.portName', port: 2 },
         { name: 't:settings.drivers.tp-link-managed-switch.portName', port: 3 },
       ]);
+    });
+
+    it('power port autocomplete lists every port on the switch', async () => {
+      const device = {
+        getSwitchPortCount: jest.fn().mockReturnValue(8),
+        getCapabilities: jest.fn().mockReturnValue(['onoff.1', 'alarm_port_disconnected.2']),
+      };
+      const fn = autocompleteListeners.action.turnOn_port.port;
+      const rows = await fn('', { device });
+      expect(rows.map((row: { port: number }) => row.port)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    });
+
+    it('alarm port autocomplete lists only ports with the alarm capability', async () => {
+      const device = {
+        getSwitchPortCount: jest.fn().mockReturnValue(8),
+        getCapabilities: jest.fn().mockReturnValue(['onoff.1', 'alarm_port_disconnected.2']),
+      };
+      const conditionFn = autocompleteListeners.condition.alarm_port_disconnected_status.port;
+      const triggerFn = autocompleteListeners.deviceTrigger.alarm_port_disconnected_true.port;
+      const conditionRows = await conditionFn('', { device });
+      const triggerRows = await triggerFn('', { device });
+      expect(conditionRows.map((row: { port: number }) => row.port)).toEqual([2]);
+      expect(triggerRows.map((row: { port: number }) => row.port)).toEqual([2]);
     });
 
     it('alarm disconnect device triggers only match the configured port', async () => {
