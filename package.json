@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@jest/globals": "^30.3.0",
+    "@jest/globals": "^30.5.2",
     "@tsconfig/node22": "^22.0.5",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
     "@types/jest": "^30.0.0",
@@ -35,14 +35,14 @@
     "globals": "^17.7.0",
     "homey": "4.2.3",
     "homey-apps-sdk-v3-types": "^0.3.12",
-    "jest": "^30.3.0",
-    "ts-jest": "^29.4.9",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.14",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.65.0"
   },
   "dependencies": {
-    "axios": "^1.18.1"
+    "axios": "^1.20.0"
   },
   "keywords": [
     "homey",
@@ -56,14 +56,20 @@
   "overrides": {
     "got": "11.8.6",
     "homey-api": {
+      ".": "3.20.1",
       "socket.io-client": "4.8.1",
       "engine.io-client": "6.6.4"
     },
+    "test-exclude": "8.0.0",
+    "formdata-node": "6.0.3",
     "tmp": "0.2.7",
-    "sharp": "0.35.3",
+    "sharp": "0.35.5",
     "uuid": "11.1.1",
     "ws": "8.21.0",
-    "minimatch": "10.2.5",
-    "brace-expansion": "5.0.8"
+    "minimatch": "10.2.6",
+    "brace-expansion": "5.0.12",
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "4.3.2"
+    }
   }
 }
