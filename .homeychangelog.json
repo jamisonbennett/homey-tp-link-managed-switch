@@ -148,5 +148,20 @@
     "ru": "Исправить CVE",
     "ko": "CVE 수정하기",
     "ar": "إصلاح CVEs"
+  },
+  "0.1.10": {
+    "en": "Fixed an issue where the switch could go unavailable and miss port link-state Flow triggers while a port capability was still registering. Dependency security updates.",
+    "nl": "Een probleem opgelost waarbij de switch onbeschikbaar kon worden en Flow-triggers voor de poortlinkstatus kon missen terwijl een poortmogelijkheid nog werd geregistreerd. Beveiligingsupdates voor afhankelijkheden.",
+    "da": "Rettet et problem, hvor switchen kunne blive utilgængelig og misse Flow-udløsere for portlinkstatus, mens en portfunktion stadig blev registreret. Sikkerhedsopdateringer af afhængigheder.",
+    "de": "Ein Problem behoben, bei dem der Switch nicht verfügbar werden und Flow-Auslöser für den Port-Link-Status verpassen konnte, während eine Port-Fähigkeit noch registriert wurde. Sicherheitsupdates für Abhängigkeiten.",
+    "es": "Se corrigió un problema por el que el switch podía quedar no disponible y perder disparadores de Flow del estado del enlace del puerto mientras aún se registraba una capacidad del puerto. Actualizaciones de seguridad de dependencias.",
+    "fr": "Correction d'un problème où le commutateur pouvait devenir indisponible et manquer les déclencheurs de flux d'état de lien de port pendant l'enregistrement d'une capacité de port. Mises à jour de sécurité des dépendances.",
+    "it": "Risolto un problema per cui lo switch poteva risultare non disponibile e perdere i trigger di Flow sullo stato del collegamento della porta mentre una capacità della porta era ancora in registrazione. Aggiornamenti di sicurezza delle dipendenze.",
+    "no": "Fikset et problem der switchen kunne bli utilgjengelig og gå glipp av Flow-utløsere for portlinkstatus mens en portfunksjon fortsatt ble registrert. Sikkerhetsoppdateringer for avhengigheter.",
+    "sv": "Åtgärdade ett problem där switchen kunde bli otillgänglig och missa flödesutlösare för portlänkstatus medan en portfunktion fortfarande registrerades. Säkerhetsuppdateringar för beroenden.",
+    "pl": "Naprawiono problem, przez który przełącznik mógł stać się niedostępny i pominąć wyzwalacze Flow stanu łącza portu, gdy funkcja portu była jeszcze rejestrowana. Aktualizacje zabezpieczeń zależności.",
+    "ru": "Исправлена ошибка, из-за которой коммутатор мог становиться недоступным и пропускать триггеры Flow состояния канала порта, пока возможность порта ещё регистрировалась. Обновления безопасности зависимостей.",
+    "ko": "포트 기능이 아직 등록되는 동안 스위치가 사용 불가로 표시되고 포트 링크 상태 Flow 트리거를 놓칠 수 있는 문제를 수정했습니다. 종속성 보안 업데이트를 적용했습니다.",
+    "ar": "تم إصلاح مشكلة كان يمكن أن يصبح فيها المحول غير متاح ويفوّت مشغلات Flow لحالة ارتباط المنفذ أثناء تسجيل قدرة المنفذ. تحديثات أمان للتبعيات."
   }
 }
